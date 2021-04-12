@@ -8,17 +8,17 @@
 #include <sstream>
 #include "Window.h"
 
-Window::Window(WindowInfo *info) :
+Window::Window(const WindowInfo &info) :
         m_window(nullptr, SDL_DestroyWindow),
-        m_title(info->title),
+        m_title(info.title),
         m_renderer(nullptr)
 {
     if(SDL_Init(SDL_INIT_VIDEO))
         throw std::runtime_error(SDL_GetError());
 
-    m_window.reset(SDL_CreateWindow(info->title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, info->width, info->height, SDL_WINDOW_SHOWN));
+    m_window.reset(SDL_CreateWindow(info.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, info.width, info.height, SDL_WINDOW_SHOWN));
 
-    m_renderer = Renderer::Create(m_window.get(), info->width, info->height);
+    m_renderer = Renderer::Create(m_window.get(), info.width, info.height);
 
     if(!m_window)
         throw std::runtime_error("La fenêtre n'a pas pu être créée !");
@@ -53,7 +53,7 @@ void Window::Draw()
     m_renderer->Draw();
 }
 
-std::shared_ptr<Window> Window::Create(WindowInfo *info)
+std::shared_ptr<Window> Window::Create(const WindowInfo &info)
 {
     return std::shared_ptr<Window>(static_cast<Window*>(new Window(info)));
 }

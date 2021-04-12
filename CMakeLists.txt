@@ -33,7 +33,7 @@ set(SRC_FILES
         Program/Application.cpp
         Program/Application.h
         Transformers/Shapes.cpp
-        Transformers/Shapes.h Transformers/LuaInterpreter.cpp Transformers/LuaInterpreter.h Program/Config/Config.cpp Program/Config/Config.h Transformers/World.cpp Transformers/World.h View/Error.cpp View/Error.h Transformers/MainManager.cpp Transformers/MainManager.h)
+        Transformers/Shapes.h Transformers/LuaInterpreter.cpp Transformers/LuaInterpreter.h Program/Config/Config.cpp Program/Config/Config.h Transformers/World.cpp Transformers/World.h View/Error.cpp View/Error.h Transformers/MainManager.cpp Transformers/MainManager.h Transformers/Context.cpp Transformers/Context.h Transformers/Contexts.cpp Transformers/Contexts.h)
 
 # SPÉCIFICITÉS
 message("Compiling for : ")

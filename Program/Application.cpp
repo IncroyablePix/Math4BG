@@ -5,14 +5,14 @@
 #include <iostream>
 #include "Application.h"
 
-Application::Application(const std::shared_ptr<Window>& window, const Config &config) :
-m_window(std::shared_ptr(window)),
-m_luaInterpreter(std::make_shared<LuaInterpreter>())
+Application::Application(std::shared_ptr<Contexts> contexts, const Config &config) :
+m_luaInterpreter(std::make_shared<LuaInterpreter>(contexts))
 {
-    m_logic = std::make_shared<Logic>(window->GetRenderer());
-    m_world = std::make_shared<World>(window->GetRenderer());
+    m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
+    //std::make_shared<Logic>(window->GetRenderer());
+    //m_world = std::make_shared<World>(window->GetRenderer());
 
-    m_luaInterpreter->SetWorld(m_world);
+    //m_luaInterpreter->SetWorld(m_world);
     m_luaInterpreter->ExecuteFile(config.scriptFile);
 }
 
@@ -60,6 +60,9 @@ void Application::Run()
         }
 
         //---LOGIC UPDATE---//
+        std::unordered_map<int, Context*>::iterator it;
+        std::unordered_map<int, Context*>::iterator itEnd;
+
         unsigned long long now = SDL_GetTicks();
         unsigned long long elapsed = now - m_last;
 
@@ -74,19 +77,31 @@ void Application::Run()
             if(now - lastUPS >= 1000)
             {
                 lastUPS = SDL_GetTicks();
-                m_window->SetUPS(ups);
+
+                it = m_contexts->Begin();
+                for(; it != itEnd; it++)
+                    it->second->SetUPS(ups);
+
                 ups = 0;
             }
         }
         m_last = SDL_GetTicks();
 
-        m_window->Draw();
+
+        it = m_contexts->Begin();
+        for(; it != itEnd; it++)
+            it->second->Draw();
+
         fps++;
 
         if (now - lastFPS >= 1000)
         {
             lastFPS = SDL_GetTicks();
-            m_window->SetFPS(fps);
+
+            it = m_contexts->Begin();
+            for(; it != itEnd; it++)
+                it->second->SetFPS(fps);
+
             fps = 0;
         }
 
@@ -95,7 +110,12 @@ void Application::Run()
 }
 
 void Application::Update(double lag) {
-    //m_logic->Update(lag);
+    std::unordered_map<int, Context*>::iterator it;
+    std::unordered_map<int, Context*>::iterator itEnd;
+
     m_luaInterpreter->CallUpdateFunction(lag);
-    m_world->Draw();
+
+    it = m_contexts->Begin();
+    for(; it != itEnd; it++)
+        it->second->Update();
 }

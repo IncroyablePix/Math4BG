@@ -10,7 +10,7 @@
 void LoadConfig(const std::string& path, Config& config)
 {
     std::ostringstream ss;
-    LuaInterpreter lua;
+    LuaInterpreter lua(nullptr);
 
     lua.ExecuteFile(path);
     std::string scriptName = lua.GetString("script");

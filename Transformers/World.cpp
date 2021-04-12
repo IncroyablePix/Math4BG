@@ -16,7 +16,7 @@ World::~World()
 
 }
 
-void World::Draw()
+void World::Update()
 {
     m_renderer->Clear();
     for(auto &circle : m_circles)
@@ -34,8 +34,8 @@ void World::Draw()
 
 int World::CreateCircle(Point center, double radius, uint32_t color)
 {
-    m_circles[m_circleCount] = { center, radius, color };
-    return m_circleCount ++;
+    m_circles[m_count] = { center, radius, color };
+    return m_count ++;
 }
 
 bool World::SetCirclePos(int circleid, Point center)
@@ -74,8 +74,8 @@ bool World::SetCircleColor(int circleid, uint32_t color)
 
 int World::CreateLine(Point start, Point end, uint32_t color)
 {
-    m_lines[m_lineCount] = { start, end, color };
-    return m_lineCount ++;
+    m_lines[m_count] = { start, end, color };
+    return m_count ++;
 }
 
 bool World::SetLinePos(int lineid, Point start, Point end)

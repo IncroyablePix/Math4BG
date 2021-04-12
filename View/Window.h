@@ -15,16 +15,16 @@
 struct WindowInfo
 {
     std::string title;
-    int width;
-    int height;
+    unsigned int width;
+    unsigned int height;
 };
 
 class Window : public std::enable_shared_from_this<Window>
 {
 public:
-    Window(WindowInfo *info);
+    Window(const WindowInfo &info);
     ~Window();
-    static std::shared_ptr<Window> Create(WindowInfo *info);
+    static std::shared_ptr<Window> Create(const WindowInfo &info);
     inline std::shared_ptr<Renderer> GetRenderer()
     {
         return m_renderer;

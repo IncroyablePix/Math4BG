@@ -1,9 +1,8 @@
 #define SDL_MAIN_HANDLED
+
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "Application.h"
-#include "../Transformers/LuaInterpreter.h"
-#include "Config/Config.h"
 #include "../View/Error.h"
 #include <memory>
 
@@ -14,10 +13,12 @@ int main(int argc, char** argv)
 
     //---
 
-    WindowInfo info = { "Math vision", 1280, 720 };
-    std::shared_ptr<Window> window = Window::Create(&info);
+    /*WindowInfo info = { "Math vision", 1280, 720 };
+    std::shared_ptr<Window> window = Window::Create(info);*/
 
-    Application app(window, config);
+    std::shared_ptr<Contexts> contexts = Contexts::Create();
+
+    Application app(contexts, config);
     try
     {
         app.Start();

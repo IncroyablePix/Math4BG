@@ -7,6 +7,7 @@
 
 #include <memory>
 #include "World.h"
+#include "Contexts.h"
 /**
  * Lua is a C library thus having C defined functions
  */
@@ -20,10 +21,10 @@ extern "C"
 class LuaInterpreter
 {
 public:
-    LuaInterpreter();
+    LuaInterpreter(std::shared_ptr<Contexts> contexts);
     ~LuaInterpreter();
 
-    void SetWorld(std::shared_ptr<World> world);
+    //void SetWorld(std::shared_ptr<World> world);
     void Test();
     void ExecuteCommand(const std::string& cmd);
     void ExecuteFile(const std::string& path);
@@ -33,6 +34,11 @@ public:
     bool CheckValidity();
     int CallOnInitFunction();
     int CallUpdateFunction(double lag);
+
+    //---
+
+    int CreateWindow(lua_State *L);
+    int DestroyWindow(lua_State *L);
 
     //---
 
@@ -47,7 +53,8 @@ public:
     int SetLineColor(lua_State *L);
 
 private:
-    std::shared_ptr<World> m_world;
+    std::shared_ptr<Contexts> m_contexts;
+    //std::shared_ptr<World> m_world;
     std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;
 
     void RegisterFunctions();

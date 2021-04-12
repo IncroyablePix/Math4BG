@@ -17,7 +17,7 @@ public:
     World(std::shared_ptr<Renderer>  renderer);
     ~World();
 
-    void Draw();
+    void Update();
 
     int CreateCircle(Point center, double radius, uint32_t color);
     bool SetCirclePos(int circleid, Point center);
@@ -34,8 +34,7 @@ private:
     std::unordered_map<int, Circle> m_circles;
     std::unordered_map<int, Line> m_lines;
 
-    int m_circleCount = 0;
-    int m_lineCount = 0;
+    int m_count = 0;
 };
 
 

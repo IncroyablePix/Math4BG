@@ -6,9 +6,10 @@
 #include <utility>
 #include "LuaInterpreter.h"
 
-LuaInterpreter::LuaInterpreter() :
+LuaInterpreter::LuaInterpreter(std::shared_ptr<Contexts> contexts) :
 m_luaState(nullptr, lua_close)
 {
+    m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
     m_luaState.reset(luaL_newstate());
     luaL_openlibs(m_luaState.get());
 
@@ -158,22 +159,46 @@ void LuaInterpreter::RegisterFunctions()
     lua_register(m_luaState.get(), "CreateLine", &dispatch<&LuaInterpreter::CreateLine>);
     lua_register(m_luaState.get(), "SetLinePos", &dispatch<&LuaInterpreter::SetLinePos>);
     lua_register(m_luaState.get(), "SetLineColor", &dispatch<&LuaInterpreter::SetLineColor>);
+
+    lua_register(m_luaState.get(), "CreateWindow", &dispatch<&LuaInterpreter::CreateWindow>);
 }
 
-void LuaInterpreter::SetWorld(std::shared_ptr<World> world)
+/*void LuaInterpreter::SetWorld(std::shared_ptr<World> world)
 {
     m_world = std::shared_ptr<World>(std::move(world));
+}*/
+
+int LuaInterpreter::CreateWindow(lua_State *L)
+{
+    std::string title = lua_tostring(L, 1);
+    unsigned int width = lua_tonumber(L, 2);
+    unsigned int height = lua_tonumber(L, 3);
+    uint32_t type = lua_tonumber(L, 4);
+
+    int id = m_contexts->CreateContext({ title, width, height }, (WorldType) type);
+    lua_pushnumber(L, id);
+    return 1;
+}
+
+int LuaInterpreter::DestroyWindow(lua_State *L)
+{
+    return 0;
 }
 
 int LuaInterpreter::CreateCircle(lua_State *L)
 {
-    double x = (double) lua_tonumber(L, 1);
-    double y = (double) lua_tonumber(L, 2);
-    double radius = (double) lua_tonumber(L, 3);
-    unsigned int color = (unsigned int) lua_tonumber(L, 4);
+    int contextid = (int) lua_tonumber(L, 1);
+    double x = (double) lua_tonumber(L, 2);
+    double y = (double) lua_tonumber(L, 3);
+    double radius = (double) lua_tonumber(L, 4);
+    unsigned int color = (unsigned int) lua_tonumber(L, 5);
 
-    int id = m_world->CreateCircle({x, y}, radius, color);
+    int id = -1;
+    if(m_contexts->ContextExists(contextid))
+        id = ((*m_contexts)[contextid])->GetWorld()->CreateCircle({x, y}, radius, color);
+
     lua_pushnumber(L, id);
+
     return 1;
 }
 
@@ -183,7 +208,7 @@ int LuaInterpreter::SetCirclePos(lua_State *L)
     double x = (double) lua_tonumber(L, 2);
     double y = (double) lua_tonumber(L, 3);
 
-    bool out = m_world->SetCirclePos(id, {x, y});
+    bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetCirclePos(id, {x, y});
     lua_pushboolean(L, out);
 
     return 1;
@@ -194,7 +219,7 @@ int LuaInterpreter::SetCircleSize(lua_State *L)
     int id = (int) lua_tonumber(L, 1);
     double size = (double) lua_tonumber(L, 2);
 
-    bool out = m_world->SetCircleSize(id, size);
+    bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetCircleSize(id, size);
     lua_pushboolean(L, out);
 
     return 1;
@@ -205,7 +230,7 @@ int LuaInterpreter::SetCircleColor(lua_State *L)
     int id = (int) lua_tonumber(L, 1);
     unsigned int color = (unsigned int) lua_tonumber(L, 2);
 
-    bool out = m_world->SetCircleColor(id, color);
+    bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetCircleColor(id, color);
     lua_pushboolean(L, out);
 
     return 1;
@@ -213,13 +238,17 @@ int LuaInterpreter::SetCircleColor(lua_State *L)
 
 int LuaInterpreter::CreateLine(lua_State *L)
 {
-    double xStart = (double) lua_tonumber(L, 1);
-    double yStart = (double) lua_tonumber(L, 2);
-    double xEnd = (double) lua_tonumber(L, 3);
-    double yEnd = (double) lua_tonumber(L, 4);
-    unsigned int color = (unsigned int) lua_tonumber(L, 5);
+    int contextid = (int) lua_tonumber(L, 1);
+    double xStart = (double) lua_tonumber(L, 2);
+    double yStart = (double) lua_tonumber(L, 3);
+    double xEnd = (double) lua_tonumber(L, 4);
+    double yEnd = (double) lua_tonumber(L, 5);
+    unsigned int color = (unsigned int) lua_tonumber(L, 6);
 
-    int id = m_world->CreateLine({ xStart, yStart }, { xEnd, yEnd }, color);
+    int id = -1;
+    if(m_contexts->ContextExists(contextid))
+        id = ((*m_contexts)[contextid])->GetWorld()->CreateLine({ xStart, yStart }, { xEnd, yEnd }, color);
+
     lua_pushnumber(L, id);
     return 1;
 }
@@ -232,7 +261,7 @@ int LuaInterpreter::SetLinePos(lua_State *L)
     double xEnd = (double) lua_tonumber(L, 4);
     double yEnd = (double) lua_tonumber(L, 5);
 
-    bool out = m_world->SetLinePos(id, { xStart, yStart }, { xEnd, yEnd });
+    bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetLinePos(id, { xStart, yStart }, { xEnd, yEnd });
     lua_pushboolean(L, out);
     return 1;
 }
@@ -242,7 +271,7 @@ int LuaInterpreter::SetLineColor(lua_State *L)
     int id = (int) lua_tonumber(L, 1);
     unsigned int color = (unsigned int) lua_tonumber(L, 2);
 
-    bool out = m_world->SetLineColor(id, color);
+    bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetLineColor(id, color);
     lua_pushboolean(L, out);
     return 1;
 }
