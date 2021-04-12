@@ -20,7 +20,7 @@ public:
     ~MainManager();
 
 private:
-    std::unordered_map<int, World>;
+    //std::unordered_map<int, World>;
 };
 
 

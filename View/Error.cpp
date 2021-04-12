@@ -6,5 +6,5 @@
 
 int ShowErrorMessage(const std::string& message)
 {
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unhandled error", message.c_str(), nullptr);
+    return SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unhandled error", message.c_str(), nullptr);
 }
