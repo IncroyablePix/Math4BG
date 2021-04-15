@@ -5,30 +5,34 @@
 #include <stdexcept>
 #include "Screen.h"
 
-Screen::Screen(unsigned int w, unsigned int h) : width(w), height(h), size(w * h), m_data(new Pixel[w * h])
-{
-}
 
-Screen::~Screen()
+namespace Math4BG
 {
-    delete[] m_data;
-}
+    Screen::Screen(unsigned int w, unsigned int h) : width(w), height(h), size(w * h), m_data(new Pixel[w * h])
+    {
+    }
 
-void Screen::SetPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
-{
-    SetPixel(x, y, r, g, b, (r == 0x0 && g == 0x0 && b == 0x0) ? 0x0 : 0xFF);
-}
+    Screen::~Screen()
+    {
+        delete[] m_data;
+    }
 
-Pixel& Screen::operator[](int index)
-{
-    if(index >= width * height)
-        throw std::runtime_error("Out of bounds array exception !");
+    void Screen::SetPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
+    {
+        SetPixel(x, y, r, g, b, (r == 0x0 && g == 0x0 && b == 0x0) ? 0x0 : 0xFF);
+    }
 
-    return m_data[index];
-}
+    Pixel &Screen::operator[](int index)
+    {
+        if (index >= width * height)
+            throw std::runtime_error("Out of bounds array exception !");
 
-void Screen::SetPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
-{
-    if(!(x < 0 || x >= width || y < 0 || y >= height))
-        (*this)[y * width + x] = { r, g, b, a };
+        return m_data[index];
+    }
+
+    void Screen::SetPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+    {
+        if (!(x < 0 || x >= width || y < 0 || y >= height))
+            (*this)[y * width + x] = {r, g, b, a};
+    }
 }

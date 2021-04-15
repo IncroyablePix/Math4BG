@@ -8,6 +8,8 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-int ShowErrorMessage(const std::string& message);
-
+namespace Math4BG
+{
+    int ShowErrorMessage(const std::string &message);
+}
 #endif //ARCPOSITION_ERROR_H

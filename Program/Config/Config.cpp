@@ -7,14 +7,17 @@
 #include "Config.h"
 #include "../../Transformers/LuaInterpreter.h"
 
-void LoadConfig(const std::string& path, Config& config)
+namespace Math4BG
 {
-    std::ostringstream ss;
-    LuaInterpreter lua(nullptr);
+    void LoadConfig(const std::string &path, Config &config)
+    {
+        std::ostringstream ss;
+        LuaInterpreter lua(nullptr);
 
-    lua.ExecuteFile(path);
-    std::string scriptName = lua.GetString("script");
-    ss << "scripts/" << scriptName << ".lua";
-    config.scriptFile = ss.str();
+        lua.ExecuteFile(path);
+        std::string scriptName = lua.GetString("script");
+        ss << "scripts/" << scriptName << ".lua";
+        config.scriptFile = ss.str();
+    }
 }
 

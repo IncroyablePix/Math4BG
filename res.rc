@@ -15,9 +15,10 @@ BEGIN
       VALUE "FileVersion", "1.0"
       VALUE "InternalName", "my_app"
       VALUE "LegalCopyright", "Benjamin Wirtz"
-      VALUE "OriginalFilename", "m4bg.exe"
+      VALUE "OriginalFilename", "math4bg.exe"
       VALUE "ProductName", "Math4BG"
       VALUE "ProductVersion", "1.0"
+      VALUE "Comments", "Provided for free by Benjamin Wirtz"
     END
   END
 

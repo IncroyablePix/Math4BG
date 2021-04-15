@@ -8,34 +8,56 @@
 
 #include <memory>
 #include <unordered_map>
-#include "../View/Renderer.h"
-#include "Shapes.h"
+#include "../View/Renderer/IRenderer.h"
+#include "../View/Renderer/2D/Object/Point.h"
+#include "../View/Renderer/2D/Object/Object2D.h"
+#include "../View/Renderer/2D/Object/Circle.h"
+#include "../View/Renderer/2D/Object/Line.h"
+#include "../View/Window.h"
 
-class World
+#define INVALID_OBJECT_ID               (-1)
+
+namespace Math4BG
 {
-public:
-    World(std::shared_ptr<Renderer>  renderer);
-    ~World();
+    class World
+    {
+    public:
+        World(WorldType type, std::shared_ptr<IRenderer> renderer);
 
-    void Update();
+        ~World();
 
-    int CreateCircle(Point center, double radius, uint32_t color);
-    bool SetCirclePos(int circleid, Point center);
-    bool SetCircleSize(int circleid, double radius);
-    bool SetCircleColor(int circleid, uint32_t color);
+        void Draw(Window &window);
+        void Update();
 
-    int CreateLine(Point start, Point end, uint32_t color);
-    bool SetLinePos(int lineid, Point start, Point end);
-    bool SetLineColor(int lineid, uint32_t color);
+        int CreateCircle(Point center, double radius, uint32_t color);
+        bool SetCirclePos(int circleid, Point center);
+        bool SetCircleSize(int circleid, double radius);
+        bool SetCircleColor(int circleid, uint32_t color);
 
-private:
-    std::shared_ptr<Renderer> m_renderer;
+        int CreateLine(Point start, Point end, uint32_t color);
+        bool SetLinePos(int lineid, Point start, Point end);
+        bool SetLineColor(int lineid, uint32_t color);
 
-    std::unordered_map<int, Circle> m_circles;
-    std::unordered_map<int, Line> m_lines;
+        int CreateDot(Point position, uint32_t color);
+        bool SetDotColor(int dotid, uint32_t color);
 
-    int m_count = 0;
-};
+        void SetBackgroundColor(unsigned int color);
 
+    private:
+        std::shared_ptr<IRenderer> m_renderer;
+        WorldType m_type;
+
+        std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
+        std::unordered_map<int, Circle> m_circles;
+        std::unordered_map<int, Line> m_lines;
+
+        int m_count = 0;
+
+        template<typename Base, typename T>
+        static inline bool instanceof(const T*) {
+            return std::is_base_of<Base, T>::value;
+        }
+    };
+}
 
 #endif //ARCPOSITION_WORLD_H

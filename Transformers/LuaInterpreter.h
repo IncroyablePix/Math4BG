@@ -18,57 +18,65 @@ extern "C"
 #include <lualib.h>
 };
 
-class LuaInterpreter
+
+namespace Math4BG
 {
-public:
-    LuaInterpreter(std::shared_ptr<Contexts> contexts);
-    ~LuaInterpreter();
+    class LuaInterpreter
+    {
+    public:
+        LuaInterpreter(std::shared_ptr<Contexts> contexts);
 
-    //void SetWorld(std::shared_ptr<World> world);
-    void Test();
-    void ExecuteCommand(const std::string& cmd);
-    void ExecuteFile(const std::string& path);
-    double GetNumber(const std::string& var);
-    std::string GetString(const std::string& var);
+        ~LuaInterpreter();
 
-    bool CheckValidity();
-    int CallOnInitFunction();
-    int CallUpdateFunction(double lag);
+        void ExecuteCommand(const std::string &cmd);
+        void ExecuteFile(const std::string &path);
+        double GetNumber(const std::string &var);
+        std::string GetString(const std::string &var);
+        bool CheckValidity();
+        int CallOnInitFunction();
+        int CallUpdateFunction(double lag);
 
-    //---
+        //---
 
-    int CreateWindow(lua_State *L);
-    int DestroyWindow(lua_State *L);
+        int CreateWindow(lua_State *L);
+        int DestroyWindow(lua_State *L);
 
-    //---
+        //---
 
-    int SecondCallback(lua_State *L);
-    int CreateCircle(lua_State *L);
-    int SetCirclePos(lua_State *L);
-    int SetCircleSize(lua_State *L);
-    int SetCircleColor(lua_State *L);
+        int SecondCallback(lua_State *L);
+        int CreateCircle(lua_State *L);
+        int SetCirclePos(lua_State *L);
+        int SetCircleSize(lua_State *L);
+        int SetCircleColor(lua_State *L);
+        int CreateLine(lua_State *L);
+        int SetLinePos(lua_State *L);
+        int SetLineColor(lua_State *L);
+        int CreateDot(lua_State *L);
+        int SetDotColor(lua_State *L);
 
-    int CreateLine(lua_State *L);
-    int SetLinePos(lua_State *L);
-    int SetLineColor(lua_State *L);
+    private:
+        std::shared_ptr<Contexts> m_contexts;
+        //std::shared_ptr<World> m_world;
+        std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;
 
-private:
-    std::shared_ptr<Contexts> m_contexts;
-    //std::shared_ptr<World> m_world;
-    std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;
+        void RegisterFunctions();
 
-    void RegisterFunctions();
-    bool CheckLua(int r);
-    void ThrowLuaException();
-};
+        bool CheckLua(int r);
 
-typedef int (LuaInterpreter::*mem_func)(lua_State * L);
+        void ThrowLuaException();
+
+        int SetBackgroundColor(lua_State *L);
+    };
+
+    typedef int (LuaInterpreter::*mem_func)(lua_State *L);
 
 // This template wraps a member function into a C-style "free" function compatible with lua.
-template <mem_func func>
-int dispatch(lua_State * L) {
-    LuaInterpreter * ptr = *static_cast<LuaInterpreter**>(lua_getextraspace(L));
-    return ((*ptr).*func)(L);
+    template<mem_func func>
+    int dispatch(lua_State *L)
+    {
+        LuaInterpreter *ptr = *static_cast<LuaInterpreter **>(lua_getextraspace(L));
+        return ((*ptr).*func)(L);
+    }
 }
 
 #endif //ARCPOSITION_LUAINTERPRETER_H

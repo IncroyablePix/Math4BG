@@ -4,7 +4,11 @@
 
 #include "Error.h"
 
-int ShowErrorMessage(const std::string& message)
+
+namespace Math4BG
 {
-    return SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unhandled error", message.c_str(), nullptr);
+    int ShowErrorMessage(const std::string &message)
+    {
+        return SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unhandled error", message.c_str(), nullptr);
+    }
 }

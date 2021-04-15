@@ -9,30 +9,36 @@
 #include <memory>
 #include "../View/Window.h"
 #include "World.h"
+#include "WorldType.h"
 
-enum WorldType : uint32_t
+namespace Math4BG
 {
-    Flat
-};
+    class Context
+    {
+    public:
+        Context(const WindowInfo &info,
+                WorldType type);//const std::string& title, unsigned int width, unsigned int height, WorldType worldType);
+        ~Context();
 
-class Context
-{
-public:
-    Context(const WindowInfo& info, WorldType type);//const std::string& title, unsigned int width, unsigned int height, WorldType worldType);
-    ~Context();
+        void Update();
 
-    void Update();
-    void SetUPS(int ups);
-    void SetFPS(int fps);
+        void SetUPS(int ups);
 
-    void Draw();
+        void SetFPS(int fps);
 
-    inline World* GetWorld() { return m_world.get(); }
+        void Clear();
+        void Draw();
+        void SwapBuffers();
 
-private:
-    std::shared_ptr<Window> m_window;
-    std::shared_ptr<World> m_world;
-};
+        inline World *GetWorld()
+        { return m_world.get(); }
+
+    private:
+        std::shared_ptr<Window> m_window;
+        std::shared_ptr<World> m_world;
+
+    };
+}
 
 
 #endif //ARCPOSITION_CONTEXT_H
