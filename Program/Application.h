@@ -18,11 +18,8 @@ namespace Math4BG
     {
     public:
         Application(std::shared_ptr<Contexts> contexts, const Config &config);
-
         ~Application();
-
         void Start();
-
 
     private:
         std::shared_ptr<Contexts> m_contexts;
@@ -30,6 +27,7 @@ namespace Math4BG
         unsigned long long m_start;
         unsigned long long m_last;
         bool m_running;
+        bool m_fpsLimiter;
 
         void Update(double lag);
 

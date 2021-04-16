@@ -32,6 +32,7 @@ namespace Math4BG
         void ExecuteFile(const std::string &path);
         double GetNumber(const std::string &var);
         std::string GetString(const std::string &var);
+        bool GetBool(const std::string &var);
         bool CheckValidity();
         int CallOnInitFunction();
         int CallUpdateFunction(double lag);
@@ -40,19 +41,28 @@ namespace Math4BG
 
         int CreateWindow(lua_State *L);
         int DestroyWindow(lua_State *L);
+        int SetBackgroundColor(lua_State *L);
 
         //---
 
         int SecondCallback(lua_State *L);
+
         int CreateCircle(lua_State *L);
         int SetCirclePos(lua_State *L);
         int SetCircleSize(lua_State *L);
         int SetCircleColor(lua_State *L);
+
         int CreateLine(lua_State *L);
         int SetLinePos(lua_State *L);
         int SetLineColor(lua_State *L);
+
         int CreateDot(lua_State *L);
         int SetDotColor(lua_State *L);
+
+        int CreateRectangle(lua_State *L);
+        int SetRectanglePos(lua_State *L);
+        int SetRectangleDimens(lua_State *L);
+        int SetRectangleColor(lua_State *L);
 
     private:
         std::shared_ptr<Contexts> m_contexts;
@@ -64,8 +74,6 @@ namespace Math4BG
         bool CheckLua(int r);
 
         void ThrowLuaException();
-
-        int SetBackgroundColor(lua_State *L);
     };
 
     typedef int (LuaInterpreter::*mem_func)(lua_State *L);

@@ -20,11 +20,6 @@ namespace Math4BG
 
         Point m_center;
         double m_radius;
-
-        /*void Draw(Renderer2D *renderer)
-        {
-            renderer->DrawEllipse(center.x, center.y, radius, radius, color);
-        }*/
     };
 }
 

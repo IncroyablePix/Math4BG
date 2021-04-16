@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include "World.h"
-#include "../View/Renderer/2D/Object/SinglePixel.h"
 
 
 namespace Math4BG
@@ -181,6 +180,63 @@ namespace Math4BG
             }
         }
 
+        return false;
+    }
+
+    int World::CreateRectangle(Point position, int width, int height, uint32_t color)
+    {
+        if(m_type == WorldType::Flat)
+        {
+            //m_objects[m_count] = std::make_shared<Line>(start, end, color);
+            m_objects[m_count] = std::make_shared<Rectangle>(position, width, height, color);
+            return m_count++;
+        }
+        else
+        {
+            return INVALID_OBJECT_ID;
+        }
+    }
+
+    bool World::SetRectanglePos(int rectangleid, Point position)
+    {
+        if (m_objects.find(rectangleid) != m_objects.end())
+        {
+            auto rectangle = m_objects[rectangleid].get();
+            if(Rectangle* r = dynamic_cast<Rectangle*>(rectangle))
+            {
+                r->m_start = position;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool World::SetRectangleDimens(int rectangleid, int width, int height)
+    {
+        if (m_objects.find(rectangleid) != m_objects.end())
+        {
+            auto rectangle = m_objects[rectangleid].get();
+            if(Rectangle* r = dynamic_cast<Rectangle*>(rectangle))
+            {
+                r->m_width = width;
+                r->m_height = height;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool World::SetRectangleColor(int rectangleid, uint32_t color)
+    {
+        if (m_objects.find(rectangleid) != m_objects.end())
+        {
+            auto rectangle = m_objects[rectangleid].get();
+            if(Rectangle* r = dynamic_cast<Rectangle*>(rectangle))
+            {
+                r->SetColor(color);
+                return true;
+            }
+        }
         return false;
     }
 }

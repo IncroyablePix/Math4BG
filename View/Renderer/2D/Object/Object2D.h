@@ -17,6 +17,7 @@ namespace Math4BG
     public:
         Object2D(uint32_t color);
         ~Object2D() override = default;
+
         virtual void Draw(SDL_Surface* surface, const Point &size) = 0;
         void SetColor(uint32_t color);
 

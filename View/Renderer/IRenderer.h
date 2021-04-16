@@ -37,14 +37,6 @@ namespace Math4BG
     protected:
         Pixel m_background;
         Screen m_screen;
-
-        template<typename T>
-        void Swap(T &a, T &b)
-        {
-            T temp = a;
-            a = b;
-            b = temp;
-        }
     };
 }
 

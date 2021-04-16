@@ -13,6 +13,8 @@
 #include "../View/Renderer/2D/Object/Object2D.h"
 #include "../View/Renderer/2D/Object/Circle.h"
 #include "../View/Renderer/2D/Object/Line.h"
+#include "../View/Renderer/2D/Object/SinglePixel.h"
+#include "../View/Renderer/2D/Object/Rectangle.h"
 #include "../View/Window.h"
 
 #define INVALID_OBJECT_ID               (-1)
@@ -40,6 +42,11 @@ namespace Math4BG
 
         int CreateDot(Point position, uint32_t color);
         bool SetDotColor(int dotid, uint32_t color);
+
+        int CreateRectangle(Point position, int width, int height, uint32_t color);
+        bool SetRectanglePos(int rectangleid, Point position);
+        bool SetRectangleDimens(int rectangleid, int width, int height);
+        bool SetRectangleColor(int rectangleid, uint32_t color);
 
         void SetBackgroundColor(unsigned int color);
 

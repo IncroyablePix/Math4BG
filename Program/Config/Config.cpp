@@ -18,6 +18,7 @@ namespace Math4BG
         std::string scriptName = lua.GetString("script");
         ss << "scripts/" << scriptName << ".lua";
         config.scriptFile = ss.str();
+        config.fpsLimiter = lua.GetBool("fpslimiter");
     }
 }
 

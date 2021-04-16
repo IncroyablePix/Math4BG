@@ -19,6 +19,7 @@ namespace Math4BG
 
     void Context::Update()
     {
+        m_window->Clear();
         m_world->Update();
     }
 
@@ -34,17 +35,8 @@ namespace Math4BG
 
     void Context::Draw()
     {
+        //m_window->Clear();
         m_world->Draw(*m_window);
-        //m_window->Draw();
-    }
-
-    void Context::Clear()
-    {
-        m_window->Clear();
-    }
-
-    void Context::SwapBuffers()
-    {
         m_window->SwapBuffers();
     }
 }

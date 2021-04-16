@@ -15,6 +15,7 @@ namespace Math4BG
     struct Config
     {
         std::string scriptFile;
+        bool fpsLimiter;
     };
 
     void LoadConfig(const std::string &path, Config &config);

@@ -26,9 +26,7 @@ namespace Math4BG
 
         void SetFPS(int fps);
 
-        void Clear();
         void Draw();
-        void SwapBuffers();
 
         inline World *GetWorld()
         { return m_world.get(); }

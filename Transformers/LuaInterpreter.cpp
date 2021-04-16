@@ -114,6 +114,21 @@ namespace Math4BG
         return val;
     }
 
+    bool LuaInterpreter::GetBool(const std::string &var)
+    {
+        bool val;
+        lua_getglobal(m_luaState.get(), var.c_str());
+        if (lua_isboolean(m_luaState.get(), -1))
+        {
+            val = lua_toboolean(m_luaState.get(), -1);
+        } else
+        {
+            val = "";
+        }
+
+        return val;
+    }
+
     bool LuaInterpreter::CheckLua(int r)
     {
         return (r == LUA_OK);
@@ -148,6 +163,11 @@ namespace Math4BG
 
         lua_register(m_luaState.get(), "CreateDot", &dispatch<&LuaInterpreter::CreateDot>);
         lua_register(m_luaState.get(), "SetDotColor", &dispatch<&LuaInterpreter::SetDotColor>);
+
+        lua_register(m_luaState.get(), "CreateRectangle", &dispatch<&LuaInterpreter::CreateRectangle>);
+        lua_register(m_luaState.get(), "SetRectanglePos", &dispatch<&LuaInterpreter::SetRectanglePos>);
+        lua_register(m_luaState.get(), "SetRectangleDimens", &dispatch<&LuaInterpreter::SetRectangleDimens>);
+        lua_register(m_luaState.get(), "SetRectangleColor", &dispatch<&LuaInterpreter::SetRectangleColor>);
 
         lua_register(m_luaState.get(), "CreateWindow", &dispatch<&LuaInterpreter::CreateWindow>);
         lua_register(m_luaState.get(), "SetBackgroundColor", &dispatch<&LuaInterpreter::SetBackgroundColor>);
@@ -293,6 +313,58 @@ namespace Math4BG
 
         bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetDotColor(id, color);
         lua_pushboolean(L, out);
+        return 1;
+    }
+
+    int LuaInterpreter::CreateRectangle(lua_State *L)
+    {
+        int contextid = (int) lua_tonumber(L, 1);
+        double x = (double) lua_tonumber(L, 2);
+        double y = (double) lua_tonumber(L, 3);
+        double width = (double) lua_tonumber(L, 4);
+        double height = (double) lua_tonumber(L, 5);
+        unsigned int color = (unsigned int) lua_tonumber(L, 6);
+
+        int id = -1;
+        if (m_contexts->ContextExists(contextid))
+            id = ((*m_contexts)[contextid])->GetWorld()->CreateRectangle({x, y}, width, height, color);
+
+        lua_pushnumber(L, id);
+
+        return 1;
+    }
+
+    int LuaInterpreter::SetRectanglePos(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        double x = (double) lua_tonumber(L, 2);
+        double y = (double) lua_tonumber(L, 3);
+
+        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetRectanglePos(id, { x, y });
+        lua_pushboolean(L, out);
+
+        return 1;
+    }
+
+    int LuaInterpreter::SetRectangleDimens(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        double width = (double) lua_tonumber(L, 2);
+        double height = (double) lua_tonumber(L, 3);
+
+        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetRectangleDimens(id, width, height);
+        lua_pushboolean(L, out);
+        return 1;
+    }
+
+    int LuaInterpreter::SetRectangleColor(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        unsigned int color = (unsigned int) lua_tonumber(L, 2);
+
+        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetRectangleColor(id, color);
+        lua_pushboolean(L, out);
+
         return 1;
     }
 }

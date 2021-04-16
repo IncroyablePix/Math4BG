@@ -8,7 +8,8 @@
 namespace Math4BG
 {
     Application::Application(std::shared_ptr<Contexts> contexts, const Config &config) :
-            m_luaInterpreter(std::make_shared<LuaInterpreter>(contexts))
+            m_luaInterpreter(std::make_shared<LuaInterpreter>(contexts)),
+            m_fpsLimiter(config.fpsLimiter)
     {
         m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
         //std::make_shared<Logic>(window->GetRenderer());
@@ -50,6 +51,12 @@ namespace Math4BG
 
         double lag = 0.0;
         const double secondsPerUpdate = 1.0 / UPS; // 50 UPS
+
+        //---
+
+        const int FPS = 144;
+        const int frameDelay = 1000 / FPS;
+
         //---
 
         while (m_running)
@@ -94,9 +101,7 @@ namespace Math4BG
             it = m_contexts->Begin();
             for (; it != itEnd; it++)
             {
-                it->second->Clear();
                 it->second->Draw();
-                it->second->SwapBuffers();
             }
 
             fps++;
@@ -112,7 +117,12 @@ namespace Math4BG
                 fps = 0;
             }
 
-            //SDL_UpdateWindowSurface(m_window.get());
+            if(m_fpsLimiter)
+            {
+                unsigned long long frameTime = SDL_GetTicks() - m_last;
+                if (frameDelay > frameTime)
+                    SDL_Delay(frameDelay - frameTime);
+            }
         }
     }
 

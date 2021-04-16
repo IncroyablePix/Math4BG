@@ -52,6 +52,9 @@ namespace Math4BG
 
     void Renderer2D::SwapBuffers()
     {
+        SDL_SetRenderDrawColor(m_renderer.get(), m_background.r, m_background.g, m_background.b, m_background.a);
+        SDL_RenderClear(m_renderer.get());
+        m_texture.reset(SDL_CreateTextureFromSurface(m_renderer.get(), m_surface.get()));
         SDL_RenderCopy(m_renderer.get(), m_texture.get(), nullptr, &m_screenRectangle);
         SDL_RenderPresent(m_renderer.get());
     }
@@ -60,11 +63,21 @@ namespace Math4BG
     {
         /*int size = m_screen.width * m_screen.height;
         for (int i = 0; i < size; i++)
-            ((uint32_t *) m_surface->pixels)[i] = 0x0;*/
+            ((uint32_t *) m_surface->pixels)[i] = 0x000000FF;*/
+        Uint32 rmask, gmask, bmask, amask;
 
-        SDL_SetRenderDrawColor(m_renderer.get(), m_background.r, m_background.g, m_background.b, m_background.a);
-        SDL_RenderClear(m_renderer.get());
-        m_texture.reset(SDL_CreateTextureFromSurface(m_renderer.get(), m_surface.get()));
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
+#else
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
+#endif
+        m_surface.reset(SDL_CreateRGBSurface(SDL_SWSURFACE, m_screen.width, m_screen.height, 32, rmask, gmask, bmask, amask));
     }
 
     /*void Renderer2D::SetPixel(int x, int y, uint32_t argb)
