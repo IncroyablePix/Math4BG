@@ -26,10 +26,10 @@ namespace Math4BG
 
         //--- TEST : TO REMOVE ---//
 
-        shader = Shader::CreateShader(ParseShader("shaders/basic.shader"));
+        /*shader = Shader::CreateShader(ParseShader("shaders/basic.shader"));
         shader->Bind();
         shader->SetUniform4f("vColor", 1.0f, 1.0f, 1.0f, 1.0f);
-        shader->Unbind();
+        shader->Unbind();*/
 
         IndexBufferContainer ibc{ (new unsigned int[36]
                                             {
