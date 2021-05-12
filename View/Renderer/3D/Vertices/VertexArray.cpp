@@ -16,7 +16,7 @@ namespace Math4BG
 
     VertexArray::~VertexArray()
     {
-        glDeleteVertexArrays(1, &m_rendererID);
+        GLCall(glDeleteVertexArrays(1, &m_rendererID));
     }
 
     void VertexArray::AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout) const
@@ -39,11 +39,11 @@ namespace Math4BG
 
     void VertexArray::Bind() const
     {
-        glBindVertexArray(m_rendererID);
+        GLCall(glBindVertexArray(m_rendererID));
     }
 
     void VertexArray::Unbind() const
     {
-        glBindVertexArray(0);
+        GLCall(glBindVertexArray(0));
     }
 }

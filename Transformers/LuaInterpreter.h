@@ -66,6 +66,10 @@ namespace Math4BG
         int SetRectangleDimens(lua_State *L);
         int SetRectangleColor(lua_State *L);
 
+        //---
+
+        int CreateCube(lua_State *L);
+
     private:
         std::shared_ptr<IOutput> m_output;
         std::shared_ptr<Contexts> m_contexts;

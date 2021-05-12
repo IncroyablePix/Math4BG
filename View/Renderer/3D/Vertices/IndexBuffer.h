@@ -20,6 +20,17 @@ namespace Math4BG
         }
     };
 
+    struct VerticesContainer
+    {
+        void *ptrData;
+        unsigned int size;
+
+        ~VerticesContainer()
+        {
+            delete[] ptrData;
+        }
+    };
+
     class IndexBuffer : public std::enable_shared_from_this<IndexBuffer>
     {
     public:

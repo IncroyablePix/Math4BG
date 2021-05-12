@@ -6,6 +6,7 @@
 #define INC_3D_GAME_ENGINE_VERTEXBUFFER_H
 
 #include <vector>
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include <memory>
 

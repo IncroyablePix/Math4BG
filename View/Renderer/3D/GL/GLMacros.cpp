@@ -1,6 +1,7 @@
 //
 // Created by Benjam on 13-04-21.
 //
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include "GLMacros.h"
 #include <iostream>

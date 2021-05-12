@@ -16,6 +16,7 @@
 #include "../View/Renderer/2D/Object/SinglePixel.h"
 #include "../View/Renderer/2D/Object/Rectangle.h"
 #include "../View/Window.h"
+#include "../View/Renderer/3D/Shaders/Shader.h"
 
 #define INVALID_OBJECT_ID               (-1)
 
@@ -51,6 +52,8 @@ namespace Math4BG
 
         void SetBackgroundColor(unsigned int color);
 
+        int CreateCube(uint32_t color);
+
     private:
         std::shared_ptr<IRenderer> m_renderer;
         WorldType m_type;
@@ -58,6 +61,8 @@ namespace Math4BG
         std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
         std::unordered_map<int, Circle> m_circles;
         std::unordered_map<int, Line> m_lines;
+
+        std::unordered_map<std::string, std::shared_ptr<Shader>> m_shaders;
 
         int m_count = 0;
 

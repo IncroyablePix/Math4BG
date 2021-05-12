@@ -34,11 +34,6 @@ namespace Math4BG
         SDL_GLContext m_glContext;
         SDL_Window *m_window;
 
-        std::shared_ptr<Shader> shader;
-        unsigned int vertexArray;
-        float vertices[6] = {-0.5, -0.5,   0.0, 0.5,   0.5, -0.5};
-        std::shared_ptr<Object3D> m_object;
-
         static float Col(uint32_t color);
         static void GlewInitAttempt();
     };

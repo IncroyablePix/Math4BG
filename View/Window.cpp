@@ -6,6 +6,7 @@
 #include <iostream>
 #include <functional>
 #include <sstream>
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include "Window.h"
 #include "Renderer/2D/Renderer2D.h"
@@ -60,7 +61,8 @@ namespace Math4BG
     void Window::Draw(IDrawable* drawable)
     {
         //m_renderer->Clear();
-        m_renderer->Draw(drawable);
+        if(drawable)
+            m_renderer->Draw(drawable);
     }
 
     void Window::Clear()
@@ -93,7 +95,7 @@ namespace Math4BG
         uint32_t flag = SDL_WINDOW_SHOWN;
 
         if (worldType == Relief)
-            flag |= SDL_WINDOW_OPENGL;
+            flag = SDL_WINDOW_OPENGL;
 
         return flag;
     }
@@ -102,7 +104,7 @@ namespace Math4BG
     {
         if(!sdlInitialized)
         {
-            if (SDL_Init(SDL_INIT_VIDEO))
+            if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO))
                 throw std::runtime_error(SDL_GetError());
 
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);

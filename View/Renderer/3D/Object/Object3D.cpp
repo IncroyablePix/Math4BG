@@ -8,27 +8,19 @@
 
 namespace Math4BG
 {
-    Object3D::Object3D(std::shared_ptr<Shader> shader, const IndexBufferContainer &ibc) :
+    Object3D::Object3D(std::shared_ptr<Shader> shader, const IndexBufferContainer &ibc, const VerticesContainer &vc) :
             m_va(std::make_unique<VertexArray>()),
             m_vb(std::make_unique<VertexBuffer>()),
             m_vbl(std::make_unique<VertexBufferLayout>()),
             m_shader(shader)
     {
+        //---HARD CODED
+        m_shader->Bind();
+        //m_shader->SetUniform4f("vColor", 1.0f, 1.0f, 1.0f, 1.0f);
+        m_shader->Unbind();
+
         m_va->Bind();
-        m_vb->Add((new float[24]
-                {
-                        -0.5f, -0.5f, 0.0f,
-                        0.5f, -0.5f, 0.0f,
-
-                        0.5f, 0.5f, 0.0f,
-                        -0.5f, 0.5f, 0.0f,
-
-                        -0.5f, -0.5f, -1.0f,
-                        0.5f, -0.5f, -1.0f,
-
-                        0.5f, 0.5f, -1.0f,
-                        -0.5f, 0.5f, -1.0f
-                }), sizeof(float) * 8 * 3);
+        m_vb->Add(vc.ptrData, vc.size);
         m_vb->Push();
 
         m_vbl->Push<float>(3);
@@ -48,7 +40,7 @@ namespace Math4BG
         m_va->Bind();
         m_ib->Bind();
 
-        std::cout << m_ib->GetCount() << std::endl;
+        //std::cout << m_ib->GetCount() << std::endl;
         glDrawElements(GL_TRIANGLES, m_ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         Unbind();

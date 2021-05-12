@@ -172,6 +172,8 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetRectangleDimens", &dispatch<&LuaInterpreter::SetRectangleDimens>);
         lua_register(m_luaState.get(), "SetRectangleColor", &dispatch<&LuaInterpreter::SetRectangleColor>);
 
+        lua_register(m_luaState.get(), "CreateCube", &dispatch<&LuaInterpreter::CreateCube>);
+
         lua_register(m_luaState.get(), "CreateWindow", &dispatch<&LuaInterpreter::CreateWindow>);
         lua_register(m_luaState.get(), "SetBackgroundColor", &dispatch<&LuaInterpreter::SetBackgroundColor>);
     }
@@ -380,6 +382,24 @@ namespace Math4BG
 
         bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetRectangleColor(id, color);
         lua_pushboolean(L, out);
+
+        return 1;
+    }
+
+    int LuaInterpreter::CreateCube(lua_State *L)
+    {
+        int contextid = (int) lua_tonumber(L, 1);
+        /*double x = (double) lua_tonumber(L, 2);
+        double y = (double) lua_tonumber(L, 3);
+        double width = (double) lua_tonumber(L, 4);
+        double height = (double) lua_tonumber(L, 5);*/
+        unsigned int color = (unsigned int) lua_tonumber(L, 5);
+
+        int id = -1;
+        if (m_contexts->ContextExists(contextid))
+            id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(color);
+
+        lua_pushnumber(L, id);
 
         return 1;
     }

@@ -4,6 +4,7 @@
 
 #include "IndexBuffer.h"
 #include "../GL/GLMacros.h"
+#define GLEW_STATIC
 #include <GL/glew.h>
 
 namespace Math4BG
@@ -13,23 +14,23 @@ namespace Math4BG
     {
         ASSERT(sizeof(unsigned int) == sizeof(GLuint));
 
-        glGenBuffers(1, &m_rendererId);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibc.count * sizeof(unsigned int), ibc.indices, GL_STATIC_DRAW);
+        GLCall(glGenBuffers(1, &m_rendererId));
+        (glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId));
+        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibc.count * sizeof(unsigned int), ibc.indices, GL_STATIC_DRAW));
     }
 
     IndexBuffer::~IndexBuffer()
     {
-        glDeleteBuffers(1, &m_rendererId);
+        GLCall(glDeleteBuffers(1, &m_rendererId));
     }
 
     void IndexBuffer::Bind() const
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId);
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId));
     }
 
     void IndexBuffer::Unbind() const
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
     }
 }

@@ -2,6 +2,7 @@
 // Created by Benjam on 13-04-21.
 //
 
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include <iostream>
 #include "Shader.h"
@@ -19,7 +20,9 @@ namespace Math4BG
     Shader::~Shader()
     {
         if(m_rendererId != 0)
-            glDeleteProgram(m_rendererId);
+        {
+            GLCall(glDeleteProgram(m_rendererId));
+        }
     }
 
     std::shared_ptr<Shader> Shader::CreateShader(ShaderProgramSource source)
@@ -28,13 +31,13 @@ namespace Math4BG
         unsigned int vertexShader = CompileShader(GL_VERTEX_SHADER, source.vertexShaderSource);
         unsigned int fragmentShader = CompileShader(GL_FRAGMENT_SHADER, source.fragmentShaderSource);
 
-        glAttachShader(shaderProgram, vertexShader);
-        glAttachShader(shaderProgram, fragmentShader);
-        glLinkProgram(shaderProgram);
-        glValidateProgram(shaderProgram);
+        GLCall(glAttachShader(shaderProgram, vertexShader));
+        GLCall(glAttachShader(shaderProgram, fragmentShader));
+        GLCall(glLinkProgram(shaderProgram));
+        GLCall(glValidateProgram(shaderProgram));
 
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
+        GLCall(glDeleteShader(vertexShader));
+        GLCall(glDeleteShader(fragmentShader));
 
         return std::make_shared<Shader>(shaderProgram);
     }
@@ -44,25 +47,25 @@ namespace Math4BG
         unsigned int id = glCreateShader(type);
         const char *src = source.c_str();
 
-        glShaderSource(id, 1, &src, nullptr);
-        glCompileShader(id);
+        GLCall(glShaderSource(id, 1, &src, nullptr));
+        GLCall(glCompileShader(id));
 
         int result;
-        glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+        GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
 
 
         if (result == GL_FALSE)
         {
             int length;
             std::stringstream ss;
-            glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+            GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
             char *message = (char *) alloca(length * sizeof(char));
-            glGetShaderInfoLog(id, length, &length, message);
+            GLCall(glGetShaderInfoLog(id, length, &length, message));
 
             ss << "Could not compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl
                << message << std::endl;
 
-            glDeleteShader(id);
+            GLCall(glDeleteShader(id));
             throw std::runtime_error(ss.str());
         }
 
@@ -76,7 +79,7 @@ namespace Math4BG
 
     void Shader::Unbind() const
     {
-        glUseProgram(0);
+        GLCall(glUseProgram(0));
     }
 
     void Shader::SetUniform4f(const std::string &name, float v0, float v1, float v2, float v3)
@@ -122,5 +125,10 @@ namespace Math4BG
     void Shader::SetUniform1i(const std::string &name, int i)
     {
         GLCall(glUniform1i(GetUniformLocation(name), i));
+    }
+
+    unsigned int Shader::GetProgramId()
+    {
+        return m_rendererId;
     }
 }

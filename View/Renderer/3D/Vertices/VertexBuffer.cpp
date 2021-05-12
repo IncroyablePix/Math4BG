@@ -11,20 +11,20 @@ namespace Math4BG
 {
     VertexBuffer::VertexBuffer() : m_rendererID(0)
     {
-        glGenBuffers(1, &m_rendererID);
+        GLCall(glGenBuffers(1, &m_rendererID));
         Bind();
     }
 
     VertexBuffer::VertexBuffer(const void *data, unsigned int size) : m_rendererID(0)
     {
-        glGenBuffers(1, &m_rendererID);
+        GLCall(glGenBuffers(1, &m_rendererID));
         Bind();
-        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
     }
 
     VertexBuffer::~VertexBuffer()
     {
-        glDeleteBuffers(1, &m_rendererID);
+        GLCall(glDeleteBuffers(1, &m_rendererID));
     }
 
     void VertexBuffer::Add(void *ptrData, unsigned int size)
@@ -40,28 +40,28 @@ namespace Math4BG
     void VertexBuffer::Push()
     {
         //std::cout << "sizeof buffer : " << m_data.size() << std::endl;
-        glBufferData(GL_ARRAY_BUFFER, m_data.size(), &m_data[0], GL_STATIC_DRAW);
+        GLCall(glBufferData(GL_ARRAY_BUFFER, m_data.size(), &m_data[0], GL_STATIC_DRAW));
     }
 
     void VertexBuffer::Repush()
     {
-        glBufferData(GL_ARRAY_BUFFER, m_data.size(), &m_data[0], GL_STATIC_DRAW);
+        GLCall(glBufferData(GL_ARRAY_BUFFER, m_data.size(), &m_data[0], GL_STATIC_DRAW));
         Bind();
     }
 
     void VertexBuffer::Bind() const
     {
-        glBindBuffer(GL_ARRAY_BUFFER, m_rendererID);
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_rendererID));
     }
 
     void VertexBuffer::Unbind() const
     {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
     }
 
     void VertexBuffer::Rebind(const void *data, unsigned int size) const
     {
-        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
         Bind();
     }
 }

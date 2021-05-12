@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "World.h"
+#include "../View/Renderer/3D/Object/Cube.h"
 
 
 namespace Math4BG
@@ -12,7 +13,10 @@ namespace Math4BG
             m_renderer(std::move(renderer)),
             m_type(type)
     {
+        //--- HARDCODED
+        std::shared_ptr<Shader> shader = Shader::CreateShader(ParseShader("shaders/rand.shader"));
 
+        m_shaders["basic"] = shader;
     }
 
     World::~World()
@@ -149,7 +153,7 @@ namespace Math4BG
 
     void World::Draw(Window &window)
     {
-        window.Draw(nullptr); // TODO : Hardcoded
+        //window.Draw(nullptr); // TODO : Hardcoded
         for(const auto& drawable : m_objects)
             window.Draw(drawable.second.get());
     }
@@ -254,5 +258,19 @@ namespace Math4BG
             }
         }
         return false;
+    }
+
+    int World::CreateCube(uint32_t color)
+    {
+        if(m_type == WorldType::Relief)
+        {
+            //m_objects[m_count] = std::make_shared<Line>(start, end, color);
+            m_objects[m_count] = std::make_shared<Cube>(m_shaders["basic"]);
+            return m_count++;
+        }
+        else
+        {
+            return INVALID_OBJECT_ID;
+        }
     }
 }
