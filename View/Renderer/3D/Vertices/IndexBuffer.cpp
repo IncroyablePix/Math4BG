@@ -8,7 +8,8 @@
 
 namespace Math4BG
 {
-    IndexBuffer::IndexBuffer(const IndexBufferContainer& ibc)
+    IndexBuffer::IndexBuffer(const IndexBufferContainer& ibc) :
+    m_count(ibc.count)
     {
         ASSERT(sizeof(unsigned int) == sizeof(GLuint));
 

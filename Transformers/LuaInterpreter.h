@@ -8,6 +8,7 @@
 #include <memory>
 #include "World.h"
 #include "Contexts.h"
+#include "../Output/IOutput.h"
 /**
  * Lua is a C library thus having C defined functions
  */
@@ -24,7 +25,7 @@ namespace Math4BG
     class LuaInterpreter
     {
     public:
-        LuaInterpreter(std::shared_ptr<Contexts> contexts);
+        LuaInterpreter(std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
 
         ~LuaInterpreter();
 
@@ -57,6 +58,7 @@ namespace Math4BG
         int SetLineColor(lua_State *L);
 
         int CreateDot(lua_State *L);
+        int SetDotPos(lua_State *L);
         int SetDotColor(lua_State *L);
 
         int CreateRectangle(lua_State *L);
@@ -65,6 +67,7 @@ namespace Math4BG
         int SetRectangleColor(lua_State *L);
 
     private:
+        std::shared_ptr<IOutput> m_output;
         std::shared_ptr<Contexts> m_contexts;
         //std::shared_ptr<World> m_world;
         std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;

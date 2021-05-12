@@ -5,11 +5,13 @@
 #include <iostream>
 #include <utility>
 #include "LuaInterpreter.h"
+#include "../Output/IOutput.h"
 
 namespace Math4BG
 {
-    LuaInterpreter::LuaInterpreter(std::shared_ptr<Contexts> contexts) :
-            m_luaState(nullptr, lua_close)
+    LuaInterpreter::LuaInterpreter(std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output) :
+            m_luaState(nullptr, lua_close),
+            m_output(std::move(output))
     {
         m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
         m_luaState.reset(luaL_newstate());
@@ -162,6 +164,7 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetLineColor", &dispatch<&LuaInterpreter::SetLineColor>);
 
         lua_register(m_luaState.get(), "CreateDot", &dispatch<&LuaInterpreter::CreateDot>);
+        lua_register(m_luaState.get(), "SetDotPos", &dispatch<&LuaInterpreter::SetDotPos>);
         lua_register(m_luaState.get(), "SetDotColor", &dispatch<&LuaInterpreter::SetDotColor>);
 
         lua_register(m_luaState.get(), "CreateRectangle", &dispatch<&LuaInterpreter::CreateRectangle>);
@@ -184,6 +187,8 @@ namespace Math4BG
         unsigned int width = lua_tonumber(L, 2);
         unsigned int height = lua_tonumber(L, 3);
         uint32_t type = lua_tonumber(L, 4);
+
+        *m_output << "Creating window : " << title << std::endl;
 
         int id = m_contexts->CreateContext({title, width, height}, (WorldType) type);
         lua_pushnumber(L, id);
@@ -303,6 +308,17 @@ namespace Math4BG
         unsigned int color = (int) lua_tonumber(L, 4);
 
         ((*m_contexts)[contextid])->GetWorld()->CreateDot({ x, y }, color);
+        return 1;
+    }
+
+    int LuaInterpreter::SetDotPos(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        double x = (double) lua_tonumber(L, 2);
+        double y = (double) lua_tonumber(L, 3);
+
+        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetDotPos(id, {x, y});
+        lua_pushboolean(L, out);
         return 1;
     }
 

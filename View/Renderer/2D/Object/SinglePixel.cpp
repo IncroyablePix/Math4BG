@@ -19,6 +19,11 @@ namespace Math4BG
 
     }
 
+    void SinglePixel::SetPosition(Point position)
+    {
+        m_position = position;
+    }
+
     SinglePixel::~SinglePixel()
     = default;
 

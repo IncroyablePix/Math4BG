@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include "Application.h"
 #include "../View/Error.h"
+#include "../Output/Console/TerminalOutput.h"
 #include <memory>
 
 int main(int argc, char** argv)
@@ -12,13 +13,10 @@ int main(int argc, char** argv)
     LoadConfig(CONFIG_PATH, config);
 
     //---
-
-    /*WindowInfo info = { "Math vision", 1280, 720 };
-    std::shared_ptr<Window> window = Window::Create(info);*/
-
+    std::shared_ptr<Math4BG::IOutput> out = Math4BG::TerminalOutput::Create();
     std::shared_ptr<Math4BG::Contexts> contexts = Math4BG::Contexts::Create();
 
-    Math4BG::Application app(contexts, config);
+    Math4BG::Application app(contexts, config, out);
     try
     {
         app.Start();

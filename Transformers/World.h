@@ -41,6 +41,7 @@ namespace Math4BG
         bool SetLineColor(int lineid, uint32_t color);
 
         int CreateDot(Point position, uint32_t color);
+        bool SetDotPos(int dotid, Point position);
         bool SetDotColor(int dotid, uint32_t color);
 
         int CreateRectangle(Point position, int width, int height, uint32_t color);

@@ -12,7 +12,7 @@ namespace Math4BG
     void LoadConfig(const std::string &path, Config &config)
     {
         std::ostringstream ss;
-        LuaInterpreter lua(nullptr);
+        LuaInterpreter lua(nullptr, nullptr);
 
         lua.ExecuteFile(path);
         std::string scriptName = lua.GetString("script");

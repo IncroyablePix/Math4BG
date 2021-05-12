@@ -17,6 +17,8 @@ namespace Math4BG
         ~SinglePixel();
         void Draw(SDL_Surface* surface, const Point &size) override;
 
+        void SetPosition(Point position);
+
     private:
         Point m_position;
     };

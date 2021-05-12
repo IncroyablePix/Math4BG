@@ -149,6 +149,7 @@ namespace Math4BG
 
     void World::Draw(Window &window)
     {
+        window.Draw(nullptr); // TODO : Hardcoded
         for(const auto& drawable : m_objects)
             window.Draw(drawable.second.get());
     }
@@ -166,6 +167,21 @@ namespace Math4BG
             return INVALID_OBJECT_ID;
         }
         return 0;
+    }
+
+    bool World::SetDotPos(int dotid, Point position)
+    {
+        if (m_objects.find(dotid) != m_objects.end())
+        {
+            auto point = m_objects[dotid].get();
+            if(SinglePixel* p = dynamic_cast<SinglePixel*>(point))
+            {
+                p->SetPosition(position);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     bool World::SetDotColor(int dotid, uint32_t color)

@@ -108,11 +108,11 @@ namespace Math4BG
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-            SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+            /*SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
             SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
             SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-            SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+            SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );*/
             SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
             SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
             sdlInitialized = true;

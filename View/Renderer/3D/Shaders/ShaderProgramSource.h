@@ -9,11 +9,12 @@
 
 namespace Math4BG
 {
-    enum ShaderType : int
+    enum ShaderType : int32_t
     {
         None = -1,
         Vertex = 0,
-        Fragment = 1
+        Fragment = 1,
+        Geometry = 2
     };
 
     struct ShaderProgramSource

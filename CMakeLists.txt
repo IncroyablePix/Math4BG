@@ -1,4 +1,4 @@
-############ GÉNÉRAL ############
+############ GENERAL ############
 cmake_minimum_required(VERSION 3.17)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 project(math4bg)
@@ -9,33 +9,36 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Bstatic,--whole-archi
 
 EXECUTE_PROCESS(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
 
-############ DÉPENDANCES ############
+############ DEPENDENCIES ############
 ### SDL2 ###
 message("Including SDL2...")
-set(SDL2_DIR E:/PRG/C-C++/Libraries/SDL2-2.0.14)
+set(SDL2_DIR $ENV{SDL2})
+message("SDL2 Directory : ${SDL2_DIR}")
 include_directories(${SDL2_DIR}/x86_64-w64-mingw32/include)
 message("Done!")
 # find_package(SDL2)
 
 ### LUA ###
 message("Including LUA...")
-set(LUA_DIR E:/PRG/C-C++/Libraries/lua-5.4.2_Win64_dllw6_lib)
+set(LUA_DIR $ENV{LUA64})
+message("LUA Directory : ${LUA_DIR}")
 include_directories(${LUA_DIR}/include)
 message("Done!")
 
 ### GLEW ###
 message("Including GLEW...")
-set(GLEW_DIR E:/PRG/C-C++/Libraries/glew-2.1.0)
+set(GLEW_DIR $ENV{GLEW})
+message("GLEW Directory : ${GLEW_DIR}")
 include_directories(${GLEW_DIR}/include)
 message("Done!")
 
 ### GLM ###
 message("Including GLM")
-set(GLM_DIR E:/PRG/C-C++/Libraries/glm-0.9.9.7/glm)
+set(GLM_DIR $ENV{GLM})
 include_directories(${GLM_DIR})
 message("Done!")
 
-############ FICHIERS ############
+############ SOURCE ############
 set(SRC_FILES
         Program/main.cpp
         View/Window.cpp
@@ -75,9 +78,9 @@ set(SRC_FILES
         View/Renderer/3D/Vertices/VertexBuffer.cpp
         View/Renderer/3D/Vertices/VertexBuffer.h
         View/Renderer/3D/Vertices/VertexBufferLayout.cpp
-        View/Renderer/3D/Vertices/VertexBufferLayout.h View/Renderer/3D/GL/GLMacros.cpp View/Renderer/3D/Object/Object3D.cpp View/Renderer/3D/Object/Object3D.h View/Renderer/3D/Vertices/IndexBuffer.cpp View/Renderer/3D/Vertices/IndexBuffer.h View/Renderer/Draw/IDrawable.cpp View/Renderer/Draw/IDrawable.h View/Renderer/2D/Object/Object2D.cpp View/Renderer/2D/Object/Object2D.h View/Renderer/2D/Object/Circle.cpp View/Renderer/2D/Object/Circle.h View/Renderer/2D/Object/Line.cpp View/Renderer/2D/Object/Line.h View/Renderer/2D/Object/SinglePixel.cpp View/Renderer/2D/Object/SinglePixel.h View/Renderer/2D/Object/Rectangle.cpp View/Renderer/2D/Object/Rectangle.h)
+        View/Renderer/3D/Vertices/VertexBufferLayout.h View/Renderer/3D/GL/GLMacros.cpp View/Renderer/3D/Object/Object3D.cpp View/Renderer/3D/Object/Object3D.h View/Renderer/3D/Vertices/IndexBuffer.cpp View/Renderer/3D/Vertices/IndexBuffer.h View/Renderer/Draw/IDrawable.cpp View/Renderer/Draw/IDrawable.h View/Renderer/2D/Object/Object2D.cpp View/Renderer/2D/Object/Object2D.h View/Renderer/2D/Object/Circle.cpp View/Renderer/2D/Object/Circle.h View/Renderer/2D/Object/Line.cpp View/Renderer/2D/Object/Line.h View/Renderer/2D/Object/SinglePixel.cpp View/Renderer/2D/Object/SinglePixel.h View/Renderer/2D/Object/Rectangle.cpp View/Renderer/2D/Object/Rectangle.h View/Renderer/3D/Object/Cube.cpp View/Renderer/3D/Object/Cube.h Output/IOutput.cpp Output/IOutput.h Output/Console/TerminalOutput.cpp Output/Console/TerminalOutput.h)
 
-# SPÉCIFICITÉS
+# OS SPECIFICITIES
 message("Compiling for : ")
 
 if(WIN64 OR WIN32)
@@ -86,7 +89,6 @@ if(WIN64 OR WIN32)
 elseif(UNIX)
     message("UNIX")
 elseif(APPLE)
-    # Add an icon for the apple .app file
     list(APPEND SRC_FILES ../../src/osx/carbon/wxmac.icns)
     message("MacOS")
 endif()
@@ -99,13 +101,13 @@ elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
     message("32bits")
 endif()
 
-############ EXÉCUTABLE ############
+############ EXECUTABLE ############
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 message("Done!")
 
 message("Linking...")
 ############ LINK ############
-### Specificités ###
+### Specificities ###
 if(WIN64 OR WIN32)
     target_link_libraries(${PROJECT_NAME} PUBLIC -lopengl32)
 endif()

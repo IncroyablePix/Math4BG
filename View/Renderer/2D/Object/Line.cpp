@@ -89,7 +89,8 @@ namespace Math4BG
 
                 SetPixel(surface, size, x, y);
             }
-        } else
+        }
+        else
         {
             d = (ady << 1) - adx;
             d1 = ady << 1;
