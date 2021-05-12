@@ -162,6 +162,7 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetLineColor", &dispatch<&LuaInterpreter::SetLineColor>);
 
         lua_register(m_luaState.get(), "CreateDot", &dispatch<&LuaInterpreter::CreateDot>);
+        lua_register(m_luaState.get(), "SetDotPos", &dispatch<&LuaInterpreter::SetDotPos>);
         lua_register(m_luaState.get(), "SetDotColor", &dispatch<&LuaInterpreter::SetDotColor>);
 
         lua_register(m_luaState.get(), "CreateRectangle", &dispatch<&LuaInterpreter::CreateRectangle>);
@@ -303,6 +304,17 @@ namespace Math4BG
         unsigned int color = (int) lua_tonumber(L, 4);
 
         ((*m_contexts)[contextid])->GetWorld()->CreateDot({ x, y }, color);
+        return 1;
+    }
+
+    int LuaInterpreter::SetDotPos(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        double x = (double) lua_tonumber(L, 2);
+        double y = (double) lua_tonumber(L, 3);
+
+        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetDotPos(id, {x, y});
+        lua_pushboolean(L, out);
         return 1;
     }
 

@@ -14,7 +14,7 @@ namespace Math4BG
     void Object2D::SetPixel(SDL_Surface *surface, Point size, int x, int y)
     {
         int idx = y * size.x + x;
-        if (size.x > x && size.y > y && idx >= 0)
+        if (size.x > x && x >= 0 && size.y > y && y >= 0 && idx >= 0)
             ((uint32_t *) surface->pixels)[idx] = m_color;
     }
 

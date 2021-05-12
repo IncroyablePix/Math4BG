@@ -75,7 +75,7 @@ set(SRC_FILES
         View/Renderer/3D/Vertices/VertexBuffer.cpp
         View/Renderer/3D/Vertices/VertexBuffer.h
         View/Renderer/3D/Vertices/VertexBufferLayout.cpp
-        View/Renderer/3D/Vertices/VertexBufferLayout.h View/Renderer/3D/GL/GLMacros.cpp View/Renderer/3D/Object/Object3D.cpp View/Renderer/3D/Object/Object3D.h View/Renderer/3D/Vertices/IndexBuffer.cpp View/Renderer/3D/Vertices/IndexBuffer.h View/Renderer/Draw/IDrawable.cpp View/Renderer/Draw/IDrawable.h View/Renderer/2D/Object/Object2D.cpp View/Renderer/2D/Object/Object2D.h View/Renderer/2D/Object/Circle.cpp View/Renderer/2D/Object/Circle.h View/Renderer/2D/Object/Line.cpp View/Renderer/2D/Object/Line.h View/Renderer/2D/Object/SinglePixel.cpp View/Renderer/2D/Object/SinglePixel.h View/Renderer/2D/Object/Rectangle.cpp View/Renderer/2D/Object/Rectangle.h)
+        View/Renderer/3D/Vertices/VertexBufferLayout.h View/Renderer/3D/GL/GLMacros.cpp View/Renderer/3D/Object/Object3D.cpp View/Renderer/3D/Object/Object3D.h View/Renderer/3D/Vertices/IndexBuffer.cpp View/Renderer/3D/Vertices/IndexBuffer.h View/Renderer/Draw/IDrawable.cpp View/Renderer/Draw/IDrawable.h View/Renderer/2D/Object/Object2D.cpp View/Renderer/2D/Object/Object2D.h View/Renderer/2D/Object/Circle.cpp View/Renderer/2D/Object/Circle.h View/Renderer/2D/Object/Line.cpp View/Renderer/2D/Object/Line.h View/Renderer/2D/Object/SinglePixel.cpp View/Renderer/2D/Object/SinglePixel.h View/Renderer/2D/Object/Rectangle.cpp View/Renderer/2D/Object/Rectangle.h View/Renderer/3D/Object/Cube.cpp View/Renderer/3D/Object/Cube.h)
 
 # SPÉCIFICITÉS
 message("Compiling for : ")

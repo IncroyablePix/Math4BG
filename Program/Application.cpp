@@ -11,11 +11,14 @@ namespace Math4BG
             m_luaInterpreter(std::make_shared<LuaInterpreter>(contexts)),
             m_fpsLimiter(config.fpsLimiter)
     {
-        m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
-        //std::make_shared<Logic>(window->GetRenderer());
-        //m_world = std::make_shared<World>(window->GetRenderer());
+        /*SDL_DisplayMode current;
+        int errorCode = SDL_GetCurrentDisplayMode(0, &current);
+        if(errorCode != 0)
+            throw std::runtime_error("Could not retrieve DisplayMode");*/
 
-        //m_luaInterpreter->SetWorld(m_world);
+        m_refreshRate = 144;
+
+        m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
         m_luaInterpreter->ExecuteFile(config.scriptFile);
     }
 
@@ -54,8 +57,7 @@ namespace Math4BG
 
         //---
 
-        const int FPS = 144;
-        const int frameDelay = 1000 / FPS;
+        const int frameDelay = 1000 / m_refreshRate;
 
         //---
 

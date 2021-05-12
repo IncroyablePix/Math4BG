@@ -28,6 +28,7 @@ namespace Math4BG
         unsigned long long m_last;
         bool m_running;
         bool m_fpsLimiter;
+        int m_refreshRate;
 
         void Update(double lag);
 

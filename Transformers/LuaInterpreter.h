@@ -57,6 +57,7 @@ namespace Math4BG
         int SetLineColor(lua_State *L);
 
         int CreateDot(lua_State *L);
+        int SetDotPos(lua_State *L);
         int SetDotColor(lua_State *L);
 
         int CreateRectangle(lua_State *L);
