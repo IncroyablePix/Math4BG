@@ -18,6 +18,22 @@ namespace Math4BG
 
     }
 
+    int Contexts::KillContextForWindowId(uint32_t id)
+    {
+        if(m_contextIds.find(id) == m_contextIds.end())
+            throw std::runtime_error("Context doesn't exist");
+
+        int contextId = m_contextIds[id];
+
+        Context* context = m_contexts[contextId];
+        delete context;
+
+        m_contexts.erase(contextId);
+        m_contextIds.erase(id);
+
+        return contextId;
+    }
+
     Context *Contexts::operator[](int index)
     {
         if (m_contexts.find(index) == m_contexts.end())
@@ -28,7 +44,11 @@ namespace Math4BG
 
     int Contexts::CreateContext(const WindowInfo &info, WorldType type)
     {
-        m_contexts[m_count] = new Context(info, type);
+        Context* context = new Context(info, type);
+
+        m_contexts[m_count] = context;
+        m_contextIds[context->GetWindowId()] = m_count;
+
         return m_count++;
     }
 

@@ -54,9 +54,6 @@ namespace Math4BG
 
         glm::vec3 m_eye;
         glm::vec3 m_view;
-        glm::vec3 m_up;
-        float m_pitch = 0.0f;
-        float m_yaw = 0.0f;
 
         glm::mat4 m_modelToCamera;
         glm::mat4 GetView();

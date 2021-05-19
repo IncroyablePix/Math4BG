@@ -5,23 +5,19 @@
 #include <iostream>
 #include <utility>
 #include "LuaInterpreter.h"
-#include "../Output/IOutput.h"
+#include "../../Output/IOutput.h"
 
 namespace Math4BG
 {
     LuaInterpreter::LuaInterpreter(std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output) :
             m_luaState(nullptr, lua_close),
-            m_output(std::move(output))
+            ILanInterpreter(contexts, output)
     {
-        m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
         m_luaState.reset(luaL_newstate());
         luaL_openlibs(m_luaState.get());
 
         RegisterFunctions();
     }
-
-    LuaInterpreter::~LuaInterpreter()
-    = default;
 
     void LuaInterpreter::ExecuteCommand(const std::string &cmd)
     {
@@ -41,8 +37,7 @@ namespace Math4BG
 
     bool LuaInterpreter::CheckValidity()
     {
-        unsigned int count = 0;
-        char *functions[] = {"OnInit", "OnUpdate"};
+        char *functions[] = {"OnInit", "OnUpdate", "OnWindowClosed"};
         for (auto &function : functions)
         {
             lua_getglobal(m_luaState.get(), function);
@@ -62,6 +57,23 @@ namespace Math4BG
 
             int out = lua_pcall(m_luaState.get(), 1, 1, 0);
             if (!CheckLua(out))
+                ThrowLuaException();
+
+            return (int) lua_tonumber(m_luaState.get(), -1);
+        }
+
+        return -1;
+    }
+
+    int LuaInterpreter::CallOnWindowClosed(int windowId)
+    {
+        lua_getglobal(m_luaState.get(), "OnWindowClosed");
+        if(lua_isfunction(m_luaState.get(), -1))
+        {
+            lua_pushnumber(m_luaState.get(), windowId);
+
+            int out = lua_pcall(m_luaState.get(), 1, 1, 0);
+            if(!CheckLua(out))
                 ThrowLuaException();
 
             return (int) lua_tonumber(m_luaState.get(), -1);
@@ -142,17 +154,9 @@ namespace Math4BG
         throw std::runtime_error(error);
     }
 
-    int LuaInterpreter::SecondCallback(lua_State *L)
-    {
-        std::cout << "coucou" << std::endl;
-        return 0;
-    }
-
     void LuaInterpreter::RegisterFunctions()
     {
         *static_cast<LuaInterpreter **>(lua_getextraspace(m_luaState.get())) = this;
-
-        lua_register(m_luaState.get(), "SecondCallback", &dispatch<&LuaInterpreter::SecondCallback>);
 
         lua_register(m_luaState.get(), "CreateCircle", &dispatch<&LuaInterpreter::CreateCircle>);
         lua_register(m_luaState.get(), "SetCirclePos", &dispatch<&LuaInterpreter::SetCirclePos>);
@@ -173,6 +177,7 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetRectangleColor", &dispatch<&LuaInterpreter::SetRectangleColor>);
 
         lua_register(m_luaState.get(), "CreateCube", &dispatch<&LuaInterpreter::CreateCube>);
+        lua_register(m_luaState.get(), "SetCubePos", &dispatch<&LuaInterpreter::SetCubePos>);
 
         lua_register(m_luaState.get(), "CreateShader", &dispatch<&LuaInterpreter::CreateShader>);
 
@@ -407,18 +412,41 @@ namespace Math4BG
     {
         int contextid = (int) lua_tonumber(L, 1);
         std::string shaderName = lua_tostring(L, 2);
-        /*double x = (double) lua_tonumber(L, 2);
-        double y = (double) lua_tonumber(L, 3);
-        double width = (double) lua_tonumber(L, 4);
-        double height = (double) lua_tonumber(L, 5);*/
+        float x = (float) lua_tonumber(L, 3);
+        float y = (float) lua_tonumber(L, 4);
+        float z = (float) lua_tonumber(L, 5);
+
         //unsigned int color = (unsigned int) lua_tonumber(L, 5);
+        Transform transform = {{x, y, z}};
 
         int id = -1;
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(shaderName);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(shaderName, transform);
 
         lua_pushnumber(L, id);
 
         return 1;
+    }
+
+    int LuaInterpreter::SetCubePos(lua_State* L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        float x = (float) lua_tonumber(L, 2);
+        float y = (float) lua_tonumber(L, 3);
+        float z = (float) lua_tonumber(L, 4);
+
+        bool out = false;
+
+        if(m_contexts->GetWorldForId(id))
+            out = m_contexts->GetWorldForId(id)->GetWorld()->SetCubePos(id, {x, y, z});
+
+        lua_pushboolean(L, out);
+
+        return 0;
+    }
+
+    std::shared_ptr<LuaInterpreter>LuaInterpreter::Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output)
+    {
+        return std::shared_ptr<LuaInterpreter>(static_cast<LuaInterpreter *>(new LuaInterpreter(context, output)));
     }
 }

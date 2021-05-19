@@ -43,6 +43,8 @@ namespace Math4BG
         void Draw(MainCamera* camera, IDrawable* drawable);
         void SwapBuffers();
 
+        inline uint32_t GetWindowId() { return SDL_GetWindowID(m_window.get()); }
+
     private:
         std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> m_window;
         std::shared_ptr<IRenderer> m_renderer;

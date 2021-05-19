@@ -5,7 +5,10 @@
 #ifndef MATH4BG_INDEXBUFFER_H
 #define MATH4BG_INDEXBUFFER_H
 
+#include <iostream>
 #include <memory>
+#include <glm/glm.hpp>
+#include "../../../../Physics/Transform.h"
 
 namespace Math4BG
 {
@@ -22,8 +25,19 @@ namespace Math4BG
 
     struct VerticesContainer
     {
-        void *ptrData;
+        float *ptrData;
+        unsigned int entries;
         unsigned int size;
+
+        inline void ApplyTransform(const Transform& transform)
+        {
+            for(int i = 0; i < entries * 3; i += 3) {
+                std::cout << "BEF: " << ptrData[i] << ", " << ptrData[i + 1] << ", " << ptrData[i + 2] << std::endl;
+                (ptrData[i]) += transform.Position.x;
+                ptrData[i + 1] += transform.Position.y;
+                ptrData[i + 2] += transform.Position.z;
+            }
+        }
 
         ~VerticesContainer()
         {

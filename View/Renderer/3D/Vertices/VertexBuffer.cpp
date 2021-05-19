@@ -61,6 +61,7 @@ namespace Math4BG
 
     void VertexBuffer::Rebind(const void *data, unsigned int size) const
     {
+        Unbind();
         GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
         Bind();
     }

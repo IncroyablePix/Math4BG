@@ -16,8 +16,7 @@ namespace Math4BG
     class Context
     {
     public:
-        Context(const WindowInfo &info,
-                WorldType type);//const std::string& title, unsigned int width, unsigned int height, WorldType worldType);
+        Context(const WindowInfo &info, WorldType type);
         ~Context();
 
         void Update(double lag);
@@ -28,8 +27,9 @@ namespace Math4BG
 
         void Draw();
 
-        inline World *GetWorld()
-        { return m_world.get(); }
+        inline World *GetWorld() { return m_world.get(); }
+
+        inline uint32_t GetWindowId() { return m_window->GetWindowId(); }
 
     private:
         std::shared_ptr<Window> m_window;

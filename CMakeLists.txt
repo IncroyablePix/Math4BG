@@ -38,6 +38,13 @@ set(GLM_DIR $ENV{GLM})
 include_directories(${GLM_DIR})
 message("Done!")
 
+### DUKTAPE ###
+message("Including DukType")
+set(DUKTP_DIR $ENV{DUKTAPE64})
+message("DUKTAPE Directory : ${DUKTP_DIR}")
+include_directories(${DUKTP_DIR}/include)
+message("Done!")
+
 ############ SOURCE ############
 set(SRC_FILES
         Program/main.cpp
@@ -51,8 +58,8 @@ set(SRC_FILES
         Program/Application.h
         View/Renderer/2D/Object/Point.cpp
         View/Renderer/2D/Object/Point.h
-        Transformers/LuaInterpreter.cpp
-        Transformers/LuaInterpreter.h
+        Transformers/Interpreter/LuaInterpreter.cpp
+        Transformers/Interpreter/LuaInterpreter.h
         Program/Config/Config.cpp
         Program/Config/Config.h
         Transformers/World.cpp
@@ -78,7 +85,7 @@ set(SRC_FILES
         View/Renderer/3D/Vertices/VertexBuffer.cpp
         View/Renderer/3D/Vertices/VertexBuffer.h
         View/Renderer/3D/Vertices/VertexBufferLayout.cpp
-        View/Renderer/3D/Vertices/VertexBufferLayout.h View/Renderer/3D/GL/GLMacros.cpp View/Renderer/3D/Object/Object3D.cpp View/Renderer/3D/Object/Object3D.h View/Renderer/3D/Vertices/IndexBuffer.cpp View/Renderer/3D/Vertices/IndexBuffer.h View/Renderer/Draw/IDrawable.cpp View/Renderer/Draw/IDrawable.h View/Renderer/2D/Object/Object2D.cpp View/Renderer/2D/Object/Object2D.h View/Renderer/2D/Object/Circle.cpp View/Renderer/2D/Object/Circle.h View/Renderer/2D/Object/Line.cpp View/Renderer/2D/Object/Line.h View/Renderer/2D/Object/SinglePixel.cpp View/Renderer/2D/Object/SinglePixel.h View/Renderer/2D/Object/Rectangle.cpp View/Renderer/2D/Object/Rectangle.h View/Renderer/3D/Object/Cube.cpp View/Renderer/3D/Object/Cube.h Output/IOutput.cpp Output/IOutput.h Output/Console/TerminalOutput.cpp Output/Console/TerminalOutput.h View/Renderer/3D/GL/GLUtils.cpp View/Renderer/3D/GL/GLUtils.h Utils/FileSplit.cpp Utils/FileSplit.h View/Renderer/3D/Camera/ICamera.cpp View/Renderer/3D/Camera/ICamera.h View/Renderer/3D/Camera/MainCamera.cpp View/Renderer/3D/Camera/MainCamera.h Input/KeyInput.cpp Input/KeyInput.h Input/MouseInput.cpp Input/MouseInput.h IO/IModelLoader.cpp IO/IModelLoader.h IO/OBJLoader.cpp IO/OBJLoader.h)
+        View/Renderer/3D/Vertices/VertexBufferLayout.h View/Renderer/3D/GL/GLMacros.cpp View/Renderer/3D/Object/Object3D.cpp View/Renderer/3D/Object/Object3D.h View/Renderer/3D/Vertices/IndexBuffer.cpp View/Renderer/3D/Vertices/IndexBuffer.h View/Renderer/Draw/IDrawable.cpp View/Renderer/Draw/IDrawable.h View/Renderer/2D/Object/Object2D.cpp View/Renderer/2D/Object/Object2D.h View/Renderer/2D/Object/Circle.cpp View/Renderer/2D/Object/Circle.h View/Renderer/2D/Object/Line.cpp View/Renderer/2D/Object/Line.h View/Renderer/2D/Object/SinglePixel.cpp View/Renderer/2D/Object/SinglePixel.h View/Renderer/2D/Object/Rectangle.cpp View/Renderer/2D/Object/Rectangle.h View/Renderer/3D/Object/Cube.cpp View/Renderer/3D/Object/Cube.h Output/IOutput.cpp Output/IOutput.h Output/Console/TerminalOutput.cpp Output/Console/TerminalOutput.h View/Renderer/3D/GL/GLUtils.cpp View/Renderer/3D/GL/GLUtils.h Utils/FileSplit.cpp Utils/FileSplit.h View/Renderer/3D/Camera/ICamera.cpp View/Renderer/3D/Camera/ICamera.h View/Renderer/3D/Camera/MainCamera.cpp View/Renderer/3D/Camera/MainCamera.h Input/KeyInput.cpp Input/KeyInput.h Input/MouseInput.cpp Input/MouseInput.h IO/IModelLoader.cpp IO/IModelLoader.h IO/OBJLoader.cpp IO/OBJLoader.h Transformers/Interpreter/ILanInterpreter.cpp Transformers/Interpreter/ILanInterpreter.h Transformers/Interpreter/JavascriptInterpreter.cpp Transformers/Interpreter/JavascriptInterpreter.h Physics/Transform.cpp Physics/Transform.h)
 
 
 # OS SPECIFICITIES
@@ -127,5 +134,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${LUA_DIR}/lua54.dll)
 message("Linking GLEW...")
 target_include_directories(${PROJECT_NAME} PUBLIC ${GLEW_DIR}/include)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${GLEW_DIR}/bin/Release/x64/glew32.dll)
+
+### DUKTAPE ###
+message("Linking DUKTAPE...")
+target_include_directories(${PROJECT_NAME} PUBLIC ${DUKTP_DIR}/include)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${DUKTP_DIR}/lib/libduktape.dll)
 
 message("Done!")

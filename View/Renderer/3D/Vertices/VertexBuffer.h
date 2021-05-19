@@ -32,12 +32,11 @@ namespace Math4BG
         void Clear();
 
         void Push();
+        void Repush();
 
     private:
         unsigned int m_rendererID;
         std::vector<unsigned char> m_data;
-
-        void Repush();
     };
 }
 

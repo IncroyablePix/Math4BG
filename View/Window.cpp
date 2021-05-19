@@ -23,6 +23,7 @@ namespace Math4BG
     {
         InitSDL();
 
+
         m_window.reset(SDL_CreateWindow(info.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, info.width,
                                         info.height, FlagsFor(worldType)));
 
@@ -37,7 +38,7 @@ namespace Math4BG
 
     Window::~Window()
     {
-        SDL_Quit();
+        //SDL_Quit();
     }
 
     void Window::UpdateWindowTitle()

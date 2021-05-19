@@ -6,31 +6,32 @@
 #define MATH4BG_CUBE_H
 
 #include "Object3D.h"
+#include "../../../../Physics/Transform.h"
 
 namespace Math4BG
 {
     class Cube : public Object3D
     {
     public:
-        Cube(std::shared_ptr<Shader> shader);
+        Cube(std::shared_ptr<Shader> shader, Transform &transform);
 
     private:
-        inline const static VerticesContainer cubeVc =
+        inline static VerticesContainer cubeVc =
                 {
                 (new float[24]
                         {
-                                -0.5f, -0.5f, 0.0f,
-                                0.5f, -0.5f, 0.0f,
+                                -0.5f, -0.5f, 0.5f,
+                                0.5f, -0.5f, 0.5f,
 
-                                0.5f, 0.5f, 0.0f,
-                                -0.5f, 0.5f, 0.0f,
+                                0.5f, 0.5f, 0.5f,
+                                -0.5f, 0.5f, 0.5f,
 
-                                -0.5f, -0.5f, -1.0f,
-                                0.5f, -0.5f, -1.0f,
+                                -0.5f, -0.5f, -0.5f,
+                                0.5f, -0.5f, -0.5f,
 
-                                0.5f, 0.5f, -1.0f,
-                                -0.5f, 0.5f, -1.0f
-                        }), sizeof(float) * 8 * 3
+                                0.5f, 0.5f, -0.5f,
+                                -0.5f, 0.5f, -0.5f
+                        }), 8, sizeof(float) * 8 * 3
                 };
 
         inline const static IndexBufferContainer cubeIbc =

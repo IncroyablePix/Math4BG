@@ -5,7 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include "Config.h"
-#include "../../Transformers/LuaInterpreter.h"
+#include "../../Transformers/Interpreter/LuaInterpreter.h"
 
 namespace Math4BG
 {

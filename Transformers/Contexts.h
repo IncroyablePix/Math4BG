@@ -18,27 +18,25 @@ namespace Math4BG
 
         int CreateContext(const WindowInfo &info, WorldType type);
 
-        inline Context *GetContext(int id)
-        { return m_contexts[id]; }
+        inline Context *GetContext(int id) { return m_contexts[id]; }
 
-        inline bool ContextExists(int id)
-        { return m_contexts.find(id) != m_contexts.end(); }
+        inline bool ContextExists(int id) { return m_contexts.find(id) != m_contexts.end(); }
 
         Context *operator[](int index);
 
-        inline Context *GetWorldForId(int id)
-        { return m_contexts[m_objects[id]]; }
+        inline Context *GetWorldForId(int id) { return m_contexts[m_objects[id]]; }
 
-        inline std::unordered_map<int, Context *>::iterator Begin()
-        { return m_contexts.begin(); }
+        inline std::unordered_map<int, Context *>::iterator Begin() { return m_contexts.begin(); }
 
-        inline std::unordered_map<int, Context *>::iterator End()
-        { return m_contexts.end(); }
+        inline std::unordered_map<int, Context *>::iterator End() { return m_contexts.end(); }
 
         static std::shared_ptr<Contexts> Create();
 
+        int KillContextForWindowId(uint32_t id);
+
     private:
-        std::unordered_map<int, Context *> m_contexts;
+        std::unordered_map<uint32_t, int> m_contextIds;
+        std::unordered_map<int, Context*> m_contexts;
         std::unordered_map<int, int> m_objects;
         int m_count = 0;
     };

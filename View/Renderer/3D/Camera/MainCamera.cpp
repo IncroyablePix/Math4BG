@@ -18,8 +18,6 @@ namespace Math4BG {
 
     m_eye(0.0f, 0.0f, 0.0f),
     m_view(0.0f, 0.0f, -1.0f),
-    m_up(0.0f, 1.0f, 0.0f),
-    m_speed(25.0f),
 
     ICamera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
     {
@@ -104,7 +102,7 @@ namespace Math4BG {
     {
         if(Mouse.Down(MouseButton::LMB))
         {
-            std::cout << "Mouse delta : " << Mouse.DeltaPosition().x << ", " << Mouse.DeltaPosition().x << std::endl;
+            //std::cout << "Mouse delta : " << Mouse.DeltaPosition().x << ", " << Mouse.DeltaPosition().x << std::endl;
 
             m_horizontalAngle += (0.25f * lag * (-Mouse.DeltaPosition().x));
             m_verticalAngle += (0.25f * lag * (-Mouse.DeltaPosition().y));
@@ -130,8 +128,8 @@ namespace Math4BG {
             dir += Right();
 
         //std::cout << "Pos : " << m_eye.x << ", " << m_eye.y << ", " << m_eye.z << std::endl;
-        std::cout << "Rot : " << RadToDeg(m_horizontalAngle) << ", " << RadToDeg(m_verticalAngle) << std::endl;
-        std::cout << "Dir : " << m_direction.x << ", " << m_direction.y << ", " << m_direction.z << std::endl;
+        /*std::cout << "Rot : " << RadToDeg(m_horizontalAngle) << ", " << RadToDeg(m_verticalAngle) << std::endl;
+        std::cout << "Dir : " << m_direction.x << ", " << m_direction.y << ", " << m_direction.z << std::endl;*/
 
         Move(dir * m_speed, lag);
 

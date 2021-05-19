@@ -6,9 +6,10 @@
 #define ARCPOSITION_LUAINTERPRETER_H
 
 #include <memory>
-#include "World.h"
-#include "Contexts.h"
-#include "../Output/IOutput.h"
+#include "../World.h"
+#include "../Contexts.h"
+#include "../../Output/IOutput.h"
+#include "ILanInterpreter.h"
 /**
  * Lua is a C library thus having C defined functions
  */
@@ -22,21 +23,24 @@ extern "C"
 
 namespace Math4BG
 {
-    class LuaInterpreter
+    class LuaInterpreter : public ILanInterpreter
     {
     public:
         LuaInterpreter(std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
-
-        ~LuaInterpreter();
+        ~LuaInterpreter() override = default;
 
         void ExecuteCommand(const std::string &cmd);
-        void ExecuteFile(const std::string &path);
+        void ExecuteFile(const std::string &path) override;
         double GetNumber(const std::string &var);
         std::string GetString(const std::string &var);
         bool GetBool(const std::string &var);
-        bool CheckValidity();
-        int CallOnInitFunction();
-        int CallUpdateFunction(double lag);
+        bool CheckValidity() override;
+
+        void RegisterFunctions() override;
+
+        int CallOnInitFunction() override;
+        int CallUpdateFunction(double lag) override;
+        int CallOnWindowClosed(int windowId) override;
 
         //---
 
@@ -47,8 +51,6 @@ namespace Math4BG
         int CreateShader(lua_State *L);
 
         //---
-
-        int SecondCallback(lua_State *L);
 
         int CreateCircle(lua_State *L);
         int SetCirclePos(lua_State *L);
@@ -71,17 +73,13 @@ namespace Math4BG
         //---
 
         int CreateCube(lua_State *L);
+        int SetCubePos(lua_State *L);
+
+        static std::shared_ptr<LuaInterpreter> Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output);
 
     private:
-        std::shared_ptr<IOutput> m_output;
-        std::shared_ptr<Contexts> m_contexts;
-        //std::shared_ptr<World> m_world;
         std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;
-
-        void RegisterFunctions();
-
         bool CheckLua(int r);
-
         void ThrowLuaException();
     };
 

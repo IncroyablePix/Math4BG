@@ -260,17 +260,31 @@ namespace Math4BG
         return false;
     }
 
-    int World::CreateCube(const std::string &shaderName)
+    int World::CreateCube(const std::string &shaderName, Transform &transform)
     {
         if(m_type == WorldType::Relief)
         {
             //m_objects[m_count] = std::make_shared<Line>(start, end, color);
-            m_objects[m_count] = std::make_shared<Cube>(m_shaders[shaderName]);
+            m_objects[m_count] = std::make_shared<Cube>(m_shaders[shaderName], transform);
             return m_count++;
         }
         else
         {
             return INVALID_OBJECT_ID;
         }
+    }
+
+    bool World::SetCubePos(int cubeid, const glm::vec3 &position)
+    {
+        if(m_objects.find(cubeid) != m_objects.end())
+        {
+            auto rectangle = m_objects[cubeid].get();
+            if(Cube* c = dynamic_cast<Cube*>(rectangle))
+            {
+                c->SetPos(position);
+                return true;
+            }
+        }
+        return false;
     }
 }

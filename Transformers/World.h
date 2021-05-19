@@ -17,6 +17,7 @@
 #include "../View/Renderer/2D/Object/Rectangle.h"
 #include "../View/Window.h"
 #include "../View/Renderer/3D/Shaders/Shader.h"
+#include "../Physics/Transform.h"
 
 #define INVALID_OBJECT_ID               (-1)
 
@@ -54,7 +55,8 @@ namespace Math4BG
 
         void SetBackgroundColor(unsigned int color);
 
-        int CreateCube(const std::string &shaderName);
+        int CreateCube(const std::string &shaderName, Transform& transform);
+        bool SetCubePos(int cubeid, const glm::vec3 &position);
 
     private:
         std::unique_ptr<MainCamera> m_camera;

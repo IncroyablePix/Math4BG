@@ -7,7 +7,7 @@
 
 
 #include "../View/Window.h"
-#include "../Transformers/LuaInterpreter.h"
+#include "../Transformers/Interpreter/LuaInterpreter.h"
 #include "Config/Config.h"
 #include "../Transformers/Context.h"
 #include "../Transformers/Contexts.h"
@@ -23,8 +23,10 @@ namespace Math4BG
         void Start();
 
     private:
+        void ManageWindowEvents(const SDL_Event& event);
+
         std::shared_ptr<Contexts> m_contexts;
-        std::shared_ptr<LuaInterpreter> m_luaInterpreter;
+        std::shared_ptr<ILanInterpreter> m_interpreter;
         std::shared_ptr<IOutput> m_output;
         unsigned long long m_start;
         unsigned long long m_last;
@@ -35,6 +37,8 @@ namespace Math4BG
         void Update(double lag);
 
         void Run();
+
+        static std::shared_ptr<ILanInterpreter> CreateInterpreter(const std::string& name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
     };
 }
 
