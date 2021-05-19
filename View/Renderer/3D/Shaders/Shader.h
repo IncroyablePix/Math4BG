@@ -43,6 +43,8 @@ namespace Math4BG
 
         int GetUniformLocation(const std::string &name);
     };
+
+    //extern Shader Basic;
 }
 
 #endif //MATH4BG_SHADER_H

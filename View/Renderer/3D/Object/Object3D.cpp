@@ -34,13 +34,19 @@ namespace Math4BG
 
     }
 
-    void Object3D::Bind() const
+    void Object3D::Bind(MainCamera* camera) const
     {
         m_shader->Bind();
+
+        /*m_shader->SetUniformMat4("projectionMatrix", camera->GetProjectionMatrix());// Projection perspective
+        m_shader->SetUniformMat4("modelViewMatrix", camera->GetModelViewMatrix());
+        m_shader->SetUniformMat4("normalMatrix", camera->GetNormalMatrix());*/
+
+        m_shader->SetUniformMat4("MVP", camera->GetMVP());
+
         m_va->Bind();
         m_ib->Bind();
 
-        //std::cout << m_ib->GetCount() << std::endl;
         glDrawElements(GL_TRIANGLES, m_ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         Unbind();

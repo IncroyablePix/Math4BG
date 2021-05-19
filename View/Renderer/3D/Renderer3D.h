@@ -24,7 +24,7 @@ namespace Math4BG
 
         static std::shared_ptr<Renderer3D> Create(SDL_Window *window, unsigned int width, unsigned int height);
 
-        void Draw(IDrawable *drawable) override;
+        void Draw(MainCamera* camera, IDrawable *drawable) override;
         void SwapBuffers() override;
         void SetBackgroundColor(uint8_t r, uint8_t g, uint8_t b) override;
 

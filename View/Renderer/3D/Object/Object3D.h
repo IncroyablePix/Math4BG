@@ -11,6 +11,8 @@
 #include "../Shaders/Shader.h"
 #include "../Vertices/IndexBuffer.h"
 #include "../../Draw/IDrawable.h"
+#include "../Camera/ICamera.h"
+#include "../Camera/MainCamera.h"
 #include <memory>
 
 namespace Math4BG
@@ -21,7 +23,9 @@ namespace Math4BG
         Object3D(std::shared_ptr<Shader> shader, const IndexBufferContainer &ibc, const VerticesContainer &vc);
         ~Object3D();
 
-        void Bind() const;
+        //void SetShaderAttribute(std::string name);
+
+        void Bind(MainCamera* camera) const;
         void Unbind() const;
 
     private:

@@ -13,17 +13,19 @@ namespace Math4BG
     {
         None = -1,
         Vertex = 0,
-        Fragment = 1,
-        Geometry = 2
+        Geometry = 1,
+        Fragment = 2
     };
 
     struct ShaderProgramSource
     {
         std::string vertexShaderSource;
+        std::string geometryShaderSource;
         std::string fragmentShaderSource;
     };
 
     ShaderProgramSource ParseShader(std::string filepath);
+    ShaderProgramSource ParseShaders(const std::string &vshpath, const std::string &gshpath, const std::string &fshpath);
 }
 
 #endif //MATH4BG_SHADERPROGRAMSOURCE_H

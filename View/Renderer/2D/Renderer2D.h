@@ -22,7 +22,7 @@ namespace Math4BG
 
         static std::shared_ptr<Renderer2D> Create(SDL_Window *window, unsigned int width, unsigned int height);
 
-        void Draw(IDrawable* drawable) override;
+        void Draw(MainCamera *camera, IDrawable* drawable) override;
         void Clear() override;
         void SwapBuffers() override;
 

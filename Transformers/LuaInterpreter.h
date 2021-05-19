@@ -44,6 +44,8 @@ namespace Math4BG
         int DestroyWindow(lua_State *L);
         int SetBackgroundColor(lua_State *L);
 
+        int CreateShader(lua_State *L);
+
         //---
 
         int SecondCallback(lua_State *L);

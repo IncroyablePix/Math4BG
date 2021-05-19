@@ -10,6 +10,8 @@
 #include <SDL2/SDL.h>
 #include "../Screen.h"
 #include "Draw/IDrawable.h"
+#include "3D/Camera/ICamera.h"
+#include "3D/Camera/MainCamera.h"
 
 
 namespace Math4BG
@@ -31,7 +33,7 @@ namespace Math4BG
 
         virtual void SetBackgroundColor(uint8_t r, uint8_t g, uint8_t b);
 
-        virtual void Draw(IDrawable* drawable) = 0;
+        virtual void Draw(MainCamera* camera, IDrawable* drawable) = 0;
         virtual void Clear() = 0;
 
     protected:

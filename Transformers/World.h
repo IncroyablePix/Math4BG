@@ -25,12 +25,14 @@ namespace Math4BG
     class World
     {
     public:
-        World(WorldType type, std::shared_ptr<IRenderer> renderer);
+        World(const WindowInfo &info, WorldType type, std::shared_ptr<IRenderer> renderer);
 
         ~World();
 
         void Draw(Window &window);
-        void Update();
+        void Update(double lag);
+
+        std::string CreateShader(const std::string& path);
 
         int CreateCircle(Point center, double radius, uint32_t color);
         bool SetCirclePos(int circleid, Point center);
@@ -52,13 +54,15 @@ namespace Math4BG
 
         void SetBackgroundColor(unsigned int color);
 
-        int CreateCube(uint32_t color);
+        int CreateCube(const std::string &shaderName);
 
     private:
+        std::unique_ptr<MainCamera> m_camera;
         std::shared_ptr<IRenderer> m_renderer;
         WorldType m_type;
 
         std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
+        //std::unordered_map<int, std::shared_ptr<Shader>> m_shaders;
         std::unordered_map<int, Circle> m_circles;
         std::unordered_map<int, Line> m_lines;
 

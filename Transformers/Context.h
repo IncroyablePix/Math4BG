@@ -20,7 +20,7 @@ namespace Math4BG
                 WorldType type);//const std::string& title, unsigned int width, unsigned int height, WorldType worldType);
         ~Context();
 
-        void Update();
+        void Update(double lag);
 
         void SetUPS(int ups);
 

@@ -6,6 +6,9 @@
 #include "Shaders/Shader.h"
 #include "Object/Object3D.h"
 #include "Object/Cube.h"
+#include "Camera/ICamera.h"
+#include "Camera/MainCamera.h"
+
 #define GLEW_STATIC
 #include <GL/glew.h>
 
@@ -17,7 +20,9 @@ namespace Math4BG
             m_glContext(SDL_GL_CreateContext(window)),
             m_window(window)
     {
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        //glEnable(GL_CULL_FACE);
 
         /*glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
@@ -35,11 +40,11 @@ namespace Math4BG
         SDL_GL_DeleteContext(m_glContext);
     }
 
-    void Renderer3D::Draw(IDrawable *drawable)
+    void Renderer3D::Draw(MainCamera *camera, IDrawable *drawable)
     {
         //--- TEST : TO DELETE ---//
         auto* object = (Object3D*) drawable;
-        object->Bind();
+        object->Bind(camera);
     }
 
     std::shared_ptr<Renderer3D> Renderer3D::Create(SDL_Window *window, unsigned int width, unsigned int height)

@@ -5,6 +5,8 @@
 #include <iostream>
 #include <utility>
 #include "Application.h"
+#include "../Input/MouseInput.h"
+#include "../Input/KeyInput.h"
 
 namespace Math4BG
 {
@@ -63,6 +65,8 @@ namespace Math4BG
 
         //---
 
+        //SDL_ShowCursor(SDL_DISABLE);
+
         while (m_running)
         {
             //---SDL STUFF---//
@@ -71,6 +75,22 @@ namespace Math4BG
             {
                 case SDL_QUIT:
                     m_running = false;
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    Mouse.MouseSet(Mouse.ConvertSDLInput(event.button.button), true);
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    Mouse.MouseSet(Mouse.ConvertSDLInput(event.button.button), false);
+                    break;
+                case SDL_MOUSEMOTION:
+                    Mouse.MousePos({ event.motion.x, event.motion.y });
+                    break;
+                case SDL_KEYDOWN:
+                    Keys.KeySet(Keys.ConvertSDLInput(event.key.keysym.sym), true);
+                    break;
+                case SDL_KEYUP:
+                    Keys.KeySet(Keys.ConvertSDLInput(event.key.keysym.sym), false);
+                    break;
             }
 
             //---LOGIC UPDATE---//
@@ -132,6 +152,10 @@ namespace Math4BG
 
     void Application::Update(double lag)
     {
+        Mouse.Update();
+        Keys.Update();
+        //std::cout << Mouse.Position().x << ", " << Mouse.Position().y << " - " << Mouse.DeltaPosition().x << ", " << Mouse.DeltaPosition().y << std::endl;
+
         std::unordered_map<int, Context *>::iterator it;
         std::unordered_map<int, Context *>::iterator itEnd;
 
@@ -139,6 +163,6 @@ namespace Math4BG
 
         it = m_contexts->Begin();
         for (; it != itEnd; it++)
-            it->second->Update();
+            it->second->Update(lag);
     }
 }

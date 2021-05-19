@@ -40,7 +40,7 @@ namespace Math4BG
         void SetUPS(unsigned int ups);
 
         void Clear();
-        void Draw(IDrawable* drawable);
+        void Draw(MainCamera* camera, IDrawable* drawable);
         void SwapBuffers();
 
     private:

@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "Renderer/2D/Renderer2D.h"
 #include "Renderer/3D/Renderer3D.h"
+#include "Renderer/3D/Camera/MainCamera.h"
 
 
 namespace Math4BG
@@ -58,11 +59,11 @@ namespace Math4BG
         UpdateWindowTitle();
     }
 
-    void Window::Draw(IDrawable* drawable)
+    void Window::Draw(MainCamera* camera, IDrawable* drawable)
     {
         //m_renderer->Clear();
         if(drawable)
-            m_renderer->Draw(drawable);
+            m_renderer->Draw(camera, drawable);
     }
 
     void Window::Clear()

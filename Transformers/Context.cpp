@@ -9,7 +9,7 @@ namespace Math4BG
     Context::Context(const WindowInfo &info, WorldType worldType) :
             m_window(Window::Create(info, worldType))
     {
-        m_world = std::make_shared<World>(worldType, m_window->GetRenderer());
+        m_world = std::make_shared<World>(info, worldType, m_window->GetRenderer());
     }
 
     Context::~Context()
@@ -17,10 +17,10 @@ namespace Math4BG
 
     }
 
-    void Context::Update()
+    void Context::Update(double lag)
     {
         m_window->Clear();
-        m_world->Update();
+        m_world->Update(lag);
     }
 
     void Context::SetUPS(int ups)

@@ -5,18 +5,17 @@
 #include <iostream>
 #include "World.h"
 #include "../View/Renderer/3D/Object/Cube.h"
+#include "../Utils/FileSplit.h"
+#include "../View/Renderer/3D/Camera/MainCamera.h"
 
 
 namespace Math4BG
 {
-    World::World(WorldType type, std::shared_ptr<IRenderer> renderer) :
+    World::World(const WindowInfo &info, WorldType type, std::shared_ptr<IRenderer> renderer) :
             m_renderer(std::move(renderer)),
-            m_type(type)
+            m_type(type),
+            m_camera(std::make_unique<MainCamera>(45.0f, (float) info.width / (float) info.height, 0.1f, 1000.0f))
     {
-        //--- HARDCODED
-        std::shared_ptr<Shader> shader = Shader::CreateShader(ParseShader("shaders/rand.shader"));
-
-        m_shaders["basic"] = shader;
     }
 
     World::~World()
@@ -24,24 +23,25 @@ namespace Math4BG
 
     }
 
-    void World::Update()
+    std::string World::CreateShader(const std::string &path)
     {
-        /*for (auto &circle : m_circles)
-        {
-            Circle c = circle.second;
-            m_renderer->DrawEllipse(c.center.x, c.center.y, c.radius, c.radius, c.color);
-        }
+        //--- HARDCODED
+        ShaderProgramSource source = ParseShader(path);
+        std::shared_ptr<Shader> shader = Shader::CreateShader(source);
+        FileSplit fileSplit(path);
+        std::cout << fileSplit.fileWithoutExtension << std::endl;
+        /*shader->Bind();
+        shader->SetUniformVec4("vColor", glm::vec4(1.0, 1.0, 1.0, 1.0));
+        shader->Unbind();*/
 
-        for (auto &line : m_lines)
-        {
-            Line l = line.second;
-            m_renderer->DrawLine(l.start.x, l.start.y, l.end.x, l.end.y, l.color);
-        }*/
+        m_shaders[fileSplit.fileWithoutExtension] = shader;
 
-        /*for(auto &o : m_objects)
-        {
+        return fileSplit.fileWithoutExtension;
+    }
 
-        }*/
+    void World::Update(double lag)
+    {
+        m_camera->Update(lag);
     }
 
     int World::CreateCircle(Point center, double radius, uint32_t color)
@@ -147,15 +147,15 @@ namespace Math4BG
         uint8_t g = color >> 4;
         uint8_t b = color >> 2;
 
-
         m_renderer->SetBackgroundColor(r, g, b);
     }
 
     void World::Draw(Window &window)
     {
-        //window.Draw(nullptr); // TODO : Hardcoded
+        //m_camera->Move(m_camera->Backward() + (m_camera->Left() * 0.5f), 0.05f); // Hardcoded
+        //m_camera->Rotate({0.0, 0.01, 0.0});
         for(const auto& drawable : m_objects)
-            window.Draw(drawable.second.get());
+            window.Draw(m_camera.get(), drawable.second.get());
     }
 
     int World::CreateDot(Point position, uint32_t color)
@@ -260,12 +260,12 @@ namespace Math4BG
         return false;
     }
 
-    int World::CreateCube(uint32_t color)
+    int World::CreateCube(const std::string &shaderName)
     {
         if(m_type == WorldType::Relief)
         {
             //m_objects[m_count] = std::make_shared<Line>(start, end, color);
-            m_objects[m_count] = std::make_shared<Cube>(m_shaders["basic"]);
+            m_objects[m_count] = std::make_shared<Cube>(m_shaders[shaderName]);
             return m_count++;
         }
         else

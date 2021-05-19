@@ -174,6 +174,8 @@ namespace Math4BG
 
         lua_register(m_luaState.get(), "CreateCube", &dispatch<&LuaInterpreter::CreateCube>);
 
+        lua_register(m_luaState.get(), "CreateShader", &dispatch<&LuaInterpreter::CreateShader>);
+
         lua_register(m_luaState.get(), "CreateWindow", &dispatch<&LuaInterpreter::CreateWindow>);
         lua_register(m_luaState.get(), "SetBackgroundColor", &dispatch<&LuaInterpreter::SetBackgroundColor>);
     }
@@ -200,6 +202,21 @@ namespace Math4BG
     int LuaInterpreter::DestroyWindow(lua_State *L)
     {
         return 0;
+    }
+
+    int LuaInterpreter::CreateShader(lua_State *L)
+    {
+        int contextid = (int) lua_tonumber(L, 1);
+        std::string file = lua_tostring(L, 2);
+
+        std::string name = "";
+
+        if(m_contexts->ContextExists(contextid))
+            name = ((*m_contexts)[contextid])->GetWorld()->CreateShader(file);
+
+        lua_pushstring(L, name.c_str());
+
+        return 1;
     }
 
     int LuaInterpreter::CreateCircle(lua_State *L)
@@ -389,15 +406,16 @@ namespace Math4BG
     int LuaInterpreter::CreateCube(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
+        std::string shaderName = lua_tostring(L, 2);
         /*double x = (double) lua_tonumber(L, 2);
         double y = (double) lua_tonumber(L, 3);
         double width = (double) lua_tonumber(L, 4);
         double height = (double) lua_tonumber(L, 5);*/
-        unsigned int color = (unsigned int) lua_tonumber(L, 5);
+        //unsigned int color = (unsigned int) lua_tonumber(L, 5);
 
         int id = -1;
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(color);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(shaderName);
 
         lua_pushnumber(L, id);
 
