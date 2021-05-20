@@ -16,47 +16,43 @@ namespace Math4BG
         Cube(std::shared_ptr<Shader> shader, Transform &transform);
 
     private:
-        inline static VerticesContainer cubeVc =
-                {
-                (new float[24]
-                        {
-                                -0.5f, -0.5f, 0.5f,
-                                0.5f, -0.5f, 0.5f,
+        inline static float cubeVertices[24] = {
+                -0.5f, -0.5f, 0.5f,
+                0.5f, -0.5f, 0.5f,
 
-                                0.5f, 0.5f, 0.5f,
-                                -0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
+                -0.5f, 0.5f, 0.5f,
 
-                                -0.5f, -0.5f, -0.5f,
-                                0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
 
-                                0.5f, 0.5f, -0.5f,
-                                -0.5f, 0.5f, -0.5f
-                        }), 8, sizeof(float) * 8 * 3
-                };
+                0.5f, 0.5f, -0.5f,
+                -0.5f, 0.5f, -0.5f
+        };
+        inline static VerticesContainer cubeVc = { cubeVertices, 24 };
 
-        inline const static IndexBufferContainer cubeIbc =
-                { (new unsigned int[36]
-                    {
-                            0, 1, 2, // Face en face
-                            2, 3, 0,
+        inline static unsigned int verticesIndexes[36] =
+        {
+                0, 1, 2, // Face en face
+                2, 3, 0,
 
-                            0, 1, 4, // Face du bas
-                            1, 4, 5,
+                0, 1, 4, // Face du bas
+                1, 4, 5,
 
-                            3, 4, 7, // Face gauche
-                            0, 3, 4,
+                3, 4, 7, // Face gauche
+                0, 3, 4,
 
-                            4, 5, 9, // Face arrière
-                            6, 7, 4,
+                4, 5, 9, // Face arrière
+                6, 7, 4,
 
-                            2, 3, 6, // Face du haut
-                            3, 6, 7,
+                2, 3, 6, // Face du haut
+                3, 6, 7,
 
-                            1, 2, 5, // Face droite
-                            2, 5, 6
-                    }),
-                  36
-                };
+                1, 2, 5, // Face droite
+                2, 5, 6
+        };
+        inline static IndexBufferContainer cubeIbc = { verticesIndexes, 36 };
+
     };
 }
 

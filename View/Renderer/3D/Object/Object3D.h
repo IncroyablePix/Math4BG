@@ -14,6 +14,8 @@
 #include "../Camera/ICamera.h"
 #include "../Camera/MainCamera.h"
 #include "../../../../Physics/Transform.h"
+#include "../../../../IO/IModelLoader.h"
+#include "../../../../IO/ModelData.h"
 #include <memory>
 
 namespace Math4BG
@@ -21,6 +23,7 @@ namespace Math4BG
     class Object3D : public IDrawable
     {
     public:
+        Object3D(std::shared_ptr<Shader> shader, ModelData* model, const Transform &transform);
         Object3D(std::shared_ptr<Shader> shader, const IndexBufferContainer &ibc, VerticesContainer &vc, const Transform &transform);
         ~Object3D();
 
@@ -39,7 +42,6 @@ namespace Math4BG
         std::unique_ptr<IndexBuffer> m_ib;
         std::shared_ptr<Shader> m_shader;
 
-        VerticesContainer m_vc;
     };
 }
 

@@ -5,11 +5,11 @@
 #ifndef ARCPOSITION_CONTEXT_H
 #define ARCPOSITION_CONTEXT_H
 
+#include "World.h"
+#include "WorldType.h"
 #include <string>
 #include <memory>
 #include "../View/Window.h"
-#include "World.h"
-#include "WorldType.h"
 
 namespace Math4BG
 {
@@ -20,15 +20,11 @@ namespace Math4BG
         ~Context();
 
         void Update(double lag);
-
         void SetUPS(int ups);
-
         void SetFPS(int fps);
-
         void Draw();
 
         inline World *GetWorld() { return m_world.get(); }
-
         inline uint32_t GetWindowId() { return m_window->GetWindowId(); }
 
     private:

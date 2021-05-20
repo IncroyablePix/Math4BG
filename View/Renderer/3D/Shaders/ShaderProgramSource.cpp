@@ -15,6 +15,7 @@ namespace Math4BG
         std::ifstream stream(filepath);
         std::string line;
         std::stringstream ss[3];
+        bool shaderFound[3] = { false, false, false };
 
         ShaderType type = ShaderType::None;
 
@@ -28,13 +29,16 @@ namespace Math4BG
                     type = ShaderType::Geometry;
                 else if (line.find("fragment") != std::string::npos)
                     type = ShaderType::Fragment;
+
+                shaderFound[type] = true;
             } else
             {
                 ss[type] << line << std::endl;
             }
         }
 
-        return {ss[0].str(), ss[1].str(), ss[2].str()};
+        return {shaderFound[0], shaderFound[1], shaderFound[2],
+                ss[0].str(), ss[1].str(), ss[2].str()};
     }
 
     //---

@@ -177,9 +177,12 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetRectangleColor", &dispatch<&LuaInterpreter::SetRectangleColor>);
 
         lua_register(m_luaState.get(), "CreateCube", &dispatch<&LuaInterpreter::CreateCube>);
-        lua_register(m_luaState.get(), "SetCubePos", &dispatch<&LuaInterpreter::SetCubePos>);
+        lua_register(m_luaState.get(), "SetObjectPos", &dispatch<&LuaInterpreter::SetObjectPos>);
+
+        lua_register(m_luaState.get(), "CreateCustomObject", &dispatch<&LuaInterpreter::CreateCustomObject>);
 
         lua_register(m_luaState.get(), "CreateShader", &dispatch<&LuaInterpreter::CreateShader>);
+        lua_register(m_luaState.get(), "CreateModel", &dispatch<&LuaInterpreter::CreateModel>);
 
         lua_register(m_luaState.get(), "CreateWindow", &dispatch<&LuaInterpreter::CreateWindow>);
         lua_register(m_luaState.get(), "SetBackgroundColor", &dispatch<&LuaInterpreter::SetBackgroundColor>);
@@ -220,6 +223,18 @@ namespace Math4BG
             name = ((*m_contexts)[contextid])->GetWorld()->CreateShader(file);
 
         lua_pushstring(L, name.c_str());
+
+        return 1;
+    }
+
+    int LuaInterpreter::CreateModel(lua_State *L)
+    {
+        std::string file = lua_tostring(L, 1);
+        std::string name = lua_tostring(L, 2);
+
+        bool out = m_contexts->LoadModel(file, name);
+
+        lua_pushboolean(L, out);
 
         return 1;
     }
@@ -428,7 +443,7 @@ namespace Math4BG
         return 1;
     }
 
-    int LuaInterpreter::SetCubePos(lua_State* L)
+    int LuaInterpreter::SetObjectPos(lua_State* L)
     {
         int id = (int) lua_tonumber(L, 1);
         float x = (float) lua_tonumber(L, 2);
@@ -438,7 +453,7 @@ namespace Math4BG
         bool out = false;
 
         if(m_contexts->GetWorldForId(id))
-            out = m_contexts->GetWorldForId(id)->GetWorld()->SetCubePos(id, {x, y, z});
+            out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectPos(id, {x, y, z});
 
         lua_pushboolean(L, out);
 
@@ -448,5 +463,31 @@ namespace Math4BG
     std::shared_ptr<LuaInterpreter>LuaInterpreter::Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output)
     {
         return std::shared_ptr<LuaInterpreter>(static_cast<LuaInterpreter *>(new LuaInterpreter(context, output)));
+    }
+
+    int LuaInterpreter::CreateCustomObject(lua_State *L)
+    {
+        int contextid = (int) lua_tonumber(L, 1);
+        std::string shaderName = lua_tostring(L, 2);
+        std::string modelName = lua_tostring(L, 3);
+        float x = (float) lua_tonumber(L, 4);
+        float y = (float) lua_tonumber(L, 5);
+        float z = (float) lua_tonumber(L, 6);
+
+        //unsigned int color = (unsigned int) lua_tonumber(L, 5);
+        Transform transform = {{x, y, z}};
+
+        int id = -1;
+        if(m_contexts->ModelExists(modelName))
+        {
+            auto model = ((*m_contexts)[modelName]);
+
+            if (m_contexts->ContextExists(contextid))
+                id = ((*m_contexts)[contextid])->GetWorld()->CreateCustomObject(model, shaderName, transform);
+        }
+
+        lua_pushnumber(L, id);
+
+        return 1;
     }
 }

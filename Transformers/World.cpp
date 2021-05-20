@@ -264,7 +264,6 @@ namespace Math4BG
     {
         if(m_type == WorldType::Relief)
         {
-            //m_objects[m_count] = std::make_shared<Line>(start, end, color);
             m_objects[m_count] = std::make_shared<Cube>(m_shaders[shaderName], transform);
             return m_count++;
         }
@@ -274,17 +273,30 @@ namespace Math4BG
         }
     }
 
-    bool World::SetCubePos(int cubeid, const glm::vec3 &position)
+    bool World::SetObjectPos(int objid, const glm::vec3 &position)
     {
-        if(m_objects.find(cubeid) != m_objects.end())
+        if(m_objects.find(objid) != m_objects.end())
         {
-            auto rectangle = m_objects[cubeid].get();
-            if(Cube* c = dynamic_cast<Cube*>(rectangle))
+            auto object = m_objects[objid].get();
+            if(Object3D* o = dynamic_cast<Object3D*>(object))
             {
-                c->SetPos(position);
+                o->SetPos(position);
                 return true;
             }
         }
         return false;
+    }
+
+    int World::CreateCustomObject(ModelData *model, const std::string &shaderName, Transform &transform)
+    {
+        if(m_type == WorldType::Relief)
+        {
+            m_objects[m_count] = std::make_shared<Object3D>(m_shaders[shaderName], model, transform);
+            return m_count++;
+        }
+        else
+        {
+            return INVALID_OBJECT_ID;
+        }
     }
 }

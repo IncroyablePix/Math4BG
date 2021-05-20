@@ -18,6 +18,7 @@
 #include "../View/Window.h"
 #include "../View/Renderer/3D/Shaders/Shader.h"
 #include "../Physics/Transform.h"
+#include "../IO/ModelData.h"
 
 #define INVALID_OBJECT_ID               (-1)
 
@@ -56,7 +57,9 @@ namespace Math4BG
         void SetBackgroundColor(unsigned int color);
 
         int CreateCube(const std::string &shaderName, Transform& transform);
-        bool SetCubePos(int cubeid, const glm::vec3 &position);
+        bool SetObjectPos(int objid, const glm::vec3 &position);
+
+        int CreateCustomObject(ModelData* model, const std::string &shaderName, Transform& transform);
 
     private:
         std::unique_ptr<MainCamera> m_camera;

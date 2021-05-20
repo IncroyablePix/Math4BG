@@ -8,6 +8,7 @@
 #include "../Input/MouseInput.h"
 #include "../Input/KeyInput.h"
 #include "../Transformers/Interpreter/JavascriptInterpreter.h"
+#include "../IO/OBJLoader.h"
 
 namespace Math4BG
 {
@@ -25,6 +26,10 @@ namespace Math4BG
 
         m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
         m_interpreter->ExecuteFile(config.scriptFile);
+
+        /*auto loader = OBJLoader();
+        ModelData data = loader.LoadModel("models/suzanne.obj");
+        std::cout << data << std::endl;*/
     }
 
     Application::~Application()
@@ -106,7 +111,8 @@ namespace Math4BG
             it = m_contexts->Begin();
             for (; it != itEnd; it++)
             {
-                it->second->Draw();
+                if(it->second)
+                    it->second->Draw();
             }
 
             fps++;
@@ -117,8 +123,10 @@ namespace Math4BG
 
                 it = m_contexts->Begin();
                 for (; it != itEnd; it++)
-                    it->second->SetFPS(fps);
-
+                {
+                    if(it->second)
+                        it->second->SetFPS(fps);
+                }
                 fps = 0;
             }
 

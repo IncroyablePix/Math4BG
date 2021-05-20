@@ -10,13 +10,13 @@
 namespace Math4BG
 {
     IndexBuffer::IndexBuffer(const IndexBufferContainer& ibc) :
-    m_count(ibc.count)
+    m_count(ibc.Entries())
     {
         ASSERT(sizeof(unsigned int) == sizeof(GLuint));
 
         GLCall(glGenBuffers(1, &m_rendererId));
         (glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId));
-        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibc.count * sizeof(unsigned int), ibc.indices, GL_STATIC_DRAW));
+        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibc.GetSize(), ibc.Data(), GL_STATIC_DRAW));
     }
 
     IndexBuffer::~IndexBuffer()

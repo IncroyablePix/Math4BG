@@ -8,24 +8,12 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <string>
+#include <iostream>
+#include "../View/Renderer/3D/Renderer3D.h"
+#include "../IO/ModelData.h"
 
 namespace Math4BG
 {
-    enum DataType : int32_t
-    {
-        NoData = -1,
-        Vertex = 0,
-        UV = 1,
-        Normals = 2
-    };
-
-    struct ModelData
-    {
-        std::vector<glm::vec3> outVertices;
-        std::vector<glm::vec2> outUVs;
-        std::vector<glm::vec3> outNormals;
-    };
-
     class IModelLoader
     {
     public:

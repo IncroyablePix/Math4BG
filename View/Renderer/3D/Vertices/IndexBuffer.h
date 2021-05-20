@@ -6,6 +6,7 @@
 #define MATH4BG_INDEXBUFFER_H
 
 #include <iostream>
+#include <vector>
 #include <memory>
 #include <glm/glm.hpp>
 #include "../../../../Physics/Transform.h"
@@ -14,35 +15,39 @@ namespace Math4BG
 {
     struct IndexBufferContainer
     {
-        unsigned int* indices;
-        int count;
-
-        ~IndexBufferContainer()
+        IndexBufferContainer() = default;
+        IndexBufferContainer(const unsigned int* indices, unsigned int len)
         {
-            delete[] indices;
+            for(int i = 0; i < len; i ++)
+                vertices.push_back(indices[i]);
         }
+
+        std::vector<unsigned int> vertices;
+
+        /*unsigned int* indices;
+        int count;*/
+
+        inline void Push(const unsigned int i) { vertices.push_back(i); }
+        inline void Push(const unsigned int i1, const unsigned int i2, const unsigned int i3) { vertices.push_back(i1); vertices.push_back(i2); vertices.push_back(i3); }
+        inline const unsigned int* Data() const { return vertices.data(); }
+        inline unsigned int Entries() const { return vertices.size(); }
+        inline unsigned int GetSize() const { return sizeof(unsigned int) * vertices.size(); }
     };
 
     struct VerticesContainer
     {
-        float *ptrData;
-        unsigned int entries;
-        unsigned int size;
-
-        inline void ApplyTransform(const Transform& transform)
+        VerticesContainer() = default;
+        VerticesContainer(const float *array, unsigned int len)
         {
-            for(int i = 0; i < entries * 3; i += 3) {
-                std::cout << "BEF: " << ptrData[i] << ", " << ptrData[i + 1] << ", " << ptrData[i + 2] << std::endl;
-                (ptrData[i]) += transform.Position.x;
-                ptrData[i + 1] += transform.Position.y;
-                ptrData[i + 2] += transform.Position.z;
-            }
+            for(int i = 0; i < len; i ++)
+                vertices.push_back(array[i]);
         }
 
-        ~VerticesContainer()
-        {
-            delete[] ptrData;
-        }
+        std::vector<float> vertices;
+
+        inline void Push(const glm::vec3 &v3) { vertices.push_back(v3.x); vertices.push_back(v3.y); vertices.push_back(v3.z); }
+        inline float* Data() { return vertices.data(); }
+        inline unsigned int GetSize() const { return sizeof(float) * vertices.size(); }
     };
 
     class IndexBuffer : public std::enable_shared_from_this<IndexBuffer>

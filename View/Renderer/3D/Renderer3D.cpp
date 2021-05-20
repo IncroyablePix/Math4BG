@@ -20,7 +20,7 @@ namespace Math4BG
             m_glContext(SDL_GL_CreateContext(window)),
             m_window(window)
     {
-        //glEnable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
         //glEnable(GL_CULL_FACE);
 
@@ -56,7 +56,7 @@ namespace Math4BG
     {
         glClearColor(Col(m_background.r), Col(m_background.g), Col(m_background.b), Col(m_background.a));
         glClearDepth(1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     float Renderer3D::Col(uint32_t color)

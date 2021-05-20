@@ -64,11 +64,24 @@ namespace Math4BG
 
     std::shared_ptr<Shader> Shader::CreateShader(ShaderProgramSource source)
     {
+        bool geometry;
         unsigned int shaderProgram = glCreateProgram();
-        unsigned int vertexShader = CompileShader(GL_VERTEX_SHADER, source.vertexShaderSource);
-        unsigned int fragmentShader = CompileShader(GL_FRAGMENT_SHADER, source.fragmentShaderSource);
+        unsigned int vertexShader;
+        unsigned int geometryShader;
+        unsigned int fragmentShader;
+        vertexShader = CompileShader(GL_VERTEX_SHADER, source.vertexShaderSource);
+
+        if(source.geometry)
+            geometryShader = CompileShader(GL_GEOMETRY_SHADER, source.geometryShaderSource);
+
+        fragmentShader = CompileShader(GL_FRAGMENT_SHADER, source.fragmentShaderSource);
 
         GLCall(glAttachShader(shaderProgram, vertexShader));
+        if(source.geometry)
+        {
+            GLCall(glAttachShader(shaderProgram, geometryShader));
+        }
+
         GLCall(glAttachShader(shaderProgram, fragmentShader));
         GLCall(glLinkProgram(shaderProgram));
         GLCall(glValidateProgram(shaderProgram));

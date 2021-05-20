@@ -4,6 +4,7 @@
 
 #include <stdexcept>
 #include "Contexts.h"
+#include "../IO/OBJLoader.h"
 
 
 namespace Math4BG
@@ -42,6 +43,14 @@ namespace Math4BG
         return m_contexts[index];
     }
 
+    ModelData *Contexts::operator[](const std::string &name)
+    {
+        if(!ModelExists(name))
+            return nullptr;
+
+        return &m_models[name];
+    }
+
     int Contexts::CreateContext(const WindowInfo &info, WorldType type)
     {
         Context* context = new Context(info, type);
@@ -55,5 +64,20 @@ namespace Math4BG
     std::shared_ptr<Contexts> Contexts::Create()
     {
         return std::shared_ptr<Contexts>(static_cast<Contexts *>(new Contexts()));
+    }
+
+    bool Contexts::LoadModel(const std::string &path, const std::string &name)
+    {
+        //return std::shared_ptr<IRenderer>(Renderer3D::Create(window, width, height));
+        if(path.substr(path.size() - 4, 4) == ".obj")
+        {
+            OBJLoader loader;
+            ModelData model = loader.LoadModel(path);
+
+            m_models[name] = model;
+            return true;
+        }
+
+        return false;
     }
 }

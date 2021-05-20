@@ -6,8 +6,8 @@
 #define ARCPOSITION_LUAINTERPRETER_H
 
 #include <memory>
-#include "../World.h"
 #include "../Contexts.h"
+#include "../World.h"
 #include "../../Output/IOutput.h"
 #include "ILanInterpreter.h"
 /**
@@ -49,6 +49,7 @@ namespace Math4BG
         int SetBackgroundColor(lua_State *L);
 
         int CreateShader(lua_State *L);
+        int CreateModel(lua_State *L);
 
         //---
 
@@ -73,7 +74,10 @@ namespace Math4BG
         //---
 
         int CreateCube(lua_State *L);
-        int SetCubePos(lua_State *L);
+        int SetObjectPos(lua_State *L);
+
+        int CreateCustomObject(lua_State *L);
+
 
         static std::shared_ptr<LuaInterpreter> Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output);
 

@@ -19,6 +19,10 @@ namespace Math4BG
 
     struct ShaderProgramSource
     {
+        bool vertex;
+        bool geometry;
+        bool fragment;
+
         std::string vertexShaderSource;
         std::string geometryShaderSource;
         std::string fragmentShaderSource;
