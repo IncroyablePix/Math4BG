@@ -24,11 +24,11 @@ namespace Math4BG
             if (line.find("#shader") != std::string::npos)
             {
                 if (line.find("vertex") != std::string::npos)
-                    type = ShaderType::Vertex;
+                    type = ShaderType::VertexShader;
                 else if(line.find("geometry") != std::string::npos)
-                    type = ShaderType::Geometry;
+                    type = ShaderType::GeometryShader;
                 else if (line.find("fragment") != std::string::npos)
-                    type = ShaderType::Fragment;
+                    type = ShaderType::FragmentShader;
 
                 shaderFound[type] = true;
             } else
@@ -56,13 +56,13 @@ namespace Math4BG
 
         switch(type)
         {
-            case Vertex:
+            case VertexShader:
                 source.vertexShaderSource = ss.str();
                 break;
-            case Geometry:
+            case GeometryShader:
                 source.geometryShaderSource = ss.str();
                 break;
-            case Fragment:
+            case FragmentShader:
                 source.fragmentShaderSource = ss.str();
                 break;
         }
@@ -72,9 +72,9 @@ namespace Math4BG
     {
         ShaderProgramSource source;
 
-        ReadShaderSource(vshpath, source, Vertex);
-        ReadShaderSource(gshpath, source, Geometry);
-        ReadShaderSource(fshpath, source, Fragment);
+        ReadShaderSource(vshpath, source, VertexShader);
+        ReadShaderSource(gshpath, source, GeometryShader);
+        ReadShaderSource(fshpath, source, FragmentShader);
 
         return source;
     }

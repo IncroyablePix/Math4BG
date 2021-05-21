@@ -17,6 +17,15 @@ namespace Math4BG
     ModelData OBJLoader::LoadModel(const std::string &path)
     {
         ModelData data = { };
+
+        std::vector<unsigned int> outUVIndices;
+        std::vector<unsigned int> outNormalIndices;
+
+        std::vector<glm::vec2> outUVs;
+        std::vector<glm::vec3> outNormals;
+
+        std::vector<glm::fvec3> vc;
+
         std::ifstream stream(path);
         std::string line;
         std::stringstream ss;
@@ -29,40 +38,73 @@ namespace Math4BG
             ss >> prefix;
 
             if(prefix == "v")
-                ReadVertexLine(ss, data);
+                ReadVertexLine(ss, vc);
             else if(prefix == "vt")
-                ReadUVLine(ss, data);
+                ReadUVLine(ss, outUVs);
             else if(prefix == "vn")
-                ReadNormalsLine(ss, data);
+                ReadNormalsLine(ss, outNormals);
             else if(prefix == "f")
-                ReadIndicesLine(ss, data);
+                ReadIndicesLine(ss, data, outUVIndices, outNormalIndices);
         }
+
+        //std::cout << "Vertices count " << data.vc.size() << std::endl;
+
+        /*data.vertices.resize(data.vc.size(), Vertex());
+
+        for(int i = 0; i < data.vertices.size(); i ++)
+        {
+            std::cout << i << " - (" << data.vc[i].x << ", " << data.vc[i].y << ", " << data.vc[i].z << ") - (" <<
+            data.outUVs[i].x << ", " << data.outUVs[i].y << ") - (" <<
+            data.outNormals[i].x << ", " << data.outNormals[i].y << ", " << data.outNormals[i].z << ")" << std::endl;
+
+            data.vertices[i].position = data.vc[i];
+            data.vertices[i].texcoord = data.outUVs[i];
+            data.vertices[i].normal = data.outNormals[i];
+            data.vertices[i].col = glm::vec3(1.0f, 1.0f, 1.0f);
+        }*/
+        data.vertices.resize(data.ibc.Entries(), Vertex());
+
+        for(int i = 0; i < data.vertices.size(); i ++)
+        {
+            data.vertices[i].position = vc[data.ibc.vertices[i]];
+            data.vertices[i].texcoord = outUVs[outUVIndices[i]];
+            data.vertices[i].normal = outNormals[outNormalIndices[i]];
+            data.vertices[i].col = glm::vec3(1.0f, 1.0f, 1.0f);
+        }
+
+        //data.ibc.vertices.clear();
+
+
+        /*for(int i = 0; i < vertices.size(); i ++)
+        {
+            std::cout << v
+        }*/
 
         return data;
     }
 
-    void OBJLoader::ReadVertexLine(std::stringstream &line, ModelData &data)
+    void OBJLoader::ReadVertexLine(std::stringstream &line, std::vector<glm::fvec3> &vc)
     {
         glm::vec3 vertex;
         line >> vertex.x >> vertex.y >> vertex.z;
-        data.vc.Push(vertex);
+        vc.push_back(vertex);
     }
 
-    void OBJLoader::ReadUVLine(std::stringstream &line, ModelData &data)
+    void OBJLoader::ReadUVLine(std::stringstream &line, std::vector<glm::vec2> &outUVs)
     {
         glm::vec2 uv;
         line >> uv.x >> uv.y;
-        data.outUVs.push_back(uv);
+        outUVs.push_back(uv);
     }
 
-    void OBJLoader::ReadNormalsLine(std::stringstream &line, ModelData &data)
+    void OBJLoader::ReadNormalsLine(std::stringstream &line, std::vector<glm::vec3> &outNormals)
     {
         glm::vec3 vertex;
         line >> vertex.x >> vertex.y >> vertex.z;
-        data.outNormals.push_back(vertex);
+        outNormals.push_back(vertex);
     }
 
-    void OBJLoader::ReadIndicesLine(std::stringstream &line, ModelData &data)
+    void OBJLoader::ReadIndicesLine(std::stringstream &line, ModelData &data, std::vector<unsigned int> &outUVIndices, std::vector<unsigned int> &outNormalIndices)
     {
         int i = 0;
         unsigned int tempUInt;
@@ -75,10 +117,10 @@ namespace Math4BG
                     data.ibc.Push(tempUInt - 1);
                     break;
                 case 1:
-                    data.outUVIndices.push_back(tempUInt - 1);
+                    outUVIndices.push_back(tempUInt);
                     break;
                 case 2:
-                    data.outNormalIndices.push_back(tempUInt - 1);
+                    outNormalIndices.push_back(tempUInt);
                     break;
             }
 

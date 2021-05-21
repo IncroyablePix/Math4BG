@@ -13,7 +13,7 @@
 
 namespace Math4BG
 {
-    class VertexBufferLayout; // Forward to avoid cyclic include
+    class VertexBufferLayout; // Forward to avoid cyclic inclusion
     class VertexArray : public std::enable_shared_from_this<VertexArray>
     {
     public:
@@ -28,7 +28,7 @@ namespace Math4BG
         void Unbind() const;
 
     private:
-        unsigned int m_rendererID{};
+        unsigned int m_rendererID { };
     };
 }
 

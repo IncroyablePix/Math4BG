@@ -54,3 +54,4 @@ As the 3D is not currently well developped, it has no real point to go further o
 ## Thanks to :
 TheCherno for his OpenGL tutorial.
 The-One-Who-Does-Not-Want-To-Be-Mentionned who helped me out testing on different machines.
+Maxime De Rycke for giving the wonderful name of "Math4BG"

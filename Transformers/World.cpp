@@ -287,6 +287,48 @@ namespace Math4BG
         return false;
     }
 
+    bool World::SetObjectOrigin(int objid, const glm::vec3 &position)
+    {
+        if(m_objects.find(objid) != m_objects.end())
+        {
+            auto object = m_objects[objid].get();
+            if(Object3D* o = dynamic_cast<Object3D*>(object))
+            {
+                o->SetOrigin(position);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool World::SetObjectRot(int objid, const glm::vec3 &rot)
+    {
+        if(m_objects.find(objid) != m_objects.end())
+        {
+            auto object = m_objects[objid].get();
+            if(Object3D* o = dynamic_cast<Object3D*>(object))
+            {
+                o->SetRotation(rot);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool World::SetObjectScale(int objid, const glm::vec3 &scale)
+    {
+        if(m_objects.find(objid) != m_objects.end())
+        {
+            auto object = m_objects[objid].get();
+            if(Object3D* o = dynamic_cast<Object3D*>(object))
+            {
+                o->SetScale(scale);
+                return true;
+            }
+        }
+        return false;
+    }
+
     int World::CreateCustomObject(ModelData *model, const std::string &shaderName, Transform &transform)
     {
         if(m_type == WorldType::Relief)

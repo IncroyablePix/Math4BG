@@ -58,6 +58,10 @@ namespace Math4BG
 
         int CreateCube(const std::string &shaderName, Transform& transform);
         bool SetObjectPos(int objid, const glm::vec3 &position);
+        bool SetObjectPosOrigin(int objid, const glm::vec3 &position);
+        bool SetObjectOrigin(int objid, const glm::vec3 &position);
+        bool SetObjectRot(int objid, const glm::vec3 &rot);
+        bool SetObjectScale(int objid, const glm::vec3 &scale);
 
         int CreateCustomObject(ModelData* model, const std::string &shaderName, Transform& transform);
 

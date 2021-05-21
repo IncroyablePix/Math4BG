@@ -53,6 +53,10 @@ namespace Math4BG
 
         //---
 
+        int GetMillis(lua_State *L);
+
+        //---
+
         int CreateCircle(lua_State *L);
         int SetCirclePos(lua_State *L);
         int SetCircleSize(lua_State *L);
@@ -75,6 +79,10 @@ namespace Math4BG
 
         int CreateCube(lua_State *L);
         int SetObjectPos(lua_State *L);
+        int SetObjectPosOrigin(lua_State *L);
+        int SetObjectOrigin(lua_State *L);
+        int SetObjectRot(lua_State *L);
+        int SetObjectScale(lua_State *L);
 
         int CreateCustomObject(lua_State *L);
 

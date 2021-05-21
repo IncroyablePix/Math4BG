@@ -8,39 +8,11 @@
 
 namespace Math4BG
 {
-    Object3D::Object3D(std::shared_ptr<Shader> shader, const IndexBufferContainer &ibc, VerticesContainer &vc, const Transform &transform) :
-            m_va(std::make_unique<VertexArray>()),
-            m_vb(std::make_unique<VertexBuffer>()),
-            m_vbl(std::make_unique<VertexBufferLayout>()),
-            m_shader(shader),
-            m_transform(transform)
-    {
-        m_va->Bind();
-        m_vb->Add(vc.Data(), vc.GetSize());
-        m_vb->Push();
-
-        m_vbl->Push<float>(3);
-        m_va->AddBuffer(*m_vb, *m_vbl);
-
-        m_ib = std::make_unique<IndexBuffer>(ibc);
-    }
-
     Object3D::Object3D(std::shared_ptr<Shader> shader, ModelData *model, const Transform &transform) :
-        m_va(std::make_unique<VertexArray>()),
-        m_vb(std::make_unique<VertexBuffer>()),
-        m_vbl(std::make_unique<VertexBufferLayout>()),
-
         m_shader(shader),
         m_transform(transform)
     {
-        m_va->Bind();
-        m_vb->Add(model->vc.Data(), model->vc.GetSize());
-        m_vb->Push();
-
-        m_vbl->Push<float>(3);
-        m_va->AddBuffer(*m_vb, *m_vbl);
-
-        m_ib = std::make_unique<IndexBuffer>(model->ibc);
+        m_meshes.push_back(std::make_unique<Mesh>((Vertex*) (model->vertices.data()), model->vertices.size(), model->ibc, transform));
     }
 
     Object3D::~Object3D()
@@ -50,33 +22,48 @@ namespace Math4BG
 
     void Object3D::Bind(MainCamera* camera) const
     {
-        m_shader->Bind();
+        for(auto& mesh : m_meshes)
+            mesh->Bind(camera, *m_shader);
 
-        /*m_shader->SetUniformMat4("projectionMatrix", camera->GetProjectionMatrix());// Projection perspective
-        m_shader->SetUniformMat4("modelViewMatrix", camera->GetModelViewMatrix());
-        m_shader->SetUniformMat4("normalMatrix", camera->GetNormalMatrix());*/
-
-        m_shader->SetUniformMat4("MVP", camera->GetMVP());
-        m_shader->SetUniformVec3("Position", m_transform.Position);
-
-        m_va->Bind();
-        m_ib->Bind();
-
-        glDrawElements(GL_TRIANGLES, m_ib->GetCount(), GL_UNSIGNED_INT, nullptr);
-
-        Unbind();
     }
 
     void Object3D::Unbind() const
     {
-        m_va->Unbind();
-        m_vb->Unbind();
-        m_ib->Unbind();
-        m_shader->Unbind();
     }
 
     void Object3D::SetPos(const glm::vec3 position)
     {
         m_transform.Position = position;
+
+        //---TODO : Set as an overlay
+        for(auto& mesh : m_meshes)
+            mesh->SetPos(position);
+    }
+
+    void Object3D::SetOrigin(const glm::vec3 position)
+    {
+        m_transform.Origin = position;
+
+        //---TODO : Set as an overlay
+        for(auto& mesh : m_meshes)
+            mesh->SetOrigin(position);
+    }
+
+    void Object3D::SetRotation(const glm::vec3 rotation)
+    {
+        m_transform.Rotation = rotation;
+
+        //---TODO : Set as an overlay
+        for(auto& mesh : m_meshes)
+            mesh->SetRotation(rotation);
+    }
+
+    void Object3D::SetScale(const glm::vec3 scale)
+    {
+        m_transform.Scale = scale;
+
+        //---TODO : Set as an overlay
+        for(auto& mesh : m_meshes)
+            mesh->SetScale(scale);
     }
 }

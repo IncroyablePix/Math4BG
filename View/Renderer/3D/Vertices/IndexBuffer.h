@@ -10,6 +10,7 @@
 #include <memory>
 #include <glm/glm.hpp>
 #include "../../../../Physics/Transform.h"
+#include "Vertex.h"
 
 namespace Math4BG
 {
@@ -48,6 +49,14 @@ namespace Math4BG
         inline void Push(const glm::vec3 &v3) { vertices.push_back(v3.x); vertices.push_back(v3.y); vertices.push_back(v3.z); }
         inline float* Data() { return vertices.data(); }
         inline unsigned int GetSize() const { return sizeof(float) * vertices.size(); }
+    };
+
+    struct PackedVerticesContainer
+    {
+        PackedVerticesContainer() = default;
+
+        std::vector<Vertex> vertices;
+
     };
 
     class IndexBuffer : public std::enable_shared_from_this<IndexBuffer>

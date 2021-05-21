@@ -23,6 +23,7 @@ namespace Math4BG {
     {
         UpdatePosition();
         UpdateView();
+        UpdateDirection();
     }
 
     const glm::mat4 MainCamera::GetProjectionMatrix()
@@ -43,12 +44,12 @@ namespace Math4BG {
 
     const glm::mat4 MainCamera::GetMVP()
     {
-        //return glm::lookAt(m_eye, m_view, m_up);
         return GetProjectionMatrix() * GetView() * glm::mat4(1.0f);
     }
 
-    glm::mat4 MainCamera::GetView() {
-        return glm::lookAt(m_eye, m_view, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 MainCamera::GetView()
+    {
+        return glm::lookAt(m_eye, m_eye + m_forward, m_up);
     }
 
     void MainCamera::UpdatePosition()
@@ -74,14 +75,14 @@ namespace Math4BG {
     {
         m_eye = CalculatePosition();
 
-        glm::quat orientation = m_direction;
+        glm::quat orientation = m_forward;
         m_viewMatrix = glm::translate(glm::mat4(1.0f), m_eye) * glm::toMat4(orientation);
         m_viewMatrix = glm::inverse(m_viewMatrix);
     }
 
     glm::vec3 MainCamera::CalculatePosition() const
     {
-        return (m_focalPoint - (Forward() * m_distance));
+        return (m_focalPoint - (m_forward * m_distance));
     }
 
     void MainCamera::Move(glm::vec3 direction, float fBy)
@@ -90,28 +91,28 @@ namespace Math4BG {
 
         m_eye += direction;
         m_view += direction;
-        //UpdatePosition();
-    }
-
-    float RadToDeg(float rad)
-    {
-        return rad * (180 / 3.14f);
     }
 
     void MainCamera::Update(double lag)
     {
         if(Mouse.Down(MouseButton::LMB))
         {
-            //std::cout << "Mouse delta : " << Mouse.DeltaPosition().x << ", " << Mouse.DeltaPosition().x << std::endl;
+            m_horizontalAngle += lag * m_speed * 2 * static_cast<float>(Mouse.DeltaPosition().x);
+            m_verticalAngle -= lag * m_speed * 2 * static_cast<float>(Mouse.DeltaPosition().y);
 
-            m_horizontalAngle += (0.25f * lag * (-Mouse.DeltaPosition().x));
-            m_verticalAngle += (0.25f * lag * (-Mouse.DeltaPosition().y));
+            //---
 
-            m_direction = {cos(m_verticalAngle) * sin(m_horizontalAngle),
-                           sin(m_verticalAngle),
-                           cos(m_verticalAngle) * cos(m_horizontalAngle)};
+            if(m_verticalAngle > 80.0f)
+                m_verticalAngle = 80.0f;
+            else if(m_verticalAngle < -80.0f)
+                m_verticalAngle = -80.0f;
 
-            m_view += m_direction;
+            //---
+
+            if(m_horizontalAngle > 360.0f || m_horizontalAngle < -360.0f)
+                m_horizontalAngle = 0.0f;
+
+            UpdateDirection();
         }
 
         //---
@@ -119,20 +120,37 @@ namespace Math4BG {
         glm::vec3 dir = {0.0, 0.0, 0.0f};
 
         if(Keys.Down(KeyButton::Z))
-            dir += Forward();
+            dir += m_forward;
         if(Keys.Down(KeyButton::S))
-            dir = Backward();
+            dir += m_backward;
         if(Keys.Down(KeyButton::Q))
-            dir += Left();
+            dir += m_left;
         if(Keys.Down(KeyButton::D))
-            dir += Right();
-
-        //std::cout << "Pos : " << m_eye.x << ", " << m_eye.y << ", " << m_eye.z << std::endl;
-        /*std::cout << "Rot : " << RadToDeg(m_horizontalAngle) << ", " << RadToDeg(m_verticalAngle) << std::endl;
-        std::cout << "Dir : " << m_direction.x << ", " << m_direction.y << ", " << m_direction.z << std::endl;*/
+            dir += m_right;
 
         Move(dir * m_speed, lag);
+    }
 
-        //UpdateView();
+    void MainCamera::UpdateDirection()
+    {
+        const glm::vec3 top = glm::vec3(0.f, 1.f, 0.f);
+
+        m_forward =
+        {
+            cos(glm::radians(m_horizontalAngle) * cos(glm::radians(m_verticalAngle))),
+            sin(glm::radians(m_verticalAngle)),
+            sin(glm::radians(m_horizontalAngle)) * cos(glm::radians(m_verticalAngle))
+        };
+        m_forward = glm::normalize(m_forward);
+        m_backward = -m_forward;
+
+        //----
+
+        m_right = glm::normalize(glm::cross(m_forward, top));
+        m_left = -m_right;
+
+        //---
+
+        m_up = glm::normalize(glm::cross(m_right, m_forward));
     }
 }

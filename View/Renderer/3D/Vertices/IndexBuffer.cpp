@@ -15,7 +15,7 @@ namespace Math4BG
         ASSERT(sizeof(unsigned int) == sizeof(GLuint));
 
         GLCall(glGenBuffers(1, &m_rendererId));
-        (glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId));
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererId));
         GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibc.GetSize(), ibc.Data(), GL_STATIC_DRAW));
     }
 

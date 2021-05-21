@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <utility>
+#include <chrono>
 #include "LuaInterpreter.h"
 #include "../../Output/IOutput.h"
 
@@ -177,7 +178,12 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetRectangleColor", &dispatch<&LuaInterpreter::SetRectangleColor>);
 
         lua_register(m_luaState.get(), "CreateCube", &dispatch<&LuaInterpreter::CreateCube>);
+
         lua_register(m_luaState.get(), "SetObjectPos", &dispatch<&LuaInterpreter::SetObjectPos>);
+        lua_register(m_luaState.get(), "SetObjectPosOrigin", &dispatch<&LuaInterpreter::SetObjectPosOrigin>);
+        lua_register(m_luaState.get(), "SetObjectOrigin", &dispatch<&LuaInterpreter::SetObjectOrigin>);
+        lua_register(m_luaState.get(), "SetObjectRot", &dispatch<&LuaInterpreter::SetObjectRot>);
+        lua_register(m_luaState.get(), "SetObjectScale", &dispatch<&LuaInterpreter::SetObjectScale>);
 
         lua_register(m_luaState.get(), "CreateCustomObject", &dispatch<&LuaInterpreter::CreateCustomObject>);
 
@@ -186,6 +192,8 @@ namespace Math4BG
 
         lua_register(m_luaState.get(), "CreateWindow", &dispatch<&LuaInterpreter::CreateWindow>);
         lua_register(m_luaState.get(), "SetBackgroundColor", &dispatch<&LuaInterpreter::SetBackgroundColor>);
+
+        lua_register(m_luaState.get(), "GetMillis", &dispatch<&LuaInterpreter::GetMillis>);
     }
 
 /*void LuaInterpreter::SetWorld(std::shared_ptr<World> world)
@@ -224,6 +232,15 @@ namespace Math4BG
 
         lua_pushstring(L, name.c_str());
 
+        return 1;
+    }
+
+    int LuaInterpreter::GetMillis(lua_State *L)
+    {
+        std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+        auto now = ms.count();
+
+        lua_pushnumber(L, now);
         return 1;
     }
 
@@ -460,6 +477,78 @@ namespace Math4BG
         return 0;
     }
 
+    int LuaInterpreter::SetObjectRot(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        float x = (float) lua_tonumber(L, 2);
+        float y = (float) lua_tonumber(L, 3);
+        float z = (float) lua_tonumber(L, 4);
+
+        bool out = false;
+
+        if(m_contexts->GetWorldForId(id))
+            out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectRot(id, {x, y, z});
+
+        lua_pushboolean(L, out);
+
+        return 0;
+    }
+
+    int LuaInterpreter::SetObjectScale(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        float x = (float) lua_tonumber(L, 2);
+        float y = (float) lua_tonumber(L, 3);
+        float z = (float) lua_tonumber(L, 4);
+
+        bool out = false;
+
+        if(m_contexts->GetWorldForId(id))
+            out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectScale(id, {x, y, z});
+
+        lua_pushboolean(L, out);
+
+        return 0;
+    }
+
+    int LuaInterpreter::SetObjectPosOrigin(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        float x = (float) lua_tonumber(L, 2);
+        float y = (float) lua_tonumber(L, 3);
+        float z = (float) lua_tonumber(L, 4);
+
+        bool out = false;
+
+        if(m_contexts->GetWorldForId(id))
+        {
+            auto world = m_contexts->GetWorldForId(id)->GetWorld();
+            out = world->SetObjectPos(id, {x, y, z});
+            out = world->SetObjectOrigin(id, {x, y, z});
+        }
+
+        lua_pushboolean(L, out);
+
+        return 0;
+    }
+
+    int LuaInterpreter::SetObjectOrigin(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        float x = (float) lua_tonumber(L, 2);
+        float y = (float) lua_tonumber(L, 3);
+        float z = (float) lua_tonumber(L, 4);
+
+        bool out = false;
+
+        if(m_contexts->GetWorldForId(id))
+            out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectOrigin(id, {x, y, z});
+
+        lua_pushboolean(L, out);
+
+        return 0;
+    }
+
     std::shared_ptr<LuaInterpreter>LuaInterpreter::Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output)
     {
         return std::shared_ptr<LuaInterpreter>(static_cast<LuaInterpreter *>(new LuaInterpreter(context, output)));
@@ -475,7 +564,7 @@ namespace Math4BG
         float z = (float) lua_tonumber(L, 6);
 
         //unsigned int color = (unsigned int) lua_tonumber(L, 5);
-        Transform transform = {{x, y, z}};
+        Transform transform({ x, y, z }, { x, y, z }, { 0.0, 0.0, 0.0 }, {1.0f, 1.0f, 1.0f});
 
         int id = -1;
         if(m_contexts->ModelExists(modelName))

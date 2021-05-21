@@ -28,38 +28,30 @@ namespace Math4BG
 
         const glm::mat4 GetMVP() override;
 
-        /*inline glm::vec3 Forward() const
-        {
-            return m_view - m_eye;
-        }*/
-
-        inline glm::vec3 Up() const{ return glm::vec3(0.0f, 1.0f, 0.0f); } // y + 1 - UP
-        inline glm::vec3 Down() const{ return glm::vec3(0.0f, -1.0f, 0.0f); } // y - 1 - DOWN
-
-        inline glm::vec3 Right() const { return {sin(m_horizontalAngle - 3.14f / 2.0f), 0.0f, cos(m_horizontalAngle - 3.14f / 2.0f) }; }// z + 1 - FORWARD
-        inline glm::vec3 Left() const { return {sin(m_horizontalAngle + 3.14f / 2.0f), 0.0f, cos(m_horizontalAngle + 3.14f / 2.0f) }; }// z - 1 - BACKWARDS
-
-        inline glm::vec3 Forward() const { return m_direction; } // x - 1 - LEFT
-        inline glm::vec3 Backward() const { return -m_direction; } // x + 1 - RIGHT
+        glm::mat4 GetView();
 
     private:
+        //--- Directions ---//
+        glm::vec3 m_up;
+        glm::vec3 m_bottom;
+        glm::vec3 m_left;
+        glm::vec3 m_right;
+        glm::vec3 m_forward;
+        glm::vec3 m_backward;
+
         float m_speed = 5.0f;
 
-        float m_horizontalAngle = 3.14f; // pi
+        float m_horizontalAngle = 0.0f;
         float m_verticalAngle = 0.0f;
-
-        glm::vec3 m_direction = {cos(m_verticalAngle) * sin(m_horizontalAngle),
-                                   sin(m_verticalAngle),
-                                 cos(m_verticalAngle) * cos(m_horizontalAngle) };
 
         glm::vec3 m_eye;
         glm::vec3 m_view;
 
         glm::mat4 m_modelToCamera;
-        glm::mat4 GetView();
 
         void UpdatePosition();
 
+        void UpdateDirection();
 
         void UpdateProjection();
         void UpdateView();

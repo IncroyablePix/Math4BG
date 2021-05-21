@@ -12,33 +12,15 @@ namespace Math4BG
 {
     struct ModelData
     {
-        std::vector<unsigned int> outUVIndices;
-        std::vector<unsigned int> outNormalIndices;
-
-        std::vector<glm::vec2> outUVs;
-        std::vector<glm::vec3> outNormals;
-
-        VerticesContainer vc;
-        IndexBufferContainer ibc;
-
-        friend std::ostream& operator<<(std::ostream& out, ModelData& data)
+        ModelData() = default;
+        ModelData(std::vector<Vertex> &vertices, IndexBufferContainer& ibc) : vertices(vertices), ibc(ibc) { }
+        ModelData(Vertex *vertices, unsigned int len, IndexBufferContainer& ibc) : ibc(ibc)
         {
-            out << "UVs :" << std::endl;
-            for(auto v : data.outUVs)
-                out << v.x << ", " << v.y << std::endl;
-            out << "Normals :" << std::endl;
-            for(auto v : data.outNormals)
-                out << v.x << ", " << v.y << ", " << v.z << std::endl;
-
-            out << "UV indices :" << std::endl;
-            for(auto v : data.outUVIndices)
-                out << v << std::endl;
-            out << "Normals indices :" << std::endl;
-            for(auto v : data.outNormalIndices)
-                out << v << std::endl;
-
-            return out;
+            for(int i = 0; i < len; i ++)
+                this->vertices.push_back(vertices[i]);
         }
+        std::vector<Vertex> vertices;
+        IndexBufferContainer ibc;
     };
 }
 #endif //MATH4BG_MODELDATA_H
