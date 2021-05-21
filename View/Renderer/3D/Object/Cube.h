@@ -28,7 +28,6 @@ namespace Math4BG
                 {{-0.5f, -0.5f, -0.5f}, 	{0.f, 0.f, 1.f},	{1.f, 0.f},		{0.f, 0.f, -1.f}},
                 {{-0.5f, 0.5f, -0.5f},		{1.f, 1.f, 0.f},	{1.f, 1.f},		{0.f, 0.f, -1.f}}
         };
-        //inline static VerticesContainer cubeVc = { cubeVertices, 24 };
 
         inline static unsigned int verticesIndexes[] =
         {
@@ -36,39 +35,23 @@ namespace Math4BG
                 0, 2, 3,
 
                 7, 6, 1,
-                4, 5, 6,
+                0, 7, 1,
 
                 4, 5, 6,
                 4, 6, 7,
 
                 3, 2, 5,
-                3, 5, 4
-                /*0, 1, 2, // Face en face
-                2, 3, 0,
+                4, 3, 5,
 
-                0, 1, 4, // Face du bas
-                1, 4, 5,
-
-                3, 4, 7, // Face gauche
                 0, 3, 4,
+                0, 4, 7,
 
-                4, 5, 9, // Face arrière
-                6, 7, 4,
-
-                2, 3, 6, // Face du haut
-                3, 6, 7,
-
-                1, 2, 5, // Face droite
-                2, 5, 6*/
+                5, 2, 1,
+                6, 5, 1
         };
-        inline static IndexBufferContainer cubeIbc = { verticesIndexes, 24 };
+        inline static IndexBufferContainer cubeIbc = { verticesIndexes, 36 };
 
         inline static ModelData cubeModel { cubeVertices, 8, cubeIbc };
-        /*
-         *
-        std::vector<Vertex> vertices;
-        IndexBufferContainer ibc;
-         */
     };
 }
 

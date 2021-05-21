@@ -57,6 +57,7 @@ namespace Math4BG
         void SetBackgroundColor(unsigned int color);
 
         int CreateCube(const std::string &shaderName, Transform& transform);
+        int CreatePyramid(const std::string &shaderName, Transform &transform);
         bool SetObjectPos(int objid, const glm::vec3 &position);
         bool SetObjectPosOrigin(int objid, const glm::vec3 &position);
         bool SetObjectOrigin(int objid, const glm::vec3 &position);

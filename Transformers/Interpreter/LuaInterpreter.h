@@ -78,6 +78,7 @@ namespace Math4BG
         //---
 
         int CreateCube(lua_State *L);
+        int CreatePyramid(lua_State *L);
         int SetObjectPos(lua_State *L);
         int SetObjectPosOrigin(lua_State *L);
         int SetObjectOrigin(lua_State *L);

@@ -22,13 +22,10 @@ namespace Math4BG
     {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
-        //glEnable(GL_CULL_FACE);
-
-        /*glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
+        glEnable(GL_CULL_FACE);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glCullFace(GL_BACK);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
         GlewInitAttempt();
         glViewport(0, 0, width, height);

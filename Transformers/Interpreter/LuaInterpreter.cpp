@@ -178,6 +178,7 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetRectangleColor", &dispatch<&LuaInterpreter::SetRectangleColor>);
 
         lua_register(m_luaState.get(), "CreateCube", &dispatch<&LuaInterpreter::CreateCube>);
+        lua_register(m_luaState.get(), "CreatePyramid", &dispatch<&LuaInterpreter::CreatePyramid>);
 
         lua_register(m_luaState.get(), "SetObjectPos", &dispatch<&LuaInterpreter::SetObjectPos>);
         lua_register(m_luaState.get(), "SetObjectPosOrigin", &dispatch<&LuaInterpreter::SetObjectPosOrigin>);
@@ -454,6 +455,26 @@ namespace Math4BG
         int id = -1;
         if (m_contexts->ContextExists(contextid))
             id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(shaderName, transform);
+
+        lua_pushnumber(L, id);
+
+        return 1;
+    }
+
+    int LuaInterpreter::CreatePyramid(lua_State *L)
+    {
+        int contextid = (int) lua_tonumber(L, 1);
+        std::string shaderName = lua_tostring(L, 2);
+        float x = (float) lua_tonumber(L, 3);
+        float y = (float) lua_tonumber(L, 4);
+        float z = (float) lua_tonumber(L, 5);
+
+        //unsigned int color = (unsigned int) lua_tonumber(L, 5);
+        Transform transform = {{x, y, z}};
+
+        int id = -1;
+        if (m_contexts->ContextExists(contextid))
+            id = ((*m_contexts)[contextid])->GetWorld()->CreatePyramid(shaderName, transform);
 
         lua_pushnumber(L, id);
 

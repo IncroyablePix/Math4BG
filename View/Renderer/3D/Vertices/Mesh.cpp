@@ -12,7 +12,9 @@ namespace Math4BG
 
     m_va(std::make_unique<VertexArray>()),
     m_vb(std::make_unique<VertexBuffer>()),
-    m_vbl(std::make_unique<VertexBufferLayout>())
+    m_vbl(std::make_unique<VertexBufferLayout>()),
+    m_vertices(verticesSize),
+    m_indices(ibc.Entries())
     {
         std::cout << ibc.Entries() << " - " << ibc.GetSize() << std::endl;
         std::cout << sizeof(Vertex) << " - " << verticesSize << " - " << verticesSize * sizeof(Vertex) << std::endl;
@@ -27,9 +29,23 @@ namespace Math4BG
 
         m_va->AddBuffer(*m_vb, *m_vbl);
 
-        m_ib = std::make_unique<IndexBuffer>(ibc);
+        if(ibc.Entries() > 0)
+            m_ib = std::make_unique<IndexBuffer>(ibc);
 
         UpdateModelMatrix();
+
+
+        /*glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
+        glEnableVertexAttribArray(0);
+        //Color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, col));
+        glEnableVertexAttribArray(1);
+        //Texcoord
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
+        glEnableVertexAttribArray(2);
+        //Normal
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+        glEnableVertexAttribArray(3);*/
     }
 
     void Mesh::UpdateModelMatrix()
@@ -53,12 +69,17 @@ namespace Math4BG
         shader.SetUniformMat4("ModelMatrix", m_modelMatrix);
 
         m_va->Bind();
-        m_ib->Bind();
 
-        if(!m_ib->GetCount())
-            glDrawArrays(GL_TRIANGLES, 0, m_ib->GetCount());
+        if(m_indices > 0)
+            m_ib->Bind();
+
+        if(m_indices == 0)
+            glDrawArrays(GL_TRIANGLES, 0, m_vertices);
         else
             glDrawElements(GL_TRIANGLES, m_ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+
+        /*glActiveTexture(0);
+        glBindTexture(GL_TEXTURE_2D, 0);*/
 
         Unbind(shader);
     }
