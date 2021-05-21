@@ -19,6 +19,7 @@
 #include "../View/Renderer/3D/Shaders/Shader.h"
 #include "../Physics/Transform.h"
 #include "../IO/ModelData.h"
+#include "../View/Renderer/3D/Texture/Texture.h"
 
 #define INVALID_OBJECT_ID               (-1)
 
@@ -63,8 +64,10 @@ namespace Math4BG
         bool SetObjectOrigin(int objid, const glm::vec3 &position);
         bool SetObjectRot(int objid, const glm::vec3 &rot);
         bool SetObjectScale(int objid, const glm::vec3 &scale);
+        bool SetObjectTexture(int obj, std::shared_ptr<Texture> texture);
 
         int CreateCustomObject(ModelData* model, const std::string &shaderName, Transform& transform);
+
 
     private:
         std::unique_ptr<MainCamera> m_camera;

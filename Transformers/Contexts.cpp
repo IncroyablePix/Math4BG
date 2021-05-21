@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include "Contexts.h"
 #include "../IO/OBJLoader.h"
+#include "../Utils/FileSplit.h"
+#include "../View/Renderer/3D/Texture/BMPTexture.h"
 
 
 namespace Math4BG
@@ -66,10 +68,22 @@ namespace Math4BG
         return std::shared_ptr<Contexts>(static_cast<Contexts *>(new Contexts()));
     }
 
+    bool Contexts::LoadTexture(const std::string &path, const std::string &name)
+    {
+        FileSplit fileSplit(path);
+
+        if(fileSplit.fileExtension == "bmp")
+        {
+            std::shared_ptr<BMPTexture> texture = std::make_shared<BMPTexture>(path, GL_TEXTURE_2D);
+            m_textures[name] = texture;
+        }
+    }
+
     bool Contexts::LoadModel(const std::string &path, const std::string &name)
     {
+        FileSplit fileSplit(path);
         //return std::shared_ptr<IRenderer>(Renderer3D::Create(window, width, height));
-        if(path.substr(path.size() - 4, 4) == ".obj")
+        if(fileSplit.fileExtension == "obj")
         {
             OBJLoader loader;
             ModelData model = loader.LoadModel(path);

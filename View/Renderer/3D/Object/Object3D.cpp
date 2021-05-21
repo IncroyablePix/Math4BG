@@ -22,9 +22,18 @@ namespace Math4BG
 
     void Object3D::Bind(MainCamera* camera) const
     {
+        if(m_texture != nullptr)
+        {
+            m_texture->Bind(0);
+            m_texture->Bind(1);
+        }
+
+        //---
+
         for(auto& mesh : m_meshes)
             mesh->Bind(camera, *m_shader);
 
+        Unbind();
     }
 
     void Object3D::Unbind() const
@@ -65,5 +74,13 @@ namespace Math4BG
         //---TODO : Set as an overlay
         for(auto& mesh : m_meshes)
             mesh->SetScale(scale);
+    }
+
+    void Object3D::SetTexture(std::shared_ptr<Texture> texture)
+    {
+        m_texture = std::move(texture);
+        //---TODO : Set as an overlay
+        /*for(auto& mesh : m_meshes)
+            mesh->SetTexture(texture);*/
     }
 }

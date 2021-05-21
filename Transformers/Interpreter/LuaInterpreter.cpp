@@ -185,11 +185,13 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetObjectOrigin", &dispatch<&LuaInterpreter::SetObjectOrigin>);
         lua_register(m_luaState.get(), "SetObjectRot", &dispatch<&LuaInterpreter::SetObjectRot>);
         lua_register(m_luaState.get(), "SetObjectScale", &dispatch<&LuaInterpreter::SetObjectScale>);
+        lua_register(m_luaState.get(), "SetObjectTexture", &dispatch<&LuaInterpreter::SetObjectTexture>);
 
         lua_register(m_luaState.get(), "CreateCustomObject", &dispatch<&LuaInterpreter::CreateCustomObject>);
 
         lua_register(m_luaState.get(), "CreateShader", &dispatch<&LuaInterpreter::CreateShader>);
         lua_register(m_luaState.get(), "CreateModel", &dispatch<&LuaInterpreter::CreateModel>);
+        lua_register(m_luaState.get(), "CreateTexture", &dispatch<&LuaInterpreter::CreateTexture>);
 
         lua_register(m_luaState.get(), "CreateWindow", &dispatch<&LuaInterpreter::CreateWindow>);
         lua_register(m_luaState.get(), "SetBackgroundColor", &dispatch<&LuaInterpreter::SetBackgroundColor>);
@@ -232,6 +234,18 @@ namespace Math4BG
             name = ((*m_contexts)[contextid])->GetWorld()->CreateShader(file);
 
         lua_pushstring(L, name.c_str());
+
+        return 1;
+    }
+
+    int LuaInterpreter::CreateTexture(lua_State *L)
+    {
+        std::string file = lua_tostring(L, 1);
+        std::string name = lua_tostring(L, 2);
+
+        bool out = m_contexts->LoadTexture(file, name);
+
+        lua_pushboolean(L, out);
 
         return 1;
     }
@@ -495,7 +509,7 @@ namespace Math4BG
 
         lua_pushboolean(L, out);
 
-        return 0;
+        return 1;
     }
 
     int LuaInterpreter::SetObjectRot(lua_State *L)
@@ -512,7 +526,7 @@ namespace Math4BG
 
         lua_pushboolean(L, out);
 
-        return 0;
+        return 1;
     }
 
     int LuaInterpreter::SetObjectScale(lua_State *L)
@@ -529,7 +543,7 @@ namespace Math4BG
 
         lua_pushboolean(L, out);
 
-        return 0;
+        return 1;
     }
 
     int LuaInterpreter::SetObjectPosOrigin(lua_State *L)
@@ -550,7 +564,7 @@ namespace Math4BG
 
         lua_pushboolean(L, out);
 
-        return 0;
+        return 1;
     }
 
     int LuaInterpreter::SetObjectOrigin(lua_State *L)
@@ -567,7 +581,27 @@ namespace Math4BG
 
         lua_pushboolean(L, out);
 
-        return 0;
+        return 1;
+    }
+
+    int LuaInterpreter::SetObjectTexture(lua_State *L)
+    {
+        int id = (int) lua_tonumber(L, 1);
+        std::string name = lua_tostring(L, 2);
+
+        bool out = false;
+
+        if(m_contexts->ModelExists(name))
+        {
+            std::shared_ptr<Texture> texture = m_contexts->GetTextureByName(name);
+
+            if(m_contexts->GetWorldForId(id))
+                out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectTexture(id, texture);
+        }
+
+        lua_pushboolean(L, out);
+
+        return 1;
     }
 
     std::shared_ptr<LuaInterpreter>LuaInterpreter::Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output)

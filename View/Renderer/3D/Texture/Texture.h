@@ -1,0 +1,31 @@
+//
+// Created by Benjam on 22-05-21.
+//
+
+#ifndef MATH4BG_TEXTURE_H
+#define MATH4BG_TEXTURE_H
+
+#include <string>
+
+namespace Math4BG
+{
+    class Texture
+    {
+    public:
+        Texture(unsigned int type);
+        virtual ~Texture();
+
+        inline unsigned int GetId() { return m_id; }
+
+        void Bind(unsigned int textureUnit);
+        void Unbind();
+
+    protected:
+        unsigned m_id;
+        unsigned int m_type;
+        int m_width = 0;
+        int m_height = 0;
+    };
+}
+
+#endif //MATH4BG_TEXTURE_H

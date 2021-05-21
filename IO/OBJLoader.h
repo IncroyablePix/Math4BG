@@ -19,7 +19,7 @@ namespace Math4BG
         void ReadVertexLine(std::stringstream &line, std::vector<glm::fvec3> &vc);
         void ReadUVLine(std::stringstream &line, std::vector<glm::vec2> &outUVs);
         void ReadNormalsLine(std::stringstream &line, std::vector<glm::vec3> &outNormals);
-        void ReadIndicesLine(std::stringstream &line, ModelData &data, std::vector<unsigned int> &outUVIndices, std::vector<unsigned int> &outNormalIndices);
+        void ReadIndicesLine(std::stringstream &line, std::vector<unsigned int> &outVertexIndices, std::vector<unsigned int> &outUVIndices, std::vector<unsigned int> &outNormalIndices);
 
         /*template<typename T>
         inline void ReadVectorLine(const std::string &line, std::vector<T> vector, size_t vectorSize)

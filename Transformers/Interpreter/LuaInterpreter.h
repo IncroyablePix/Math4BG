@@ -49,6 +49,7 @@ namespace Math4BG
         int SetBackgroundColor(lua_State *L);
 
         int CreateShader(lua_State *L);
+        int CreateTexture(lua_State *L);
         int CreateModel(lua_State *L);
 
         //---
@@ -94,6 +95,8 @@ namespace Math4BG
         std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;
         bool CheckLua(int r);
         void ThrowLuaException();
+
+        int SetObjectTexture(lua_State *L);
     };
 
     typedef int (LuaInterpreter::*mem_func)(lua_State *L);

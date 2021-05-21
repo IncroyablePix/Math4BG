@@ -5,6 +5,7 @@
 #ifndef MATH4BG_OBJECT3D_H
 #define MATH4BG_OBJECT3D_H
 
+#include "../Texture/Texture.h"
 #include "../Vertices/Mesh.h"
 #include "../Vertices/VertexBufferLayout.h"
 #include "../Vertices/VertexBuffer.h"
@@ -37,8 +38,11 @@ namespace Math4BG
         void SetScale(const glm::vec3 scale);
         void SetRotation(const glm::vec3 rotation);
 
+        void SetTexture(std::shared_ptr<Texture> texture);
+
     private:
         Transform m_transform;
+        std::shared_ptr<Texture> m_texture;
 
         std::vector<std::unique_ptr<Mesh>> m_meshes;
         std::shared_ptr<Shader> m_shader;

@@ -26,10 +26,11 @@ namespace Math4BG
         m_vbl->Push<float>(3); // Color
         m_vbl->Push<float>(2); // Texture coords
         m_vbl->Push<float>(3); // Normals // TODO: Vérifier
+        //m_vbl->Push<float>(11);
 
         m_va->AddBuffer(*m_vb, *m_vbl);
 
-        if(ibc.Entries() > 0)
+        if(m_indices > 0)
             m_ib = std::make_unique<IndexBuffer>(ibc);
 
         UpdateModelMatrix();

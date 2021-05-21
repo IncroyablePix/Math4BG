@@ -18,6 +18,7 @@ namespace Math4BG
     {
         ModelData data = { };
 
+        std::vector<unsigned int> outVertexIndices;
         std::vector<unsigned int> outUVIndices;
         std::vector<unsigned int> outNormalIndices;
 
@@ -44,12 +45,28 @@ namespace Math4BG
             else if(prefix == "vn")
                 ReadNormalsLine(ss, outNormals);
             else if(prefix == "f")
-                ReadIndicesLine(ss, data, outUVIndices, outNormalIndices);
+                ReadIndicesLine(ss, outVertexIndices, outUVIndices, outNormalIndices);
+        }
+
+        for(int i = 0, j = outVertexIndices.size(); i < j; i ++)
+        {
+            Vertex vertex;
+
+            unsigned int vertexIndex = outVertexIndices[i];
+            unsigned int uvIndex = outUVIndices[i];
+            unsigned int normalIndex = outNormalIndices[i];
+
+            vertex.position = vc[vertexIndex];
+            vertex.texcoord = outUVs[uvIndex];
+            vertex.normal = outNormals[normalIndex];
+            vertex.col = glm::vec3(1.0f, 1.0f, 1.0f);
+
+            data.vertices.push_back(vertex);
         }
 
         //std::cout << "Vertices count " << data.vc.size() << std::endl;
 
-        data.vertices.resize(vc.size(), Vertex());
+        /*data.vertices.resize(vc.size(), Vertex());
 
         for(int i = 0; i < data.vertices.size(); i ++)
         {
@@ -57,7 +74,7 @@ namespace Math4BG
             data.vertices[i].texcoord = outUVs[i];
             data.vertices[i].normal = outNormals[i];
             data.vertices[i].col = glm::vec3(1.0f, 1.0f, 1.0f);
-        }
+        }*/
         /*data.vertices.resize(data.ibc.Entries(), Vertex());
 
         for(int i = 0; i < data.vertices.size(); i ++)
@@ -100,7 +117,7 @@ namespace Math4BG
         outNormals.push_back(vertex);
     }
 
-    void OBJLoader::ReadIndicesLine(std::stringstream &line, ModelData &data, std::vector<unsigned int> &outUVIndices, std::vector<unsigned int> &outNormalIndices)
+    void OBJLoader::ReadIndicesLine(std::stringstream &line, std::vector<unsigned int> &outVertexIndices, std::vector<unsigned int> &outUVIndices, std::vector<unsigned int> &outNormalIndices)
     {
         int i = 0;
         unsigned int tempUInt;
@@ -110,7 +127,7 @@ namespace Math4BG
             switch(i)
             {
                 case 0:
-                    data.ibc.Push(tempUInt - 1);
+                    outVertexIndices.push_back(tempUInt - 1);
                     break;
                 case 1:
                     outUVIndices.push_back(tempUInt - 1);

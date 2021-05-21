@@ -8,6 +8,7 @@
 #include "../Utils/FileSplit.h"
 #include "../View/Renderer/3D/Camera/MainCamera.h"
 #include "../View/Renderer/3D/Object/Pyramid.h"
+#include "../View/Renderer/3D/Texture/Texture.h"
 
 
 namespace Math4BG
@@ -337,6 +338,19 @@ namespace Math4BG
             if(Object3D* o = dynamic_cast<Object3D*>(object))
             {
                 o->SetScale(scale);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool World::SetObjectTexture(int objid, std::shared_ptr<Texture> texture)
+    {if(m_objects.find(objid) != m_objects.end())
+        {
+            auto object = m_objects[objid].get();
+            if(Object3D* o = dynamic_cast<Object3D*>(object))
+            {
+                o->SetTexture(texture);
                 return true;
             }
         }
