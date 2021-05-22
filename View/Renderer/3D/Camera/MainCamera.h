@@ -30,6 +30,8 @@ namespace Math4BG
 
         glm::mat4 GetView();
 
+        const glm::vec3 &GetPos();
+
     private:
         //--- Directions ---//
         glm::vec3 m_up;

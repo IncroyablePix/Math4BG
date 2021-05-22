@@ -22,16 +22,18 @@ namespace Math4BG
 
     void Object3D::Bind(MainCamera* camera) const
     {
+        bool hasTexture = false;
         if(m_texture != nullptr)
         {
             m_texture->Bind(0);
             m_texture->Bind(1);
+            hasTexture = true;
         }
 
         //---
 
         for(auto& mesh : m_meshes)
-            mesh->Bind(camera, *m_shader);
+            mesh->Bind(camera, *m_shader, hasTexture, m_color);
 
         Unbind();
     }
@@ -82,5 +84,10 @@ namespace Math4BG
         //---TODO : Set as an overlay
         /*for(auto& mesh : m_meshes)
             mesh->SetTexture(texture);*/
+    }
+
+    void Object3D::SetColor(const glm::vec4 &color)
+    {
+        m_color = color;
     }
 }

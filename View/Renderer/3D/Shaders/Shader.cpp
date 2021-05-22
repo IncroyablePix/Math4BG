@@ -4,6 +4,7 @@
 
 #define GLEW_STATIC
 #include <GL/glew.h>
+#include <glm/glm.hpp>
 #include <iostream>
 #include "Shader.h"
 #include "../GL/GLMacros.h"
@@ -11,43 +12,6 @@
 
 namespace Math4BG
 {
-    /*Shader Basic = *Shader::CreateShader(
-{
-        "#version 330 core\n"
-        "layout(location = 0) in vec3 inPosition;\n"
-        "layout(location = 1) in vec2 inCoord;\n"
-        "layout(location = 2) in vec3 inNormal;\n"
-        "\n"
-        "out vec2 texCoord;\n"
-        "smooth out vec3 vNormal;\n"
-        "\n"
-        "uniform mat4 projectionMatrix;\n"
-        "uniform mat4 normalMatrix;\n"
-        "uniform mat4 modelViewMatrix;\n"
-        "\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = projectionMatrix * modelViewMatrix * vec4(inPosition, 1.0);\n"
-        "    texCoord = inCoord;\n"
-        "    vec4 vRes = normalMatrix * vec4(inNormal, 0.0);\n"
-        "    vNormal = vRes.xyz;\n"
-        "}\n"
-        "\n",
-
-        "",
-
-        "#shader fragment\n"
-        "#version 330 core\n"
-        "layout(location = 0) out vec4 color;\n"
-        "\n"
-        "uniform vec4 vColor;\n"
-        "\n"
-        "void main()\n"
-        "{\n"
-        "    color = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-        "}"
-    });*/
-
     Shader::Shader(unsigned int rendererId) :
             m_rendererId(rendererId)
     {
@@ -157,9 +121,9 @@ namespace Math4BG
         GLCall(glUniform1f(GetUniformLocation(name), v))
     }
 
-    void Shader::SetUniformVec3(const std::string &name, glm::vec3 vec3)
+    void Shader::SetUniformVec3(const std::string &name, const glm::vec3 &v)
     {
-        GLCall(glUniform3fv(GetUniformLocation(name), 1, (GLfloat *) &vec3));
+        GLCall(glUniform3fv(GetUniformLocation(name), 1, &v[0]));
     }
 
     void Shader::SetUniformMat4(const std::string &name, glm::mat4 m)

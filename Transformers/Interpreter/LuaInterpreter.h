@@ -52,6 +52,10 @@ namespace Math4BG
         int CreateTexture(lua_State *L);
         int CreateModel(lua_State *L);
 
+        int CreatePointLight(lua_State *L);
+        int SetLightPos(lua_State *L);
+        int SetLightColor(lua_State *L);
+
         //---
 
         int GetMillis(lua_State *L);
@@ -80,6 +84,7 @@ namespace Math4BG
 
         int CreateCube(lua_State *L);
         int CreatePyramid(lua_State *L);
+        int SetObjectColor(lua_State *L);
         int SetObjectPos(lua_State *L);
         int SetObjectPosOrigin(lua_State *L);
         int SetObjectOrigin(lua_State *L);
@@ -97,6 +102,8 @@ namespace Math4BG
         void ThrowLuaException();
 
         int SetObjectTexture(lua_State *L);
+
+        static float Col(uint32_t color);
     };
 
     typedef int (LuaInterpreter::*mem_func)(lua_State *L);

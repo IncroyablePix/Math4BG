@@ -9,6 +9,7 @@
 #include "../View/Renderer/3D/Camera/MainCamera.h"
 #include "../View/Renderer/3D/Object/Pyramid.h"
 #include "../View/Renderer/3D/Texture/Texture.h"
+#include "../View/Renderer/3D/Light/PointLight.h"
 
 
 namespace Math4BG
@@ -154,6 +155,18 @@ namespace Math4BG
 
     void World::Draw(Window &window)
     {
+        if(m_type == WorldType::Relief)
+        {
+            for (std::pair<int, std::shared_ptr<Light>> light : m_lights)
+            {
+                for (std::pair<std::string, std::shared_ptr<Shader>> shader : m_shaders)
+                {
+                    shader.second->Bind();
+                    light.second->ToShader(*shader.second);
+                    shader.second->Unbind();
+                }
+            }
+        }
         //m_camera->Move(m_camera->Backward() + (m_camera->Left() * 0.5f), 0.05f); // Hardcoded
         //m_camera->Rotate({0.0, 0.01, 0.0});
         for(const auto& drawable : m_objects)
@@ -288,6 +301,20 @@ namespace Math4BG
         }
     }
 
+    bool World::SetObjectColor(int objid, const glm::vec4 &color)
+    {
+        if(m_objects.find(objid) != m_objects.end())
+        {
+            auto object = m_objects[objid].get();
+            if(Object3D* o = dynamic_cast<Object3D*>(object))
+            {
+                o->SetColor(color);
+                return true;
+            }
+        }
+        return false;
+    }
+
     bool World::SetObjectPos(int objid, const glm::vec3 &position)
     {
         if(m_objects.find(objid) != m_objects.end())
@@ -345,7 +372,8 @@ namespace Math4BG
     }
 
     bool World::SetObjectTexture(int objid, std::shared_ptr<Texture> texture)
-    {if(m_objects.find(objid) != m_objects.end())
+    {
+        if(m_objects.find(objid) != m_objects.end())
         {
             auto object = m_objects[objid].get();
             if(Object3D* o = dynamic_cast<Object3D*>(object))
@@ -368,5 +396,46 @@ namespace Math4BG
         {
             return INVALID_OBJECT_ID;
         }
+    }
+
+    int World::CreatePointLight(float intensity, const glm::vec3 &color, const Transform &transform)
+    {
+        if(m_type == WorldType::Relief)
+        {
+            m_lights[m_count] = std::make_shared<PointLight>(transform, intensity, color);
+            return m_count ++;
+        }
+        else
+        {
+            return INVALID_OBJECT_ID;
+        }
+    }
+
+    bool World::SetLightPos(int lightid, const glm::vec3 &position)
+    {
+        if(m_lights.find(lightid) != m_lights.end())
+        {
+            auto light = m_lights[lightid].get();
+            if(Light* l = dynamic_cast<Light*>(light))
+            {
+                l->SetPos(position);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool World::SetLightColor(int lightid, const glm::vec3 &color)
+    {
+        if(m_lights.find(lightid) != m_lights.end())
+        {
+            auto light = m_lights[lightid].get();
+            if(Light* l = dynamic_cast<Light*>(light))
+            {
+                l->SetColor(color);
+                return true;
+            }
+        }
+        return false;
     }
 }

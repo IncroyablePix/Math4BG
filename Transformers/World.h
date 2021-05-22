@@ -20,6 +20,7 @@
 #include "../Physics/Transform.h"
 #include "../IO/ModelData.h"
 #include "../View/Renderer/3D/Texture/Texture.h"
+#include "../View/Renderer/3D/Light/Light.h"
 
 #define INVALID_OBJECT_ID               (-1)
 
@@ -59,6 +60,7 @@ namespace Math4BG
 
         int CreateCube(const std::string &shaderName, Transform& transform);
         int CreatePyramid(const std::string &shaderName, Transform &transform);
+        bool SetObjectColor(int objid, const glm::vec4 &color);
         bool SetObjectPos(int objid, const glm::vec3 &position);
         bool SetObjectPosOrigin(int objid, const glm::vec3 &position);
         bool SetObjectOrigin(int objid, const glm::vec3 &position);
@@ -68,14 +70,18 @@ namespace Math4BG
 
         int CreateCustomObject(ModelData* model, const std::string &shaderName, Transform& transform);
 
+        int CreatePointLight(float intensity, const glm::vec3 &color, const Transform& transform);
+        bool SetLightPos(int lightid, const glm::vec3 &position);
+        bool SetLightColor(int lightid, const glm::vec3 &position);
+
 
     private:
         std::unique_ptr<MainCamera> m_camera;
         std::shared_ptr<IRenderer> m_renderer;
         WorldType m_type;
 
+        std::unordered_map<int, std::shared_ptr<Light>> m_lights;
         std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
-        //std::unordered_map<int, std::shared_ptr<Shader>> m_shaders;
         std::unordered_map<int, Circle> m_circles;
         std::unordered_map<int, Line> m_lines;
 
@@ -87,6 +93,7 @@ namespace Math4BG
         static inline bool instanceof(const T*) {
             return std::is_base_of<Base, T>::value;
         }
+
     };
 }
 

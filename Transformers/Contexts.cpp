@@ -76,7 +76,10 @@ namespace Math4BG
         {
             std::shared_ptr<BMPTexture> texture = std::make_shared<BMPTexture>(path, GL_TEXTURE_2D);
             m_textures[name] = texture;
+            return true;
         }
+
+        return false;
     }
 
     bool Contexts::LoadModel(const std::string &path, const std::string &name)

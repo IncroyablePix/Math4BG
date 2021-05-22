@@ -39,9 +39,11 @@ namespace Math4BG
         void SetRotation(const glm::vec3 rotation);
 
         void SetTexture(std::shared_ptr<Texture> texture);
+        void SetColor(const glm::vec4 &color);
 
     private:
         Transform m_transform;
+        glm::vec4 m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         std::shared_ptr<Texture> m_texture;
 
         std::vector<std::unique_ptr<Mesh>> m_meshes;

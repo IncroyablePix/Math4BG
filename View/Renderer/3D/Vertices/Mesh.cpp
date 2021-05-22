@@ -62,12 +62,15 @@ namespace Math4BG
         // TODO : Call from Object3D when model is updated
     }
 
-    void Mesh::Bind(MainCamera *camera, Shader& shader) const
+    void Mesh::Bind(MainCamera *camera, Shader& shader, bool hasTexture, const glm::vec4 &color) const
     {
         shader.Bind();
         shader.SetUniformMat4("ProjectionMatrix", camera->GetProjectionMatrix());
         shader.SetUniformMat4("ViewMatrix", camera->GetView());
         shader.SetUniformMat4("ModelMatrix", m_modelMatrix);
+        shader.SetUniformVec4("vColor", color);
+        shader.SetUniform1i("bTextureExists", hasTexture ? 1 : 0);
+        shader.SetUniformVec3("vCameraPos", camera->GetPos());
 
         m_va->Bind();
 

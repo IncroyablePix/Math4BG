@@ -153,4 +153,9 @@ namespace Math4BG {
 
         m_up = glm::normalize(glm::cross(m_right, m_forward));
     }
+
+    const glm::vec3 &MainCamera::GetPos()
+    {
+        return m_eye;
+    }
 }

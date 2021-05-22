@@ -20,7 +20,7 @@ namespace Math4BG
     public:
         Mesh(Vertex* vertices, int verticesSize, IndexBufferContainer& ibc, const Transform& transform);
 
-        void Bind(MainCamera* camera, Shader& shader) const;
+        void Bind(MainCamera* camera, Shader&, bool hasTexture, const glm::vec4 &color) const;
         void Unbind(Shader& shader) const;
 
         void UpdateModelMatrix();

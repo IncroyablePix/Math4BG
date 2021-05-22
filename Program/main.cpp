@@ -9,10 +9,14 @@
 
 int main(int argc, char** argv)
 {
+
     Math4BG::Config config;
     LoadConfig(CONFIG_PATH, config);
 
+    //--- TODO : Override params when passed as args to main
+
     //---
+
     std::shared_ptr<Math4BG::IOutput> out = Math4BG::TerminalOutput::Create();
     std::shared_ptr<Math4BG::Contexts> contexts = Math4BG::Contexts::Create();
 
@@ -22,7 +26,7 @@ int main(int argc, char** argv)
     {
         app.Start();
     }
-    catch(std::runtime_error& e) // Terrible idea : To remove someday (maybe)
+    catch(std::runtime_error& e) // Terrible idea : To put closer to actual errors, no time right now
     {
         Math4BG::ShowErrorMessage(e.what());
     }
