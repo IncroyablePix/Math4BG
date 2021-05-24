@@ -16,8 +16,8 @@ namespace Math4BG
     m_vertices(verticesSize),
     m_indices(ibc.Entries())
     {
-        std::cout << ibc.Entries() << " - " << ibc.GetSize() << std::endl;
-        std::cout << sizeof(Vertex) << " - " << verticesSize << " - " << verticesSize * sizeof(Vertex) << std::endl;
+        //std::cout << ibc.Entries() << " - " << ibc.GetSize() << std::endl;
+        //std::cout << sizeof(Vertex) << " - " << verticesSize << " - " << verticesSize * sizeof(Vertex) << std::endl;
         m_va->Bind();
         m_vb->Add(vertices, verticesSize * sizeof(Vertex));
         m_vb->Push();

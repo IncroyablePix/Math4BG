@@ -14,6 +14,9 @@ Even though 3D is currently unavailable, the current state of the code requires 
 ### lua54
 The lua interpreter library is **lua 5.4.2**.
 
+### GLM
+You also need to import GLM, which has no need to be build before.
+
 ### For all
 All libs are dynamically linked and shall be placed in the same directory as the executable.
 

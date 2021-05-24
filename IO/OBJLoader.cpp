@@ -62,7 +62,19 @@ namespace Math4BG
             vertex.col = glm::vec3(1.0f, 1.0f, 1.0f);
 
             data.vertices.push_back(vertex);
+            //data.ibc.Push(vertexIndex);
+            /*std::cout << "{{" << vertex.position.x << ", " << vertex.position.y << ", " << vertex.position.z << "}, {" <<
+            vertex.col.x << ", " << vertex.col.y << ", " << vertex.col.z << "}, {" <<
+            vertex.texcoord.x << ", " << vertex.col.y << "}, {" <<
+            vertex.normal.x << ", " << vertex.normal.y << ", " << vertex.normal.z <<
+            "}}," << std::endl;*/
+
+            //std::cout << vertexIndex << ", ";
         }
+
+        std::cout << std::endl;
+
+        //std::cout << std::endl;
 
         //std::cout << "Vertices count " << data.vc.size() << std::endl;
 
