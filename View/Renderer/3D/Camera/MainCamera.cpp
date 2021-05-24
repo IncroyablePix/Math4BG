@@ -16,7 +16,6 @@ namespace Math4BG {
     m_nearClip(nearClip),
     m_farClip(farClip),
 
-    m_eye(0.0f, 0.0f, 0.0f),
     m_view(0.0f, 0.0f, -1.0f),
 
     ICamera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))

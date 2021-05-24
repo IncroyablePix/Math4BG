@@ -21,8 +21,11 @@ namespace Math4BG
         virtual const glm::mat4 GetModelViewMatrix() = 0;
         virtual const glm::mat4 GetNormalMatrix() = 0;
 
+        void SetCameraPos(const glm::vec3 &position);
+
     protected:
         glm::mat4 m_projection = glm::mat4(1.0f);
+        glm::vec3 m_eye = glm::vec3(0.0f, 0.0f, 0.0f);
     };
 }
 

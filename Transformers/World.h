@@ -21,6 +21,7 @@
 #include "../IO/ModelData.h"
 #include "../View/Renderer/3D/Texture/Texture.h"
 #include "../View/Renderer/3D/Light/Light.h"
+#include "../View/Renderer/3D/Light/DirectionalLight.h"
 
 #define INVALID_OBJECT_ID               (-1)
 
@@ -37,6 +38,8 @@ namespace Math4BG
         void Update(double lag);
 
         std::string CreateShader(const std::string& path);
+
+        void SetCameraPos(const glm::vec3 &pos);
 
         int CreateCircle(Point center, double radius, uint32_t color);
         bool SetCirclePos(int circleid, Point center);
@@ -72,14 +75,16 @@ namespace Math4BG
 
         int CreatePointLight(float intensity, const glm::vec3 &color, const Transform& transform);
         bool SetLightPos(int lightid, const glm::vec3 &position);
-        bool SetLightColor(int lightid, const glm::vec3 &position);
+        bool SetLightColor(int lightid, const glm::vec3 &color);
 
+        bool SetDirectionalLight(float intensity, const glm::vec3 &orientation, const glm::vec3 &color);
 
     private:
         std::unique_ptr<MainCamera> m_camera;
         std::shared_ptr<IRenderer> m_renderer;
         WorldType m_type;
 
+        DirectionalLight m_directionalLight;
         std::unordered_map<int, std::shared_ptr<Light>> m_lights;
         std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
         std::unordered_map<int, Circle> m_circles;
@@ -93,7 +98,6 @@ namespace Math4BG
         static inline bool instanceof(const T*) {
             return std::is_base_of<Base, T>::value;
         }
-
     };
 }
 

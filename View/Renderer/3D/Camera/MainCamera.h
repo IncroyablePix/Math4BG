@@ -46,7 +46,6 @@ namespace Math4BG
         float m_horizontalAngle = 0.0f;
         float m_verticalAngle = 0.0f;
 
-        glm::vec3 m_eye;
         glm::vec3 m_view;
 
         glm::mat4 m_modelToCamera;

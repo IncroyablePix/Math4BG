@@ -123,7 +123,7 @@ namespace Math4BG
 
     void Shader::SetUniformVec3(const std::string &name, const glm::vec3 &v)
     {
-        GLCall(glUniform3fv(GetUniformLocation(name), 1, &v[0]));
+        GLCall(glUniform3fv(GetUniformLocation(name), 1, (GLfloat *) &v));
     }
 
     void Shader::SetUniformMat4(const std::string &name, glm::mat4 m)

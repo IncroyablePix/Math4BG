@@ -10,4 +10,9 @@ namespace Math4BG
     {
 
     }
+
+    void ICamera::SetCameraPos(const glm::vec3 &position)
+    {
+        m_eye = position;
+    }
 }

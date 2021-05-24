@@ -56,6 +56,9 @@ namespace Math4BG
         int SetLightPos(lua_State *L);
         int SetLightColor(lua_State *L);
 
+        int SetDirectionalLight(lua_State *L);
+        int SetCameraPos(lua_State *L);
+
         //---
 
         int GetMillis(lua_State *L);

@@ -197,6 +197,10 @@ namespace Math4BG
         lua_register(m_luaState.get(), "CreateWindow", &dispatch<&LuaInterpreter::CreateWindow>);
         lua_register(m_luaState.get(), "SetBackgroundColor", &dispatch<&LuaInterpreter::SetBackgroundColor>);
 
+        lua_register(m_luaState.get(), "SetCameraPos", &dispatch<&LuaInterpreter::SetCameraPos>);
+
+        lua_register(m_luaState.get(), "SetDirectionalLight", &dispatch<&LuaInterpreter::SetDirectionalLight>);
+
         lua_register(m_luaState.get(), "CreatePointLight", &dispatch<&LuaInterpreter::CreatePointLight>);
         lua_register(m_luaState.get(), "SetLightPos", &dispatch<&LuaInterpreter::SetLightPos>);
         lua_register(m_luaState.get(), "SetLightColor", &dispatch<&LuaInterpreter::SetLightColor>);
@@ -220,6 +224,20 @@ namespace Math4BG
 
         int id = m_contexts->CreateContext({title, width, height}, (WorldType) type);
         lua_pushnumber(L, id);
+        return 1;
+    }
+
+    int LuaInterpreter::SetCameraPos(lua_State *L)
+    {
+        int contextid = lua_tonumber(L, 1);
+        float x = (float) lua_tonumber(L, 2);
+        float y = (float) lua_tonumber(L, 3);
+        float z = (float) lua_tonumber(L, 4);
+
+
+        if(m_contexts->ContextExists(contextid))
+            ((*m_contexts)[contextid])->GetWorld()->SetCameraPos({x, y, z});
+
         return 1;
     }
 
@@ -371,7 +389,12 @@ namespace Math4BG
     int LuaInterpreter::SetBackgroundColor(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
+        /*float r = (float) lua_tonumber(L, 2);
+        float g = (float) lua_tonumber(L, 3);
+        float b = (float) lua_tonumber(L, 4);*/
         unsigned int color = (unsigned int) lua_tonumber(L, 2);
+
+        //unsigned int color = (int) r * 0xFF
 
         ((*m_contexts)[contextid])->GetWorld()->SetBackgroundColor(color);
         return 0;
@@ -564,8 +587,7 @@ namespace Math4BG
         if (m_contexts->GetWorldForId(id))
         {
             auto world = m_contexts->GetWorldForId(id)->GetWorld();
-            out = world->SetObjectPos(id, {x, y, z});
-            out = world->SetObjectOrigin(id, {x, y, z});
+            out = world->SetObjectPosOrigin(id, {x, y, z});
         }
 
         lua_pushboolean(L, out);
@@ -658,22 +680,45 @@ namespace Math4BG
         return 1;
     }
 
+    int LuaInterpreter::SetDirectionalLight(lua_State *L)
+    {
+        int contextid = (int) lua_tonumber(L, 1);
+        float x = (float) lua_tonumber(L, 2);
+        float y = (float) lua_tonumber(L, 3);
+        float z = (float) lua_tonumber(L, 4);
+        float intensity = (float) lua_tonumber(L, 5);
+        float r = (float) lua_tonumber(L, 6);
+        float g = (float) lua_tonumber(L, 7);
+        float b = (float) lua_tonumber(L, 8);
+
+        bool out = false;
+
+        if (m_contexts->ContextExists(contextid))
+            out = ((*m_contexts)[contextid])->GetWorld()->SetDirectionalLight(intensity, {x, y, z}, {r, g, b});
+
+        lua_pushboolean(L, out);
+
+        return 1;
+    }
+
     int LuaInterpreter::CreatePointLight(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
         float intensity = (float) lua_tonumber(L, 2);
-        int color = (int) lua_tonumber(L, 3);
-        float x = (float) lua_tonumber(L, 4);
-        float y = (float) lua_tonumber(L, 5);
-        float z = (float) lua_tonumber(L, 6);
+        float r = (float) lua_tonumber(L, 3);
+        float g = (float) lua_tonumber(L, 4);
+        float b = (float) lua_tonumber(L, 5);
+        float x = (float) lua_tonumber(L, 6);
+        float y = (float) lua_tonumber(L, 7);
+        float z = (float) lua_tonumber(L, 8);
 
         //unsigned int color = (unsigned int) lua_tonumber(L, 5);
         Transform transform({ x, y, z }, { x, y, z }, { 0.0, 0.0, 0.0 }, {1.0f, 1.0f, 1.0f});
-        glm::vec3 vectorizedColor(Col(color >> 6), Col(color >> 4), Col(color >> 2));
+        glm::vec3 color(r, g, b);
 
         int id = -1;
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreatePointLight(intensity, vectorizedColor, transform);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreatePointLight(intensity, color, transform);
 
         lua_pushnumber(L, id);
 

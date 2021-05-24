@@ -17,13 +17,19 @@ namespace Math4BG
     World::World(const WindowInfo &info, WorldType type, std::shared_ptr<IRenderer> renderer) :
             m_renderer(std::move(renderer)),
             m_type(type),
-            m_camera(std::make_unique<MainCamera>(45.0f, (float) info.width / (float) info.height, 0.1f, 1000.0f))
+            m_camera(std::make_unique<MainCamera>(45.0f, (float) info.width / (float) info.height, 0.1f, 1000.0f)),
+            m_directionalLight({-0.7f, -0.7f, 0.0f}, 1.0f, {1.0f, 1.0f, 1.0f})
     {
     }
 
     World::~World()
     {
 
+    }
+
+    void World::SetCameraPos(const glm::vec3& pos)
+    {
+        m_camera->SetCameraPos(pos);
     }
 
     std::string World::CreateShader(const std::string &path)
@@ -146,9 +152,9 @@ namespace Math4BG
 
     void World::SetBackgroundColor(unsigned int color)
     {
-        uint8_t r = color >> 6;
-        uint8_t g = color >> 4;
-        uint8_t b = color >> 2;
+        uint8_t r = color >> 24;
+        uint8_t g = color >> 16;
+        uint8_t b = color >> 8;
 
         m_renderer->SetBackgroundColor(r, g, b);
     }
@@ -157,14 +163,16 @@ namespace Math4BG
     {
         if(m_type == WorldType::Relief)
         {
-            for (std::pair<int, std::shared_ptr<Light>> light : m_lights)
+            for (std::pair<std::string, std::shared_ptr<Shader>> shader : m_shaders)
             {
-                for (std::pair<std::string, std::shared_ptr<Shader>> shader : m_shaders)
+                shader.second->Bind();
+                m_directionalLight.ToShader(*shader.second);
+
+                for (std::pair<int, std::shared_ptr<Light>> light : m_lights)
                 {
-                    shader.second->Bind();
                     light.second->ToShader(*shader.second);
-                    shader.second->Unbind();
                 }
+                shader.second->Unbind();
             }
         }
         //m_camera->Move(m_camera->Backward() + (m_camera->Left() * 0.5f), 0.05f); // Hardcoded
@@ -343,6 +351,21 @@ namespace Math4BG
         return false;
     }
 
+    bool World::SetObjectPosOrigin(int objid, const glm::vec3 &position)
+    {
+        if(m_objects.find(objid) != m_objects.end())
+        {
+            auto object = m_objects[objid].get();
+            if(Object3D* o = dynamic_cast<Object3D*>(object))
+            {
+                o->SetPos(position);
+                o->SetOrigin(position);
+                return true;
+            }
+        }
+        return false;
+    }
+
     bool World::SetObjectRot(int objid, const glm::vec3 &rot)
     {
         if(m_objects.find(objid) != m_objects.end())
@@ -408,6 +431,20 @@ namespace Math4BG
         else
         {
             return INVALID_OBJECT_ID;
+        }
+    }
+
+    bool World::SetDirectionalLight(float intensity, const glm::vec3 &orientation, const glm::vec3 &color)
+    {
+        if(m_type == WorldType::Relief)
+        {
+            //DirectionalLight light(orientation, intensity, color);
+            m_directionalLight = {orientation, intensity, color};
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
