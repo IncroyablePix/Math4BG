@@ -10,6 +10,7 @@
 #include "../View/Renderer/3D/Object/Pyramid.h"
 #include "../View/Renderer/3D/Texture/Texture.h"
 #include "../View/Renderer/3D/Light/PointLight.h"
+#include "../View/Renderer/3D/Object/Plane.h"
 
 
 namespace Math4BG
@@ -288,6 +289,19 @@ namespace Math4BG
         if(m_type == WorldType::Relief)
         {
             m_objects[m_count] = std::make_shared<Cube>(m_shaders[shaderName], transform);
+            return m_count++;
+        }
+        else
+        {
+            return INVALID_OBJECT_ID;
+        }
+    }
+
+    int World::CreatePlane(const std::string &shaderName, Transform &transform)
+    {
+        if(m_type == WorldType::Relief)
+        {
+            m_objects[m_count] = std::make_shared<Plane>(m_shaders[shaderName], transform);
             return m_count++;
         }
         else

@@ -11,11 +11,11 @@
 struct Vertex
 {
     Vertex() = default;
-    Vertex(glm::vec3 position, glm::vec3 col, glm::vec2 texcoord, glm::vec3 normal) : position(position), col(col), texcoord(texcoord), normal(normal) { }
+    Vertex(glm::vec3 position, glm::vec3 col, glm::vec2 uvs, glm::vec3 normal) : position(position), col(col), uvs(uvs), normal(normal) { }
 
     glm::vec3 position;
     glm::vec3 col;
-    glm::vec2 texcoord;
+    glm::vec2 uvs;
     glm::vec3 normal;
 };
 

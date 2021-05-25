@@ -16,32 +16,7 @@ namespace Math4BG
         Cube(std::shared_ptr<Shader> shader, Transform &transform);
 
     private:
-
-        /*inline static Vertex cubeVertices[] =
-        {
-                {{-0.5f, 0.5f,  -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.66f}, {-1.0f, 1.0f, -1.0f}},
-                {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.25f, 0.66f}, {-1.0f, -1.0f, -1.0f}},//1
-
-                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.34f}, {1.0f, 1.0f, -1.0f}},
-                {{0.5f,  -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.25f, 0.34f}, {1.0f, -1.0f, -1.0f}},//3
-
-                {{-0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.5f, 0.66f}, {-1.0f, -1.0f, 1.0f}},
-                {{0.5f,  -0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.5f, 0.34f}, {1.0f, -1.0f, 1.0f}},//5
-
-                {{-0.5f, 0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.75f, 0.66f}, {-1.0f, 1.0f, 1.0f}},
-                {{0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.75f, 0.34f}, {1.0f, 1.0f, 1.0f}},//7
-
-                {{-0.5f, 0.5f,  -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.66f}, {-1.0f, 1.0f, -1.0f}},
-                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.34f}, {1.0f, 1.0f, 1.0f}},//8
-
-                {{-0.5f, 0.5f,  -0.5f}, {1.0f, 1.0f, 1.0f}, {0.25f, 1.0f}, {-1.0f, 1.0f, -1.0f}},
-                {{-0.5f, 0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.5f, 1.0f}, {-1.0f, 1.0f, 1.0f}},//9
-
-                {{0.5f,  0.5f,  -0.5f}, {1.0f, 1.0f, 1.0f}, {0.25f, 0.0f}, {1.0f, 0.0f, -1.0f}},
-                {{0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}}//11
-        };*/
-
-        inline static Vertex cubeVertices [] =
+        inline static Vertex vertices [] =
         {
                 {{0.5, -0.5, 0.5}, {1.0f, 1.0f, 1.0f}, {0.5f, 0.66f}, {0.0f, -1.0f, 0.0f}},// bottom 1
                 {{-0.5, -0.5, 0.5}, {1.0f, 1.0f, 1.0f}, {0.25f, 0.66f}, {0.0f, -1.0f, 0.0f}},
@@ -92,12 +67,13 @@ namespace Math4BG
                 {{-0.5, 0.5, -0.5}, {1, 1, 1}, {0.25f, 0.0f}, {0, 0, -1}},
         };
 
-        inline static unsigned int verticesIndexes[] =
+        inline static unsigned int indices[] =
         {
         };
-        inline static IndexBufferContainer cubeIbc = {{}, 0 };
 
-        inline static ModelData cubeModel { cubeVertices, 36, cubeIbc };
+        inline static IndexBufferContainer ibc = {{}, 0 };
+
+        inline static ModelData model {vertices, 36, ibc };
     };
 }
 

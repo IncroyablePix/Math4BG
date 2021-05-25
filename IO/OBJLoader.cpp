@@ -57,7 +57,7 @@ namespace Math4BG
             unsigned int normalIndex = outNormalIndices[i];
 
             vertex.position = vc[vertexIndex];
-            vertex.texcoord = outUVs[uvIndex];
+            vertex.uvs = outUVs[uvIndex];
             vertex.normal = outNormals[normalIndex];
             vertex.col = glm::vec3(1.0f, 1.0f, 1.0f);
 
@@ -65,7 +65,7 @@ namespace Math4BG
             //data.ibc.Push(vertexIndex);
             /*std::cout << "{{" << vertex.position.x << ", " << vertex.position.y << ", " << vertex.position.z << "}, {" <<
             vertex.col.x << ", " << vertex.col.y << ", " << vertex.col.z << "}, {" <<
-            vertex.texcoord.x << ", " << vertex.col.y << "}, {" <<
+            vertex.uvs.x << ", " << vertex.col.y << "}, {" <<
             vertex.normal.x << ", " << vertex.normal.y << ", " << vertex.normal.z <<
             "}}," << std::endl;*/
 
@@ -83,7 +83,7 @@ namespace Math4BG
         for(int i = 0; i < data.vertices.size(); i ++)
         {
             data.vertices[i].position = vc[i];
-            data.vertices[i].texcoord = outUVs[i];
+            data.vertices[i].uvs = outUVs[i];
             data.vertices[i].normal = outNormals[i];
             data.vertices[i].col = glm::vec3(1.0f, 1.0f, 1.0f);
         }*/
@@ -92,7 +92,7 @@ namespace Math4BG
         for(int i = 0; i < data.vertices.size(); i ++)
         {
             data.vertices[i].position = vc[data.ibc.vertices[i]];
-            data.vertices[i].texcoord = outUVs[outUVIndices[i]];
+            data.vertices[i].uvs = outUVs[outUVIndices[i]];
             data.vertices[i].normal = outNormals[outNormalIndices[i]];
             data.vertices[i].col = glm::vec3(1.0f, 1.0f, 1.0f);
         }*/
