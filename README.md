@@ -1,5 +1,8 @@
 # Math4BG
 
+## Pride of the beginner
+![Alt text](https://i.ibb.co/wc4FkwM/cel-shaded-cat.png)
+
 ## Synopsis
 **Not** yet another game engine. 
 To whom it may concern: This product is a small application with the idea that rendering was kind of hard to code for most people (including myself) and could be made easier. 
