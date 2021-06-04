@@ -19,7 +19,7 @@ namespace Math4BG
 
         int CreateContext(const WindowInfo &info, WorldType type);
         inline Context *GetContext(int id) { return m_contexts[id]; }
-        inline bool ContextExists(int id) { return m_contexts.find(id) != m_contexts.end(); }
+        inline bool ContextExists(int id) { return m_contexts.find(id) != m_contexts.end() && m_contexts[id] != nullptr; }
         inline bool ModelExists(const std::string &name) { return m_models.find(name) != m_models.end(); }
         inline bool TextureExists(const std::string &name) { return m_textures.find(name) != m_textures.end(); }
         Context *operator[](int index);

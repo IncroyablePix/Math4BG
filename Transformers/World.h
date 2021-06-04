@@ -22,6 +22,8 @@
 #include "../View/Renderer/3D/Texture/Texture.h"
 #include "../View/Renderer/3D/Light/Light.h"
 #include "../View/Renderer/3D/Light/DirectionalLight.h"
+#include "../View/Renderer/3D/PostProcessing/ViewportSquare.h"
+#include "../View/Renderer/3D/Texture/FrameBuffer/FrameBufferObject.h"
 
 #define INVALID_OBJECT_ID               (-1)
 
@@ -40,6 +42,7 @@ namespace Math4BG
         std::string CreateShader(const std::string& path);
 
         void SetCameraPos(const glm::vec3 &pos);
+        void SetCameraRot(const glm::vec2 &pos);
 
         int CreateCircle(Point center, double radius, uint32_t color);
         bool SetCirclePos(int circleid, Point center);
@@ -83,6 +86,11 @@ namespace Math4BG
     private:
         std::unique_ptr<MainCamera> m_camera;
         std::shared_ptr<IRenderer> m_renderer;
+
+        std::shared_ptr<Shader> m_ppShader = Shader::CreateShader(ParseShader("shaders/background.shader"));
+        ViewportSquare m_canvas;
+        FrameBufferObject m_fbo;
+
         WorldType m_type;
 
         DirectionalLight m_directionalLight;

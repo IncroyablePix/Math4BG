@@ -19,6 +19,7 @@ namespace Math4BG
     };
 
     void LoadConfig(const std::string &path, Config &config);
+    void ParseArgs(int argc, char** argv, Config &config);
 }
 
 #endif //ARCPOSITION_CONFIG_H

@@ -25,8 +25,7 @@ namespace Math4BG
         m_vbl->Push<float>(3); // Pos
         m_vbl->Push<float>(3); // Color
         m_vbl->Push<float>(2); // Texture coords
-        m_vbl->Push<float>(3); // Normals // TODO: Vérifier
-        //m_vbl->Push<float>(11);
+        m_vbl->Push<float>(3); // Normals
 
         m_va->AddBuffer(*m_vb, *m_vbl);
 
@@ -34,19 +33,6 @@ namespace Math4BG
             m_ib = std::make_unique<IndexBuffer>(ibc);
 
         UpdateModelMatrix();
-
-
-        /*glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
-        glEnableVertexAttribArray(0);
-        //Color
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, col));
-        glEnableVertexAttribArray(1);
-        //Texcoord
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, uvs));
-        glEnableVertexAttribArray(2);
-        //Normal
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
-        glEnableVertexAttribArray(3);*/
     }
 
     void Mesh::UpdateModelMatrix()

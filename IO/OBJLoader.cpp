@@ -12,6 +12,8 @@
 #define FLOAT_REGX          "([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))"
 #define UINT_REGX           "([0-9]+)"
 
+//#define UINT_MAX            (0xFFFFFFFF)
+
 namespace Math4BG
 {
     ModelData OBJLoader::LoadModel(const std::string &path)
@@ -57,53 +59,12 @@ namespace Math4BG
             unsigned int normalIndex = outNormalIndices[i];
 
             vertex.position = vc[vertexIndex];
-            vertex.uvs = outUVs[uvIndex];
-            vertex.normal = outNormals[normalIndex];
+            vertex.uvs = (uvIndex == UINT_MAX ? glm::vec2(0.0, 0.0) : outUVs[uvIndex]);
+            vertex.normal = (normalIndex == UINT_MAX ? glm::vec3(1.0f, 1.0f, 1.0f) : outNormals[normalIndex]);
             vertex.col = glm::vec3(1.0f, 1.0f, 1.0f);
 
             data.vertices.push_back(vertex);
-            //data.ibc.Push(vertexIndex);
-            /*std::cout << "{{" << vertex.position.x << ", " << vertex.position.y << ", " << vertex.position.z << "}, {" <<
-            vertex.col.x << ", " << vertex.col.y << ", " << vertex.col.z << "}, {" <<
-            vertex.uvs.x << ", " << vertex.col.y << "}, {" <<
-            vertex.normal.x << ", " << vertex.normal.y << ", " << vertex.normal.z <<
-            "}}," << std::endl;*/
-
-            //std::cout << vertexIndex << ", ";
         }
-
-        std::cout << std::endl;
-
-        //std::cout << std::endl;
-
-        //std::cout << "Vertices count " << data.vc.size() << std::endl;
-
-        /*data.vertices.resize(vc.size(), Vertex());
-
-        for(int i = 0; i < data.vertices.size(); i ++)
-        {
-            data.vertices[i].position = vc[i];
-            data.vertices[i].uvs = outUVs[i];
-            data.vertices[i].normal = outNormals[i];
-            data.vertices[i].col = glm::vec3(1.0f, 1.0f, 1.0f);
-        }*/
-        /*data.vertices.resize(data.ibc.Entries(), Vertex());
-
-        for(int i = 0; i < data.vertices.size(); i ++)
-        {
-            data.vertices[i].position = vc[data.ibc.vertices[i]];
-            data.vertices[i].uvs = outUVs[outUVIndices[i]];
-            data.vertices[i].normal = outNormals[outNormalIndices[i]];
-            data.vertices[i].col = glm::vec3(1.0f, 1.0f, 1.0f);
-        }*/
-
-        //data.ibc.vertices.clear();
-
-
-        /*for(int i = 0; i < vertices.size(); i ++)
-        {
-            std::cout << v
-        }*/
 
         return data;
     }
@@ -131,32 +92,86 @@ namespace Math4BG
 
     void OBJLoader::ReadIndicesLine(std::stringstream &line, std::vector<unsigned int> &outVertexIndices, std::vector<unsigned int> &outUVIndices, std::vector<unsigned int> &outNormalIndices)
     {
-        int i = 0;
+        int i = 0, j = 0;
+        std::vector<unsigned int> temp; // hoping that n-gons are an exception!!
         unsigned int tempUInt;
 
         while(line >> tempUInt)
         {
-            switch(i)
-            {
-                case 0:
-                    outVertexIndices.push_back(tempUInt - 1);
-                    break;
-                case 1:
-                    outUVIndices.push_back(tempUInt - 1);
-                    break;
-                case 2:
-                    outNormalIndices.push_back(tempUInt - 1);
-                    break;
-            }
+            tempUInt --; // stupid obj file format starting at index 1
+            temp.push_back(tempUInt);
 
-            if(line.peek() == '/' || line.peek() == ' ')
-            {
-                i ++;
+            while(line.peek() == '/' || line.peek() == ' ')
                 line.ignore(1, '/');
-            }
+        }
 
-            if(i > 2)
-                i = 0;
+        //--- Triangulization (proper word?)
+        j = temp.size();
+        switch(j)
+        {
+            case 3:
+                for(i = 0; i < 3; i ++)
+                {
+                    outVertexIndices.push_back(temp[i]);
+                    outUVIndices.push_back(UINT_MAX);
+                    outNormalIndices.push_back(UINT_MAX);
+                }
+                break;
+            case 4:
+                outVertexIndices.push_back(temp[0]); // Triangle 1
+                outVertexIndices.push_back(temp[1]);
+                outVertexIndices.push_back(temp[2]);
+
+                outVertexIndices.push_back(temp[2]);
+                outVertexIndices.push_back(temp[3]);
+                outVertexIndices.push_back(temp[0]);
+
+                for(i = 0; i < 6; i ++)
+                {
+                    outUVIndices.push_back(UINT_MAX);
+                    outNormalIndices.push_back(UINT_MAX);
+                }
+                break;
+            case 5:
+                break;
+            case 9: // Best way
+                for(i = 0; i < 3; i ++)
+                {
+                    outVertexIndices.push_back(temp[3 * i]);
+                    outUVIndices.push_back(temp[3 * i + 1]);
+                    outNormalIndices.push_back(temp[3 * i + 2]);
+                }
+                break;
+            case 12:
+                // Triangle 1
+                outVertexIndices.push_back(temp[0]); // v1
+                outUVIndices.push_back(temp[1]);
+                outNormalIndices.push_back(temp[2]);
+
+                outVertexIndices.push_back(temp[3]); // v2
+                outUVIndices.push_back(temp[4]);
+                outNormalIndices.push_back(temp[5]);
+
+                outVertexIndices.push_back(temp[6]); // v3
+                outUVIndices.push_back(temp[7]);
+                outNormalIndices.push_back(temp[8]);
+
+                // Triangle 2
+                outVertexIndices.push_back(temp[6]); // v3
+                outUVIndices.push_back(temp[7]);
+                outNormalIndices.push_back(temp[8]);
+
+                outVertexIndices.push_back(temp[9]); // v4
+                outUVIndices.push_back(temp[10]);
+                outNormalIndices.push_back(temp[11]);
+
+                outVertexIndices.push_back(temp[0]); // v1
+                outUVIndices.push_back(temp[1]);
+                outNormalIndices.push_back(temp[2]);
+
+                break;
+            case 15:
+                break;
         }
     }
 }

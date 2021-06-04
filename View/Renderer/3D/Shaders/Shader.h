@@ -36,6 +36,7 @@ namespace Math4BG
         void SetUniformMat4(const std::string &name, glm::mat4 m);
         void SetUniformVec4(const std::string &name, glm::vec4 vec4);
         void SetUniformVec3(const std::string &name, const glm::vec3 &v);
+        void SetUniformVec2(const std::string &name, const glm::vec2 &v);
 
     private:
         unsigned int m_rendererId;

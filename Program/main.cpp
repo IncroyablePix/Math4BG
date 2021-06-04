@@ -9,11 +9,19 @@
 
 int main(int argc, char** argv)
 {
-
     Math4BG::Config config;
-    LoadConfig(CONFIG_PATH, config);
+    try
+    {
+        LoadConfig(CONFIG_PATH, config);
+    }
+    catch(std::runtime_error &e)
+    {
+        Math4BG::ShowErrorMessage(e.what());
+    }
 
     //--- TODO : Override params when passed as args to main
+
+    ParseArgs(argc, argv, config);
 
     //---
 
@@ -26,7 +34,7 @@ int main(int argc, char** argv)
     {
         app.Start();
     }
-    catch(std::runtime_error& e) // Terrible idea : To put closer to actual errors, no time right now
+    catch(std::runtime_error& e) // Worst idea ever but whatever this is an pre-pre-pre-alpha : To put closer to actual errors, no time right now
     {
         Math4BG::ShowErrorMessage(e.what());
     }

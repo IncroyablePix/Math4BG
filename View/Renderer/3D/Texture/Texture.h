@@ -17,11 +17,12 @@ namespace Math4BG
 
         inline unsigned int GetId() { return m_id; }
 
-        void Bind(unsigned int textureUnit);
+        virtual void Bind(unsigned int textureUnit);
         void Unbind();
 
     protected:
-        unsigned m_id;
+        unsigned int m_id;
+        unsigned int m_sampler;
         unsigned int m_type;
         int m_width = 0;
         int m_height = 0;

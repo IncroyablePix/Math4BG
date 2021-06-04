@@ -200,6 +200,7 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetBackgroundColor", &dispatch<&LuaInterpreter::SetBackgroundColor>);
 
         lua_register(m_luaState.get(), "SetCameraPos", &dispatch<&LuaInterpreter::SetCameraPos>);
+        lua_register(m_luaState.get(), "SetCameraRot", &dispatch<&LuaInterpreter::SetCameraRot>);
 
         lua_register(m_luaState.get(), "SetDirectionalLight", &dispatch<&LuaInterpreter::SetDirectionalLight>);
 
@@ -239,6 +240,19 @@ namespace Math4BG
 
         if(m_contexts->ContextExists(contextid))
             ((*m_contexts)[contextid])->GetWorld()->SetCameraPos({x, y, z});
+
+        return 1;
+    }
+
+    int LuaInterpreter::SetCameraRot(lua_State *L)
+    {
+        int contextid = lua_tonumber(L, 1);
+        float x = (float) lua_tonumber(L, 2);
+        float y = (float) lua_tonumber(L, 3);
+
+
+        if(m_contexts->ContextExists(contextid))
+            ((*m_contexts)[contextid])->GetWorld()->SetCameraRot({x, y});
 
         return 1;
     }

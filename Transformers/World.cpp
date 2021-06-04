@@ -18,8 +18,9 @@ namespace Math4BG
     World::World(const WindowInfo &info, WorldType type, std::shared_ptr<IRenderer> renderer) :
             m_renderer(std::move(renderer)),
             m_type(type),
-            m_camera(std::make_unique<MainCamera>(45.0f, (float) info.width / (float) info.height, 0.1f, 1000.0f)),
-            m_directionalLight({-0.7f, -0.7f, 0.0f}, 1.0f, {1.0f, 1.0f, 1.0f})
+            m_camera(std::make_unique<MainCamera>(45.0f, (float) info.width, (float) info.height, 0.1f, 1000.0f)),
+            m_directionalLight({0.7f, -0.7f, 0.0f}, 1.0f, {1.0f, 1.0f, 1.0f}),
+            m_fbo(info.width, info.height)
     {
     }
 
@@ -28,9 +29,51 @@ namespace Math4BG
 
     }
 
+    void World::Draw(Window &window)
+    {
+        if(m_type == WorldType::Relief)
+        {
+            for (std::pair<std::string, std::shared_ptr<Shader>> sh : m_shaders) // Updating shaders uniforms
+            {
+                Shader* shader = sh.second.get();
+
+                shader->Bind();
+                shader->SetUniformVec2("vPixelSize", m_camera->GetPixelSize());
+                m_directionalLight.ToShader(*shader);
+
+                for (std::pair<int, std::shared_ptr<Light>> light : m_lights)
+                {
+                    light.second->ToShader(*shader);
+                }
+                shader->Unbind();
+            }
+        }
+
+        /*for(const auto& drawable : m_objects)
+            window.Draw(m_camera.get(), drawable.second.get());*/
+
+        m_fbo.Bind(true); // Draw everything to frame buffer
+        m_renderer->Clear();
+
+        for(const auto& drawable : m_objects)
+            window.Draw(m_camera.get(), drawable.second.get());
+
+        m_fbo.Unbind();
+
+        if(m_type == WorldType::Relief)
+        {
+            m_canvas.Bind(*m_ppShader, *m_fbo.GetTexture());
+        }
+    }
+
     void World::SetCameraPos(const glm::vec3& pos)
     {
         m_camera->SetCameraPos(pos);
+    }
+
+    void World::SetCameraRot(const glm::vec2& pos)
+    {
+        m_camera->SetCameraRot(pos);
     }
 
     std::string World::CreateShader(const std::string &path)
@@ -39,10 +82,6 @@ namespace Math4BG
         ShaderProgramSource source = ParseShader(path);
         std::shared_ptr<Shader> shader = Shader::CreateShader(source);
         FileSplit fileSplit(path);
-        std::cout << fileSplit.fileWithoutExtension << std::endl;
-        /*shader->Bind();
-        shader->SetUniformVec4("vColor", glm::vec4(1.0, 1.0, 1.0, 1.0));
-        shader->Unbind();*/
 
         m_shaders[fileSplit.fileWithoutExtension] = shader;
 
@@ -160,34 +199,11 @@ namespace Math4BG
         m_renderer->SetBackgroundColor(r, g, b);
     }
 
-    void World::Draw(Window &window)
-    {
-        if(m_type == WorldType::Relief)
-        {
-            for (std::pair<std::string, std::shared_ptr<Shader>> shader : m_shaders)
-            {
-                shader.second->Bind();
-                m_directionalLight.ToShader(*shader.second);
-
-                for (std::pair<int, std::shared_ptr<Light>> light : m_lights)
-                {
-                    light.second->ToShader(*shader.second);
-                }
-                shader.second->Unbind();
-            }
-        }
-        //m_camera->Move(m_camera->Backward() + (m_camera->Left() * 0.5f), 0.05f); // Hardcoded
-        //m_camera->Rotate({0.0, 0.01, 0.0});
-        for(const auto& drawable : m_objects)
-            window.Draw(m_camera.get(), drawable.second.get());
-    }
-
     int World::CreateDot(Point position, uint32_t color)
     {
         if(m_type == WorldType::Flat)
         {
             m_objects[m_count] = std::make_shared<SinglePixel>(position, color);
-            //m_circles[m_count] = {center, radius, color};
             return m_count++;
         }
         else

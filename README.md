@@ -1,8 +1,34 @@
 # Math4BG
 
+## Synopsis
+**Not** yet another game engine. 
+To whom it may concern: This product is a small application with the idea that rendering was kind of hard to code for most people (including myself) and could be made easier. 
+The ultimate goal is to help people who want to learn to code to be able to jump right into what people often want to learn to code for : 3D VIDEO GAMES. 
+You may create a simple script (LUA only, currently), enjoy the easy-to-use functions provided by this software to create 2D or 3D scenes.
+
+P.-S.: The camera movement currently uses the Z Q S D layout, not the W S A D one!
+
+## Known bugs
+* .OBJ loader does not support n-gons
+* No materials supported
+* No proper error catching on the args you can pass to the program through the lua script, which leads the program to crash if you give it too much crap to eat!
+
+## In the future
+In the future, the software should have those features : 
+* Input manipulation through the script
+* Multi-rendering API support (Vulkan)
+* Sound playing
+* Multiple scripting languages supported including Javascript and Python (Scratch?)
+* A real GUI with a script editor, etc.
+* All image formats supported (PNG, JPG, TIFF, GIF, .Whatever)
+* Shadows (If I find back my courage)
+* Spot lights
+* Multi positionned light support
+* Built-in physics?
+* Some kind of eased-up shader coding
+
 ## Credits
 Programming - IncroyablePix (Good luck to read this one)
-Programming - Indirectly TheCherno, whose OpenGL code has been quite useful to me.
 
 ## Libraries used
 ### SDL2 
@@ -49,12 +75,6 @@ Two settings can currently be precised:
 - **script**: You have to specify a script **without** the ".lua" extension for it to be loaded. (example: script = "test")
 - **fpslimiter**: I'd recommend to feed it a "true" value. (example: fpslimiter = true)
 
-### Shaders
-As the 3D is not currently well developped, it has no real point to go further on this. However the syntax is the following (c.f. TheCherno):
-- #shader vertex as a first line, followed by the vertex shader code
-- #shader fragment in a second time, followed by the fragment shader code
-
 ## Thanks to :
-TheCherno for his OpenGL tutorial.
-The-One-Who-Does-Not-Want-To-Be-Mentionned who helped me out testing on different machines.
 Maxime De Rycke for giving the wonderful name of "Math4BG"
+

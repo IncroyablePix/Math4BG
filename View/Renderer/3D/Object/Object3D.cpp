@@ -8,6 +8,9 @@
 
 namespace Math4BG
 {
+    /*
+     * Currently pushes all data in a single mesh to make further work easier
+     */
     Object3D::Object3D(std::shared_ptr<Shader> shader, ModelData *model, const Transform &transform) :
         m_shader(shader),
         m_transform(transform)
@@ -81,9 +84,6 @@ namespace Math4BG
     void Object3D::SetTexture(std::shared_ptr<Texture> texture)
     {
         m_texture = std::move(texture);
-        //---TODO : Set as an overlay
-        /*for(auto& mesh : m_meshes)
-            mesh->SetTexture(texture);*/
     }
 
     void Object3D::SetColor(const glm::vec4 &color)

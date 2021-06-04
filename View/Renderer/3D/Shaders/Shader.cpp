@@ -121,6 +121,11 @@ namespace Math4BG
         GLCall(glUniform1f(GetUniformLocation(name), v))
     }
 
+    void Shader::SetUniformVec2(const std::string &name, const glm::vec2 &v)
+    {
+        GLCall(glUniform2fv(GetUniformLocation(name), 1, (GLfloat *) &v));
+    }
+
     void Shader::SetUniformVec3(const std::string &name, const glm::vec3 &v)
     {
         GLCall(glUniform3fv(GetUniformLocation(name), 1, (GLfloat *) &v));
