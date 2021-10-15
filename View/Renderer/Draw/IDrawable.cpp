@@ -6,5 +6,8 @@
 
 namespace Math4BG
 {
-
+    void IDrawable::SetColor(const glm::vec4 &color)
+    {
+        m_color = color;
+    }
 }

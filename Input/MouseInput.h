@@ -29,7 +29,7 @@ namespace Math4BG
 
         MouseButton ConvertSDLInput(uint8_t b) const;
         void MouseSet(MouseButton button, bool state);
-        void MousePos(glm::vec2 position);
+        void MousePos(const glm::vec2 &position);
         void Update();
 
         inline const glm::vec2 Position() const { return m_position; }
@@ -44,9 +44,9 @@ namespace Math4BG
         int m_notches = 0;
         bool m_mouseState[MOUSE_BUTTONS_COUNT] = { false, false, false, false, false };
         bool m_prevMouseState[MOUSE_BUTTONS_COUNT] = { false, false, false, false, false };
-        glm::vec2 m_position;
-        glm::vec2 m_lastPosition;
-        glm::vec2 m_clickedPosition;
+        glm::vec2 m_position = {0.0f, 0.0f};;
+        glm::vec2 m_lastPosition = {0.0f, 0.0f};
+        glm::vec2 m_clickedPosition = {0.0f, 0.0f};;
     };
 
     extern MouseInput Mouse;

@@ -5,8 +5,6 @@
 #ifndef ARCPOSITION_SHAPES_H
 #define ARCPOSITION_SHAPES_H
 
-#include "../Renderer2D.h"
-
 #define CIRCLE_COLOR 						(0x4E8EB9FF)
 #define LINE_COLOR                       	(0xFF0000FF)
 

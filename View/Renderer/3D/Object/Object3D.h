@@ -30,8 +30,8 @@ namespace Math4BG
 
         //void SetShaderAttribute(std::string name);
 
-        void Bind(MainCamera* camera) const;
-        void Unbind() const;
+        void Bind(const ICamera &camera) const override;
+        void Unbind() const override;
 
         void SetPos(const glm::vec3 position);
         void SetOrigin(const glm::vec3 position);
@@ -39,11 +39,9 @@ namespace Math4BG
         void SetRotation(const glm::vec3 rotation);
 
         void SetTexture(std::shared_ptr<Texture> texture);
-        void SetColor(const glm::vec4 &color);
 
     private:
         Transform m_transform;
-        glm::vec4 m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         std::shared_ptr<Texture> m_texture;
 
         std::vector<std::unique_ptr<Mesh>> m_meshes;

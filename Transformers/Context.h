@@ -10,6 +10,8 @@
 #include <string>
 #include <memory>
 #include "../View/Window.h"
+#include "../Input/MouseInput.h"
+#include "../Input/KeyInput.h"
 
 namespace Math4BG
 {
@@ -24,13 +26,18 @@ namespace Math4BG
         void SetFPS(int fps);
         void Draw();
 
+        void KeySet(KeyButton button, bool state);
+        void MouseSet(MouseButton button, bool state);
+        void MousePos(const glm::vec2 &position);
+
         inline World *GetWorld() { return m_world.get(); }
         inline uint32_t GetWindowId() { return m_window->GetWindowId(); }
 
     private:
         std::shared_ptr<Window> m_window;
         std::shared_ptr<World> m_world;
-
+        MouseInput m_mouse;
+        KeyInput m_keys;
     };
 }
 

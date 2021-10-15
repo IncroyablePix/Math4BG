@@ -9,7 +9,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <iostream>
-#include "../View/Renderer/3D/Renderer3D.h"
+#include "../View/Renderer/OG33Renderer.h"
 #include "../IO/ModelData.h"
 
 namespace Math4BG

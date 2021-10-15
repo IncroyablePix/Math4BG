@@ -3,6 +3,7 @@
 //
 
 #include "Line.h"
+#include "../../../../Utils/ColorSwitch.h"
 
 #define		max(A,B)	((A) > (B) ? (A) : (B))
 #define 	min(A,B)	((A) < (B) ? (A) : (B))
@@ -10,18 +11,16 @@
 
 namespace Math4BG
 {
-    Line::Line() :
-    Object2D(0xFFFFFFFF)
+    Line::Line() : Object2D()
     {
 
     }
 
-    Line::Line(Point start, Point end, uint32_t color) :
-    Object2D(color),
+    Line::Line(std::shared_ptr<Shader> shader, const glm::vec3 &start, const glm::vec3 &end, uint32_t color) :
+    Object2D(shader, &model, {start}, MaskToFloat(color)),
     m_start(start),
     m_end(end)
     {
-
     }
 
     Line::~Line()
@@ -29,7 +28,7 @@ namespace Math4BG
 
     }
 
-    void Line::Draw(SDL_Surface* surface, const Point &size)
+    /*void Line::Draw(SDL_Surface* surface, const Point &size)
     {
         int x0 = m_start.x, y0 = m_start.y, x1 = m_end.x, y1 = m_end.y;
         int x, y, dx, dy, adx, ady, d, d1, d2, step;
@@ -115,5 +114,5 @@ namespace Math4BG
                 SetPixel(surface, size, x, y);
             }
         }
-    }
+    }*/
 }

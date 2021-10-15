@@ -7,7 +7,6 @@
 #include "Application.h"
 #include "../Input/MouseInput.h"
 #include "../Input/KeyInput.h"
-#include "../Transformers/Interpreter/JavascriptInterpreter.h"
 #include "../IO/OBJLoader.h"
 
 namespace Math4BG
@@ -141,16 +140,8 @@ namespace Math4BG
 
     void Application::ManageWindowEvents(const SDL_Event& event)
     {
-        if(event.type == SDL_WINDOWEVENT)
-        {
-            switch(event.window.event)
-            {
-                case SDL_WINDOWEVENT_CLOSE:
-                    int windowId = m_contexts->KillContextForWindowId(event.window.windowID);
-                    m_interpreter->CallOnWindowClosed(windowId);
-                    break;
-            }
-        }
+        int windowId = event.window.windowID;
+        Context* context = m_contexts->ContextFromWindowId(windowId);
 
         switch (event.type)
         {
@@ -158,27 +149,41 @@ namespace Math4BG
                 m_running = false;
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                Mouse.MouseSet(Mouse.ConvertSDLInput(event.button.button), true);
+                if(context)
+                    context->MouseSet(Mouse.ConvertSDLInput(event.button.button), true);
                 break;
             case SDL_MOUSEBUTTONUP:
-                Mouse.MouseSet(Mouse.ConvertSDLInput(event.button.button), false);
+                if(context)
+                    context->MouseSet(Mouse.ConvertSDLInput(event.button.button), false);
                 break;
             case SDL_MOUSEMOTION:
-                Mouse.MousePos({ event.motion.x, event.motion.y });
+                if(context)
+                    context->MousePos({ event.motion.x, event.motion.y });
                 break;
             case SDL_KEYDOWN:
-                Keys.KeySet(Keys.ConvertSDLInput(event.key.keysym.sym), true);
+                if(context)
+                    context->KeySet(Keys.ConvertSDLInput(event.key.keysym.sym), true);
                 break;
             case SDL_KEYUP:
-                Keys.KeySet(Keys.ConvertSDLInput(event.key.keysym.sym), false);
+                if(context)
+                    context->KeySet(Keys.ConvertSDLInput(event.key.keysym.sym), false);
+                break;
+            case SDL_WINDOWEVENT:
+                switch(event.window.event)
+                {
+                    case SDL_WINDOWEVENT_CLOSE:
+                        windowId = m_contexts->KillContextForWindowId(event.window.windowID);
+                        m_interpreter->CallOnWindowClosed(windowId);
+                        break;
+                }
                 break;
         }
     }
 
     void Application::Update(double lag)
     {
-        Mouse.Update();
-        Keys.Update();
+        //Mouse.Update();
+        //Keys.Update();
         //std::cout << Mouse.Position().x << ", " << Mouse.Position().y << " - " << Mouse.DeltaPosition().x << ", " << Mouse.DeltaPosition().y << std::endl;
 
         std::unordered_map<int, Context *>::iterator it;
@@ -190,7 +195,9 @@ namespace Math4BG
         for (; it != itEnd; it++)
         {
             if(it->second)
+            {
                 it->second->Update(lag);
+            }
         }
     }
 
@@ -198,8 +205,8 @@ namespace Math4BG
     {
         if(name == "lua")
             return std::shared_ptr<ILanInterpreter>(LuaInterpreter::Create(contexts, output));
-        else if(name == "js")
-            return std::shared_ptr<ILanInterpreter>(JavascriptInterpreter::Create(contexts, output));
+        /*else if(name == "js")
+            return std::shared_ptr<ILanInterpreter>(JavascriptInterpreter::Create(contexts, output));*/
 
         throw std::runtime_error("Invalid Interpreter specified!");
     }

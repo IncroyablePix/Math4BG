@@ -4,18 +4,18 @@
 
 #include "Circle.h"
 #include "Line.h"
+#include "../../../../Utils/ColorSwitch.h"
 #include <cmath>
 
 namespace Math4BG
 {
-    Circle::Circle() :
-    Object2D(0xFFFFFFFF)
+    Circle::Circle() : Object2D()
     {
 
     }
 
-    Circle::Circle(Point center, double radius, uint32_t color) :
-    Object2D(color),
+    Circle::Circle(std::shared_ptr<Shader> shader, glm::vec3 center, double radius, uint32_t color) :
+    Object2D(shader, &model, { center }, MaskToFloat(color)),
     m_center(center),
     m_radius(radius)
     {
@@ -27,7 +27,7 @@ namespace Math4BG
 
     }
 
-    void Circle::Draw(SDL_Surface *surface, const Point &size)
+    /*void Circle::Draw(SDL_Surface *surface, const Point &size)
     {
         int x0 = m_center.x, y0 = m_center.y;
         double xRadius = m_radius, yRadius = m_radius;
@@ -80,5 +80,5 @@ namespace Math4BG
 
         for(Line l : lines)
             l.Draw(surface, size);
-    }
+    }*/
 }

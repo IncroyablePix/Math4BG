@@ -15,23 +15,32 @@ namespace Math4BG
     {
     public:
         Rectangle();
-        Rectangle(Point position, int width, int height, uint32_t color);
+        Rectangle(std::shared_ptr<Shader> shader, const glm::vec3 &position, const glm::vec2 &dimens, uint32_t color);
         ~Rectangle();
 
-        void Draw(SDL_Surface* surface, const Point &size) override;
-
         Point m_start;
-        int m_height;
-        int m_width;
+        float m_height;
+        float m_width;
 
     private:
-        template<typename T>
-        void Swap(T &a, T &b)
-        {
-            T temp = a;
-            a = b;
-            b = temp;
-        }
+
+        inline static Vertex vertices [] =
+                {
+                        {{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
+                        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
+                        {{0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
+                        {{0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}
+                };
+
+        inline static unsigned int indices[] =
+                {
+                        0, 1, 2,
+                        0, 2, 3
+                };
+
+        inline static IndexBufferContainer ibc = {indices, 6 };
+
+        inline static ModelData model {vertices, 4, ibc };
     };
 }
 

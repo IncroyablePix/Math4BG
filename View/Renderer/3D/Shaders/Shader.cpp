@@ -108,8 +108,8 @@ namespace Math4BG
 
         GLCall(int location = glGetUniformLocation(m_rendererId, name.c_str()));
 
-        if (location == -1)
-            std::cout << "Warning: Uniform '" << name << "' doesn't exist!" << std::endl;
+        /*if (location == -1)
+            std::cout << "Warning: Uniform '" << name << "' doesn't exist!" << std::endl;*/
 
         m_uniformLocations[name] = location;
 

@@ -9,23 +9,44 @@
 #include <SDL2/SDL.h>
 #include "Point.h"
 #include "../../Draw/IDrawable.h"
+#include "../../3D/Vertices/VertexBufferLayout.h"
+#include "../../3D/Vertices/VertexBuffer.h"
+#include "../../3D/Vertices/IndexBuffer.h"
+#include "../../3D/Vertices/VertexArray.h"
+#include "../../../../IO/ModelData.h"
+#include "../../3D/Shaders/Shader.h"
 
 namespace Math4BG
 {
     class Object2D : public IDrawable
     {
     public:
-        Object2D(uint32_t color);
+        Object2D();
+        Object2D(std::shared_ptr<Shader> shader, ModelData *model, const Transform& transform, const glm::vec3 &color);
         ~Object2D() override = default;
 
-        virtual void Draw(SDL_Surface* surface, const Point &size) = 0;
-        void SetColor(uint32_t color);
+        void UpdateModelMatrix();
+        void Bind(const ICamera &camera) const override;
+        void Unbind() const override;
+
+        //virtual void Draw(SDL_Surface* surface, const Point &size) = 0;
 
     protected:
-        uint32_t m_color;
+        std::shared_ptr<Shader> m_shader;
+        VertexArray m_va;
+        IndexBuffer m_ib;
+        VertexBuffer m_vb;
+        VertexBufferLayout m_vbl;
 
-        void SetPixel(SDL_Surface* surface, Point size, int x, int y);
-        static void ny(int &y, const Point &size);
+        unsigned int m_vertices;
+        unsigned int m_indices;
+
+        Transform m_transform;
+
+        glm::mat4 m_modelMatrix;
+
+        //void SetPixel(SDL_Surface* surface, Point size, int x, int y);
+        //static void ny(int &y, const Point &size);
     };
 }
 

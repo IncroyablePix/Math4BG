@@ -6,6 +6,7 @@
 #define MATH4BG_IDRAWABLE_H
 
 #include <memory>
+#include "../3D/Camera/ICamera.h"
 
 namespace Math4BG
 {
@@ -13,6 +14,13 @@ namespace Math4BG
     {
     public:
         virtual ~IDrawable() = default;
+        virtual void Bind(const ICamera& camera) const = 0;
+        virtual void Unbind() const = 0;
+
+        void SetColor(const glm::vec4 &color);
+
+    protected:
+        glm::vec4 m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     };
 }
 

@@ -53,7 +53,7 @@ namespace Math4BG
         return &m_models[name];
     }
 
-    int Contexts::CreateContext(const WindowInfo &info, WorldType type)
+    int Contexts::CreateContext(const WindowInfo &info, WorldType type, bool windowed)
     {
         Context* context = new Context(info, type);
 
@@ -85,7 +85,7 @@ namespace Math4BG
     bool Contexts::LoadModel(const std::string &path, const std::string &name)
     {
         FileSplit fileSplit(path);
-        //return std::shared_ptr<IRenderer>(Renderer3D::Create(window, width, height));
+        //return std::shared_ptr<OG33Renderer>(Renderer3D::Create(window, width, height));
         if(fileSplit.fileExtension == "obj")
         {
             OBJLoader loader;

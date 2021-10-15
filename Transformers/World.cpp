@@ -11,11 +11,12 @@
 #include "../View/Renderer/3D/Texture/Texture.h"
 #include "../View/Renderer/3D/Light/PointLight.h"
 #include "../View/Renderer/3D/Object/Plane.h"
+#include "../Utils/ColorSwitch.h"
 
 
 namespace Math4BG
 {
-    World::World(const WindowInfo &info, WorldType type, std::shared_ptr<IRenderer> renderer) :
+    World::World(const WindowInfo &info, WorldType type, std::shared_ptr<OG33Renderer> renderer) :
             m_renderer(std::move(renderer)),
             m_type(type),
             m_camera(std::make_unique<MainCamera>(45.0f, (float) info.width, (float) info.height, 0.1f, 1000.0f)),
@@ -31,26 +32,20 @@ namespace Math4BG
 
     void World::Draw(Window &window)
     {
-        if(m_type == WorldType::Relief)
+        for (std::pair<std::string, std::shared_ptr<Shader>> sh : m_shaders) // Updating shaders uniforms
         {
-            for (std::pair<std::string, std::shared_ptr<Shader>> sh : m_shaders) // Updating shaders uniforms
+            Shader* shader = sh.second.get();
+
+            shader->Bind();
+            shader->SetUniformVec2("vPixelSize", m_camera->GetPixelSize());
+            m_directionalLight.ToShader(*shader);
+
+            for (std::pair<int, std::shared_ptr<Light>> light : m_lights)
             {
-                Shader* shader = sh.second.get();
-
-                shader->Bind();
-                shader->SetUniformVec2("vPixelSize", m_camera->GetPixelSize());
-                m_directionalLight.ToShader(*shader);
-
-                for (std::pair<int, std::shared_ptr<Light>> light : m_lights)
-                {
-                    light.second->ToShader(*shader);
-                }
-                shader->Unbind();
+                light.second->ToShader(*shader);
             }
+            shader->Unbind();
         }
-
-        /*for(const auto& drawable : m_objects)
-            window.Draw(m_camera.get(), drawable.second.get());*/
 
         m_fbo.Bind(true); // Draw everything to frame buffer
         m_renderer->Clear();
@@ -58,12 +53,11 @@ namespace Math4BG
         for(const auto& drawable : m_objects)
             window.Draw(m_camera.get(), drawable.second.get());
 
+        window.DrawGUI();
+
         m_fbo.Unbind();
 
-        if(m_type == WorldType::Relief)
-        {
-            m_canvas.Bind(*m_ppShader, *m_fbo.GetTexture());
-        }
+        m_canvas.Bind(*m_ppShader, *m_fbo.GetTexture()); // Drawing frame buffer over canvas
     }
 
     void World::SetCameraPos(const glm::vec3& pos)
@@ -88,23 +82,16 @@ namespace Math4BG
         return fileSplit.fileWithoutExtension;
     }
 
-    void World::Update(double lag)
+    void World::Update(double lag, const MouseInput &mouse, const KeyInput &keys)
     {
-        m_camera->Update(lag);
+        m_camera->Update(mouse, keys, lag);
     }
 
-    int World::CreateCircle(Point center, double radius, uint32_t color)
+    int World::CreateCircle(const std::string &shaderName, const glm::vec3 &center, double radius, uint32_t color)
     {
-        if(m_type == WorldType::Flat)
-        {
-            m_objects[m_count] = std::make_shared<Circle>(center, radius, color);
-            //m_circles[m_count] = {center, radius, color};
-            return m_count++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
+        m_objects[m_count] = std::make_shared<Circle>(m_shaders[shaderName], center, radius, color);
+        //m_circles[m_count] = {center, radius, color};
+        return m_count++;
     }
 
     bool World::SetCirclePos(int circleid, Point center)
@@ -138,56 +125,34 @@ namespace Math4BG
         return false;
     }
 
-    bool World::SetCircleColor(int circleid, uint32_t color)
+    int World::CreateLine(const std::string &shaderName, const glm::vec3 &start, const glm::vec3 &end, uint32_t color)
     {
-        if (m_objects.find(circleid) != m_objects.end())
-        {
-            auto circle = m_objects[circleid].get();
-            if(Circle* c = dynamic_cast<Circle*>(circle))
-            {
-                c->SetColor(color);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    int World::CreateLine(Point start, Point end, uint32_t color)
-    {
-        if(m_type == WorldType::Flat)
-        {
-            m_objects[m_count] = std::make_shared<Line>(start, end, color);
-            //m_lines[m_count] = { start, end, color };
-            return m_count++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
+        m_objects[m_count] = std::make_shared<Line>(m_shaders[shaderName], start, end, color);
+        //m_lines[m_count] = { start, end, color };
+        return m_count++;
     }
 
     bool World::SetLinePos(int lineid, Point start, Point end)
     {
-        if (m_lines.find(lineid) != m_lines.end())
+        if (m_objects.find(lineid) != m_objects.end())
         {
-            m_lines[lineid].m_start = start;
-            m_lines[lineid].m_end = end;
+            auto line = m_objects[lineid].get();
+            if(Line* r = dynamic_cast<Line*>(line))
+            {
+                r->m_start = {start.x, start.y, 1.0f};
+                r->m_end = {end.x, end.y, 1.0f};
+                return true;
+            }
+        }
+        return false;
+        /*if (m_objects.find(lineid) != m_objects.end())
+        {
+            m_lines[lineid].m_start = {start.x, start.y, 1.0f};
+            m_lines[lineid].m_end = {end.x, end.y, 1.0f};
             return true;
         }
 
-        return false;
-    }
-
-    bool World::SetLineColor(int lineid, uint32_t color)
-    {
-        if (m_lines.find(lineid) != m_lines.end())
-        {
-            m_lines[lineid].SetColor(color);
-            return true;
-        }
-
-        return false;
+        return false;*/
     }
 
     void World::SetBackgroundColor(unsigned int color)
@@ -199,62 +164,12 @@ namespace Math4BG
         m_renderer->SetBackgroundColor(r, g, b);
     }
 
-    int World::CreateDot(Point position, uint32_t color)
+    int World::CreateRectangle(const std::string &shaderName, const glm::vec3 &position, float width, float height, uint32_t color)
     {
-        if(m_type == WorldType::Flat)
-        {
-            m_objects[m_count] = std::make_shared<SinglePixel>(position, color);
-            return m_count++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
-        return 0;
-    }
-
-    bool World::SetDotPos(int dotid, Point position)
-    {
-        if (m_objects.find(dotid) != m_objects.end())
-        {
-            auto point = m_objects[dotid].get();
-            if(SinglePixel* p = dynamic_cast<SinglePixel*>(point))
-            {
-                p->SetPosition(position);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    bool World::SetDotColor(int dotid, uint32_t color)
-    {
-        if (m_objects.find(dotid) != m_objects.end())
-        {
-            auto circle = m_objects[dotid].get();
-            if(SinglePixel* p = dynamic_cast<SinglePixel*>(circle))
-            {
-                p->SetColor(color);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    int World::CreateRectangle(Point position, int width, int height, uint32_t color)
-    {
-        if(m_type == WorldType::Flat)
-        {
-            //m_objects[m_count] = std::make_shared<Line>(start, end, color);
-            m_objects[m_count] = std::make_shared<Rectangle>(position, width, height, color);
-            return m_count++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
+        //m_objects[m_count] = std::make_shared<Line>(start, end, color);
+        glm::vec2 dimens = {width, height};
+        m_objects[m_count] = std::make_shared<Rectangle>(m_shaders[shaderName], position, dimens, color);
+        return m_count++;
     }
 
     bool World::SetRectanglePos(int rectangleid, Point position)
@@ -286,57 +201,22 @@ namespace Math4BG
         return false;
     }
 
-    bool World::SetRectangleColor(int rectangleid, uint32_t color)
-    {
-        if (m_objects.find(rectangleid) != m_objects.end())
-        {
-            auto rectangle = m_objects[rectangleid].get();
-            if(Rectangle* r = dynamic_cast<Rectangle*>(rectangle))
-            {
-                r->SetColor(color);
-                return true;
-            }
-        }
-        return false;
-    }
-
     int World::CreateCube(const std::string &shaderName, Transform &transform)
     {
-        if(m_type == WorldType::Relief)
-        {
-            m_objects[m_count] = std::make_shared<Cube>(m_shaders[shaderName], transform);
-            return m_count++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
+        m_objects[m_count] = std::make_shared<Cube>(m_shaders[shaderName], transform);
+        return m_count++;
     }
 
     int World::CreatePlane(const std::string &shaderName, Transform &transform)
     {
-        if(m_type == WorldType::Relief)
-        {
-            m_objects[m_count] = std::make_shared<Plane>(m_shaders[shaderName], transform);
-            return m_count++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
+        m_objects[m_count] = std::make_shared<Plane>(m_shaders[shaderName], transform);
+        return m_count++;
     }
 
     int World::CreatePyramid(const std::string &shaderName, Transform &transform)
     {
-        if(m_type == WorldType::Relief)
-        {
-            m_objects[m_count] = std::make_shared<Pyramid>(m_shaders[shaderName], transform);
-            return m_count++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
+        m_objects[m_count] = std::make_shared<Pyramid>(m_shaders[shaderName], transform);
+        return m_count++;
     }
 
     bool World::SetObjectColor(int objid, const glm::vec4 &color)
@@ -344,7 +224,7 @@ namespace Math4BG
         if(m_objects.find(objid) != m_objects.end())
         {
             auto object = m_objects[objid].get();
-            if(Object3D* o = dynamic_cast<Object3D*>(object))
+            if(IDrawable* o = dynamic_cast<IDrawable*>(object))
             {
                 o->SetColor(color);
                 return true;
@@ -438,44 +318,36 @@ namespace Math4BG
         return false;
     }
 
+    bool World::SetObjectColor(int objid, const glm::vec3 &color)
+    {
+        if(m_objects.find(objid) != m_objects.end())
+        {
+            auto object = m_objects[objid].get();
+            if(IDrawable* o = dynamic_cast<IDrawable*>(object))
+            {
+                o->SetColor({color, 1.0f});
+                return true;
+            }
+        }
+        return false;
+    }
+
     int World::CreateCustomObject(ModelData *model, const std::string &shaderName, Transform &transform)
     {
-        if(m_type == WorldType::Relief)
-        {
-            m_objects[m_count] = std::make_shared<Object3D>(m_shaders[shaderName], model, transform);
-            return m_count++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
+        m_objects[m_count] = std::make_shared<Object3D>(m_shaders[shaderName], model, transform);
+        return m_count++;
     }
 
     int World::CreatePointLight(float intensity, const glm::vec3 &color, const Transform &transform)
     {
-        if(m_type == WorldType::Relief)
-        {
-            m_lights[m_count] = std::make_shared<PointLight>(transform, intensity, color);
-            return m_count ++;
-        }
-        else
-        {
-            return INVALID_OBJECT_ID;
-        }
+        m_lights[m_count] = std::make_shared<PointLight>(transform, intensity, color);
+        return m_count ++;
     }
 
     bool World::SetDirectionalLight(float intensity, const glm::vec3 &orientation, const glm::vec3 &color)
     {
-        if(m_type == WorldType::Relief)
-        {
-            //DirectionalLight light(orientation, intensity, color);
-            m_directionalLight = {orientation, intensity, color};
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        m_directionalLight = {orientation, intensity, color};
+        return true;
     }
 
     bool World::SetLightPos(int lightid, const glm::vec3 &position)

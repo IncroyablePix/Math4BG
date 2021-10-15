@@ -169,10 +169,6 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetLinePos", &dispatch<&LuaInterpreter::SetLinePos>);
         lua_register(m_luaState.get(), "SetLineColor", &dispatch<&LuaInterpreter::SetLineColor>);
 
-        lua_register(m_luaState.get(), "CreateDot", &dispatch<&LuaInterpreter::CreateDot>);
-        lua_register(m_luaState.get(), "SetDotPos", &dispatch<&LuaInterpreter::SetDotPos>);
-        lua_register(m_luaState.get(), "SetDotColor", &dispatch<&LuaInterpreter::SetDotColor>);
-
         lua_register(m_luaState.get(), "CreateRectangle", &dispatch<&LuaInterpreter::CreateRectangle>);
         lua_register(m_luaState.get(), "SetRectanglePos", &dispatch<&LuaInterpreter::SetRectanglePos>);
         lua_register(m_luaState.get(), "SetRectangleDimens", &dispatch<&LuaInterpreter::SetRectangleDimens>);
@@ -222,10 +218,11 @@ namespace Math4BG
         unsigned int width = lua_tonumber(L, 2);
         unsigned int height = lua_tonumber(L, 3);
         uint32_t type = lua_tonumber(L, 4);
+        bool windowed = lua_toboolean(L, 5);
 
-        *m_output << "Creating window : " << title << std::endl;
+        //*m_output << "Creating window : " << title << std::endl;
 
-        int id = m_contexts->CreateContext({title, width, height}, (WorldType) type);
+        int id = m_contexts->CreateContext({title, width, height}, (WorldType) type, windowed);
         lua_pushnumber(L, id);
         return 1;
     }
@@ -314,14 +311,17 @@ namespace Math4BG
     int LuaInterpreter::CreateCircle(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
-        double x = (double) lua_tonumber(L, 2);
-        double y = (double) lua_tonumber(L, 3);
-        double radius = (double) lua_tonumber(L, 4);
-        unsigned int color = (unsigned int) lua_tonumber(L, 5);
+        std::string shader = lua_tostring(L, 2);
+        double x = (double) lua_tonumber(L, 3);
+        double y = (double) lua_tonumber(L, 4);
+        double radius = (double) lua_tonumber(L, 5);
+        unsigned int color = (unsigned int) lua_tonumber(L, 6);
+
+        glm::vec3 position = {x, y, 0.0f};
 
         int id = -1;
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreateCircle({x, y}, radius, color);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreateCircle(shader, position, radius, color);
 
         lua_pushnumber(L, id);
 
@@ -356,7 +356,7 @@ namespace Math4BG
         int id = (int) lua_tonumber(L, 1);
         unsigned int color = (unsigned int) lua_tonumber(L, 2);
 
-        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetCircleColor(id, color);
+        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectColor(id, MaskToFloat(color));
         lua_pushboolean(L, out);
 
         return 1;
@@ -365,15 +365,20 @@ namespace Math4BG
     int LuaInterpreter::CreateLine(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
-        double xStart = (double) lua_tonumber(L, 2);
-        double yStart = (double) lua_tonumber(L, 3);
-        double xEnd = (double) lua_tonumber(L, 4);
-        double yEnd = (double) lua_tonumber(L, 5);
-        unsigned int color = (unsigned int) lua_tonumber(L, 6);
+        std::string shader = lua_tostring(L, 2);
+        double xStart = (double) lua_tonumber(L, 3);
+        double yStart = (double) lua_tonumber(L, 4);
+        double xEnd = (double) lua_tonumber(L, 5);
+        double yEnd = (double) lua_tonumber(L, 6);
+        unsigned int color = (unsigned int) lua_tonumber(L, 7);
+
+
+        glm::vec3 start(xStart, yStart, 0.0f);
+        glm::vec3 end(xEnd, yEnd, 0.0f);
 
         int id = -1;
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreateLine({xStart, yStart}, {xEnd, yEnd}, color);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreateLine(shader, start, end, color);
 
         lua_pushnumber(L, id);
         return 1;
@@ -397,7 +402,7 @@ namespace Math4BG
         int id = (int) lua_tonumber(L, 1);
         unsigned int color = (unsigned int) lua_tonumber(L, 2);
 
-        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetLineColor(id, color);
+        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectColor(id, MaskToFloat(color));
         lua_pushboolean(L, out);
         return 1;
     }
@@ -416,50 +421,21 @@ namespace Math4BG
         return 0;
     }
 
-    int LuaInterpreter::CreateDot(lua_State *L)
-    {
-        int contextid = (int) lua_tonumber(L, 1);
-        double x = (double) lua_tonumber(L, 2);
-        double y = (double) lua_tonumber(L, 3);
-        unsigned int color = (int) lua_tonumber(L, 4);
-
-        ((*m_contexts)[contextid])->GetWorld()->CreateDot({x, y}, color);
-        return 1;
-    }
-
-    int LuaInterpreter::SetDotPos(lua_State *L)
-    {
-        int id = (int) lua_tonumber(L, 1);
-        double x = (double) lua_tonumber(L, 2);
-        double y = (double) lua_tonumber(L, 3);
-
-        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetDotPos(id, {x, y});
-        lua_pushboolean(L, out);
-        return 1;
-    }
-
-    int LuaInterpreter::SetDotColor(lua_State *L)
-    {
-        int id = (int) lua_tonumber(L, 1);
-        unsigned int color = (unsigned int) lua_tonumber(L, 2);
-
-        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetDotColor(id, color);
-        lua_pushboolean(L, out);
-        return 1;
-    }
-
     int LuaInterpreter::CreateRectangle(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
-        double x = (double) lua_tonumber(L, 2);
-        double y = (double) lua_tonumber(L, 3);
-        double width = (double) lua_tonumber(L, 4);
-        double height = (double) lua_tonumber(L, 5);
-        unsigned int color = (unsigned int) lua_tonumber(L, 6);
+        std::string shader = lua_tostring(L, 2);
+        double x = (double) lua_tonumber(L, 3);
+        double y = (double) lua_tonumber(L, 4);
+        double width = (double) lua_tonumber(L, 5);
+        double height = (double) lua_tonumber(L, 6);
+        unsigned int color = (unsigned int) lua_tonumber(L, 7);
+
+        glm::vec3 position(x, y, 0.0f);
 
         int id = -1;
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreateRectangle({x, y}, width, height, color);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreateRectangle(shader, position, width, height, color);
 
         lua_pushnumber(L, id);
 
@@ -494,7 +470,7 @@ namespace Math4BG
         int id = (int) lua_tonumber(L, 1);
         unsigned int color = (unsigned int) lua_tonumber(L, 2);
 
-        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetRectangleColor(id, color);
+        bool out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectColor(id, MaskToFloat(color));
         lua_pushboolean(L, out);
 
         return 1;

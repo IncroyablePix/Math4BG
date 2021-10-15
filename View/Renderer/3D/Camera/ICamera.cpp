@@ -85,4 +85,24 @@ namespace Math4BG
     {
         return (m_focalPoint - (m_forward * m_distance));
     }
+
+    const glm::mat4 ICamera::GetProjectionMatrix() const
+    {
+        return m_projection;
+    }
+
+    const glm::mat4 ICamera::GetMVP() const
+    {
+        return GetProjectionMatrix() * GetView() * glm::mat4(1.0f);
+    }
+
+    glm::mat4 ICamera::GetView() const
+    {
+        return glm::lookAt(m_eye, m_eye + m_forward, m_up);
+    }
+
+    const glm::vec3 &ICamera::GetPos() const
+    {
+        return m_eye;
+    }
 }

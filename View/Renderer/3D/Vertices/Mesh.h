@@ -20,7 +20,7 @@ namespace Math4BG
     public:
         Mesh(Vertex* vertices, int verticesSize, IndexBufferContainer& ibc, const Transform& transform);
 
-        void Bind(MainCamera* camera, Shader&, bool hasTexture, const glm::vec4 &color) const;
+        void Bind(const ICamera &camera, Shader&, bool hasTexture, const glm::vec4 &color) const;
         void Unbind(Shader& shader) const;
 
         void UpdateModelMatrix();
@@ -30,10 +30,10 @@ namespace Math4BG
         void SetRotation(const glm::vec3 &rotation);
 
     private:
-        std::unique_ptr<VertexArray> m_va;
-        std::unique_ptr<VertexBuffer> m_vb;
-        std::unique_ptr<IndexBuffer> m_ib;
-        std::unique_ptr<VertexBufferLayout> m_vbl;
+        VertexArray m_va;
+        IndexBuffer m_ib;
+        VertexBuffer m_vb;
+        VertexBufferLayout m_vbl;
 
         unsigned int m_vertices;
         unsigned int m_indices;

@@ -17,7 +17,7 @@ namespace Math4BG
         Contexts();
         ~Contexts();
 
-        int CreateContext(const WindowInfo &info, WorldType type);
+        int CreateContext(const WindowInfo &info, WorldType type, bool windowed = true);
         inline Context *GetContext(int id) { return m_contexts[id]; }
         inline bool ContextExists(int id) { return m_contexts.find(id) != m_contexts.end() && m_contexts[id] != nullptr; }
         inline bool ModelExists(const std::string &name) { return m_models.find(name) != m_models.end(); }
@@ -35,6 +35,8 @@ namespace Math4BG
 
         bool LoadTexture(const std::string &path, const std::string &name);
         bool LoadModel(const std::string &path, const std::string &name);
+
+        inline Context* ContextFromWindowId(int windowId) { return (m_contextIds.find(windowId) != m_contextIds.end()) ? m_contexts[m_contextIds[windowId]] : nullptr; }
 
     private:
         std::unordered_map<std::string, ModelData> m_models;

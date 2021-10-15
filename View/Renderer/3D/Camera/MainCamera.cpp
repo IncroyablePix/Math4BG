@@ -2,11 +2,7 @@
 // Created by Benjam on 13-05-21.
 //
 
-#include <iostream>
 #include "MainCamera.h"
-#include "ICamera.h"
-#include "../../../../Input/MouseInput.h"
-#include "../../../../Input/KeyInput.h"
 
 namespace Math4BG {
 
@@ -19,21 +15,6 @@ namespace Math4BG {
         UpdateDirection();
     }
 
-    const glm::mat4 MainCamera::GetProjectionMatrix()
-    {
-        return m_projection;
-    }
-
-    const glm::mat4 MainCamera::GetMVP()
-    {
-        return GetProjectionMatrix() * GetView() * glm::mat4(1.0f);
-    }
-
-    glm::mat4 MainCamera::GetView()
-    {
-        return glm::lookAt(m_eye, m_eye + m_forward, m_up);
-    }
-
     void MainCamera::Move(glm::vec3 direction, float fBy)
     {
         direction *= fBy;
@@ -42,12 +23,12 @@ namespace Math4BG {
         m_view += direction;
     }
 
-    void MainCamera::Update(double lag)
+    void MainCamera::Update(const MouseInput &mouse, const KeyInput &keys, double lag)
     {
-        if(Mouse.Down(MouseButton::LMB))
+        if(mouse.Down(MouseButton::LMB))
         {
-            m_horizontalAngle += lag * m_speed * 2 * static_cast<float>(Mouse.DeltaPosition().x);
-            m_verticalAngle -= lag * m_speed * 2 * static_cast<float>(Mouse.DeltaPosition().y);
+            m_horizontalAngle += lag * m_speed * 2 * static_cast<float>(mouse.DeltaPosition().x);
+            m_verticalAngle -= lag * m_speed * 2 * static_cast<float>(mouse.DeltaPosition().y);
 
             //---
 
@@ -68,20 +49,15 @@ namespace Math4BG {
 
         glm::vec3 dir = {0.0, 0.0, 0.0f};
 
-        if(Keys.Down(KeyButton::Z))
+        if(keys.Down(KeyButton::Z))
             dir += m_forward;
-        if(Keys.Down(KeyButton::S))
+        if(keys.Down(KeyButton::S))
             dir += m_backward;
-        if(Keys.Down(KeyButton::Q))
+        if(keys.Down(KeyButton::Q))
             dir += m_left;
-        if(Keys.Down(KeyButton::D))
+        if(keys.Down(KeyButton::D))
             dir += m_right;
 
         Move(dir * m_speed, lag);
-    }
-
-    const glm::vec3 &MainCamera::GetPos()
-    {
-        return m_eye;
     }
 }

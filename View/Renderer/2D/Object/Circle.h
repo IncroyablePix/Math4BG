@@ -14,12 +14,32 @@ namespace Math4BG
     {
     public:
         Circle();
-        Circle(Point center, double radius, uint32_t color);
+        Circle(std::shared_ptr<Shader> shader, glm::vec3 center, double radius, uint32_t color);
         ~Circle();
-        void Draw(SDL_Surface* surface, const Point &size) override;
+        //void Draw(SDL_Surface* surface, const Point &size) override;
 
-        Point m_center;
+        glm::vec3 m_center;
         double m_radius;
+
+    private:
+
+        inline static Vertex vertices [] =
+                {
+                        {{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
+                        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
+                        {{0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
+                        {{0.5f, -0.5f, 0.0f}, {1, 1, 1}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}
+                };
+
+        inline static unsigned int indices[] =
+                {
+                        0, 1, 2,
+                        0, 2, 3
+                };
+
+        inline static IndexBufferContainer ibc = {indices, 6 };
+
+        inline static ModelData model {vertices, 4, ibc };
     };
 }
 

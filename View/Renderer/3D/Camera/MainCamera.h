@@ -6,6 +6,8 @@
 #define MATH4BG_MAINCAMERA_H
 
 #include "ICamera.h"
+#include "../../../../Input/MouseInput.h"
+#include "../../../../Input/KeyInput.h"
 #include <glm/gtx/quaternion.hpp>
 
 namespace Math4BG
@@ -16,17 +18,9 @@ namespace Math4BG
         MainCamera() = default;
         MainCamera(float fov, float width, float height, float nearClip, float farClip);
 
-        const glm::mat4 GetProjectionMatrix() override;
-
-        void Update(double lag);
+        void Update(const MouseInput &mouse, const KeyInput &keys, double lag);
 
         void Move(glm::vec3 direction, float fBy);
-
-        const glm::mat4 GetMVP() override;
-
-        glm::mat4 GetView();
-
-        const glm::vec3 &GetPos();
 
     private:
         float m_speed = 5.0f;

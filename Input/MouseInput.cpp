@@ -48,7 +48,7 @@ namespace Math4BG
         return MouseButton::NoPressed;
     }
 
-    void MouseInput::MousePos(glm::vec2 position)
+    void MouseInput::MousePos(const glm::vec2 &position)
     {
         m_lastPosition = m_position;
         m_position = position;

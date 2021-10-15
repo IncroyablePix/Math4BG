@@ -23,7 +23,7 @@ namespace Math4BG
 
     }
 
-    void Object3D::Bind(MainCamera* camera) const
+    void Object3D::Bind(const ICamera &camera) const
     {
         bool hasTexture = false;
         if(m_texture != nullptr)
@@ -84,10 +84,5 @@ namespace Math4BG
     void Object3D::SetTexture(std::shared_ptr<Texture> texture)
     {
         m_texture = std::move(texture);
-    }
-
-    void Object3D::SetColor(const glm::vec4 &color)
-    {
-        m_color = color;
     }
 }

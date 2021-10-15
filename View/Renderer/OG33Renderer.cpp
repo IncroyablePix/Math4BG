@@ -2,23 +2,15 @@
 // Created by Benjam on 13-04-21.
 //
 
-#include "Renderer3D.h"
-#include "Shaders/Shader.h"
-#include "Object/Object3D.h"
-#include "Object/Cube.h"
-#include "Camera/ICamera.h"
-#include "Camera/MainCamera.h"
-
-#define GLEW_STATIC
+#include "OG33Renderer.h"
 #include <GL/glew.h>
-
 
 namespace Math4BG
 {
-    Renderer3D::Renderer3D(SDL_Window *window, unsigned int width, unsigned int height) :
-            IRenderer(window, width, height),
-            m_glContext(SDL_GL_CreateContext(window)),
-            m_window(window)
+    OG33Renderer::OG33Renderer(SDL_Window *window, unsigned int width, unsigned int height) :
+            m_screen(width, height),
+            m_background{0x0, 0x0, 0x0, 0xFF},
+            m_glContext(SDL_GL_CreateContext(window))
     {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
@@ -29,39 +21,36 @@ namespace Math4BG
 
         GlewInitAttempt();
         glViewport(0, 0, width, height);
-
     }
 
-    Renderer3D::~Renderer3D()
+    OG33Renderer::~OG33Renderer()
     {
         SDL_GL_DeleteContext(m_glContext);
     }
 
-    void Renderer3D::Draw(MainCamera *camera, IDrawable *drawable)
+
+    float OG33Renderer::Col(uint32_t color)
     {
-        //--- TEST : TO DELETE ---//
-        auto* object = (Object3D*) drawable;
-        object->Bind(camera);
+        return ((float) color) / 0xFF;
     }
 
-    std::shared_ptr<Renderer3D> Renderer3D::Create(SDL_Window *window, unsigned int width, unsigned int height)
+    void OG33Renderer::SetBackgroundColor(uint8_t r, uint8_t g, uint8_t b)
     {
-        return std::shared_ptr<Renderer3D>(static_cast<Renderer3D *>(new Renderer3D(window, width, height)));
+        m_background.r = r;
+        m_background.g = g;
+        m_background.b = b;
+        m_background.a = 1.0f;
+        glClearColor(Col(m_background.r), Col(m_background.g), Col(m_background.b), Col(m_background.a));
     }
 
-    void Renderer3D::Clear()
+    void OG33Renderer::Clear()
     {
         glClearColor(Col(m_background.r), Col(m_background.g), Col(m_background.b), Col(m_background.a));
         glClearDepth(1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    float Renderer3D::Col(uint32_t color)
-    {
-        return ((float) color) / 0xFF;
-    }
-
-    void Renderer3D::GlewInitAttempt()
+    void OG33Renderer::GlewInitAttempt()
     {
         if(!glewInitialized)
         {
@@ -82,14 +71,13 @@ namespace Math4BG
         }
     }
 
-    void Renderer3D::SetBackgroundColor(uint8_t r, uint8_t g, uint8_t b)
+    void OG33Renderer::Draw(ICamera *camera, IDrawable *drawable)
     {
-        IRenderer::SetBackgroundColor(r, g, b);
-        glClearColor(Col(m_background.r), Col(m_background.g), Col(m_background.b), Col(m_background.a));
+        drawable->Bind(*camera);
     }
 
-    void Renderer3D::SwapBuffers()
+    std::shared_ptr<OG33Renderer> OG33Renderer::Create(SDL_Window *window, unsigned int width, unsigned int height)
     {
-        SDL_GL_SwapWindow(m_window);
+        return std::shared_ptr<OG33Renderer>(static_cast<OG33Renderer *>(new OG33Renderer(window, width, height)));
     }
 }

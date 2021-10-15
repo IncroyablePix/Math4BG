@@ -8,12 +8,11 @@
 
 #include <memory>
 #include <unordered_map>
-#include "../View/Renderer/IRenderer.h"
+#include "../View/Renderer/OG33Renderer.h"
 #include "../View/Renderer/2D/Object/Point.h"
 #include "../View/Renderer/2D/Object/Object2D.h"
 #include "../View/Renderer/2D/Object/Circle.h"
 #include "../View/Renderer/2D/Object/Line.h"
-#include "../View/Renderer/2D/Object/SinglePixel.h"
 #include "../View/Renderer/2D/Object/Rectangle.h"
 #include "../View/Window.h"
 #include "../View/Renderer/3D/Shaders/Shader.h"
@@ -32,35 +31,28 @@ namespace Math4BG
     class World
     {
     public:
-        World(const WindowInfo &info, WorldType type, std::shared_ptr<IRenderer> renderer);
+        World(const WindowInfo &info, WorldType type, std::shared_ptr<OG33Renderer> renderer);
 
         ~World();
 
         void Draw(Window &window);
-        void Update(double lag);
+        void Update(double lag, const MouseInput &mouse, const KeyInput &keys);
 
         std::string CreateShader(const std::string& path);
 
         void SetCameraPos(const glm::vec3 &pos);
         void SetCameraRot(const glm::vec2 &pos);
 
-        int CreateCircle(Point center, double radius, uint32_t color);
+        int CreateCircle(const std::string &shaderName, const glm::vec3 &center, double radius, uint32_t color);
         bool SetCirclePos(int circleid, Point center);
         bool SetCircleSize(int circleid, double radius);
-        bool SetCircleColor(int circleid, uint32_t color);
 
-        int CreateLine(Point start, Point end, uint32_t color);
+        int CreateLine(const std::string &shaderName, const glm::vec3 &start, const glm::vec3 &end, uint32_t color);
         bool SetLinePos(int lineid, Point start, Point end);
-        bool SetLineColor(int lineid, uint32_t color);
 
-        int CreateDot(Point position, uint32_t color);
-        bool SetDotPos(int dotid, Point position);
-        bool SetDotColor(int dotid, uint32_t color);
-
-        int CreateRectangle(Point position, int width, int height, uint32_t color);
+        int CreateRectangle(const std::string &shaderName, const glm::vec3 &position, float width, float height, uint32_t color);
         bool SetRectanglePos(int rectangleid, Point position);
         bool SetRectangleDimens(int rectangleid, int width, int height);
-        bool SetRectangleColor(int rectangleid, uint32_t color);
 
         void SetBackgroundColor(unsigned int color);
 
@@ -74,6 +66,7 @@ namespace Math4BG
         bool SetObjectRot(int objid, const glm::vec3 &rot);
         bool SetObjectScale(int objid, const glm::vec3 &scale);
         bool SetObjectTexture(int obj, std::shared_ptr<Texture> texture);
+        bool SetObjectColor(int objid, const glm::vec3 &color);
 
         int CreateCustomObject(ModelData* model, const std::string &shaderName, Transform& transform);
 
@@ -85,7 +78,7 @@ namespace Math4BG
 
     private:
         std::unique_ptr<MainCamera> m_camera;
-        std::shared_ptr<IRenderer> m_renderer;
+        std::shared_ptr<OG33Renderer> m_renderer;
 
         std::shared_ptr<Shader> m_ppShader = Shader::CreateShader(ParseShader("shaders/background.shader"));
         ViewportSquare m_canvas;
@@ -96,8 +89,8 @@ namespace Math4BG
         DirectionalLight m_directionalLight;
         std::unordered_map<int, std::shared_ptr<Light>> m_lights;
         std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
-        std::unordered_map<int, Circle> m_circles;
-        std::unordered_map<int, Line> m_lines;
+        //std::unordered_map<int, Circle> m_circles;
+        //std::unordered_map<int, Line> m_lines;
 
         std::unordered_map<std::string, std::shared_ptr<Shader>> m_shaders;
 

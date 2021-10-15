@@ -3,20 +3,19 @@
 //
 
 #include "Rectangle.h"
+#include "../../../../Utils/ColorSwitch.h"
 
 namespace Math4BG
 {
-    Rectangle::Rectangle() :
-    Object2D(0xFFFFFFFF)
+    Rectangle::Rectangle() : Object2D()
     {
 
     }
 
-    Rectangle::Rectangle(Math4BG::Point position, int width, int height, uint32_t color) :
-    Object2D(color),
-    m_start(position),
-    m_width(width),
-    m_height(height)
+    Rectangle::Rectangle(std::shared_ptr<Shader> shader, const glm::vec3 &position, const glm::vec2 &dimens, uint32_t color) :
+    Object2D(shader, &model, { position }, MaskToFloat(color)),
+    m_width(dimens.x),
+    m_height(dimens.y)
     {
 
     }
@@ -26,7 +25,7 @@ namespace Math4BG
 
     }
 
-    void Rectangle::Draw(SDL_Surface *surface, const Math4BG::Point &size)
+    /*void Rectangle::Draw(SDL_Surface *surface, const Math4BG::Point &size)
     {
         int x0 = m_start.x, y0 = m_start.y;
         int x1, y1;
@@ -49,5 +48,5 @@ namespace Math4BG
             SetPixel(surface, size, x0, size.y - y);
             SetPixel(surface, size, x1, size.y - y);
         }
-    }
+    }*/
 }
