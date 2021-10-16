@@ -13,7 +13,7 @@ namespace Math4BG
 {
     LuaInterpreter::LuaInterpreter(std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output) :
             m_luaState(nullptr, lua_close),
-            ILanInterpreter(contexts, output)
+            ILanInterpreter(std::move(contexts), output)
     {
         m_luaState.reset(luaL_newstate());
         luaL_openlibs(m_luaState.get());
@@ -160,6 +160,8 @@ namespace Math4BG
     {
         *static_cast<LuaInterpreter **>(lua_getextraspace(m_luaState.get())) = this;
 
+        lua_register(m_luaState.get(), "print", &dispatch<&LuaInterpreter::Print>);
+
         lua_register(m_luaState.get(), "CreateCircle", &dispatch<&LuaInterpreter::CreateCircle>);
         lua_register(m_luaState.get(), "SetCirclePos", &dispatch<&LuaInterpreter::SetCirclePos>);
         lua_register(m_luaState.get(), "SetCircleSize", &dispatch<&LuaInterpreter::SetCircleSize>);
@@ -205,6 +207,24 @@ namespace Math4BG
         lua_register(m_luaState.get(), "SetLightColor", &dispatch<&LuaInterpreter::SetLightColor>);
 
         lua_register(m_luaState.get(), "GetMillis", &dispatch<&LuaInterpreter::GetMillis>);
+    }
+
+    int LuaInterpreter::Print(lua_State *L)
+    {
+        int nargs = lua_gettop(L);
+        std::stringstream ss;
+
+        for (int i = 1; i <= nargs; i++)
+        {
+            if (lua_isstring(L, i))
+                ss << lua_tostring(L, i);
+            else if(lua_isnumber(L, i))
+                ss << lua_tonumber(L, i);
+        }
+        std::cout << ss.str() << std::endl;
+        *m_output << ss.str();
+
+        return 0;
     }
 
 /*void LuaInterpreter::SetWorld(std::shared_ptr<World> world)

@@ -12,10 +12,11 @@
 #include "../View/Window.h"
 #include "../Input/MouseInput.h"
 #include "../Input/KeyInput.h"
+#include "../View/Renderer/OG33Renderer.h"
 
 namespace Math4BG
 {
-    class Context
+    class Context : public std::enable_shared_from_this<Context>
     {
     public:
         Context(const WindowInfo &info, WorldType type);
@@ -31,13 +32,18 @@ namespace Math4BG
         void MousePos(const glm::vec2 &position);
 
         inline World *GetWorld() { return m_world.get(); }
-        inline uint32_t GetWindowId() { return m_window->GetWindowId(); }
+        //inline uint32_t GetWindowId() { return m_window->GetWindowId(); }
+        inline unsigned int GetFboId() const { return m_world->GetFboId(); }
+        inline std::shared_ptr<Texture> GetFboTexture() const { return m_world->GetFboTexture(); }
+        inline const std::string& GetTitle() const { return m_title; }
 
     private:
-        std::shared_ptr<Window> m_window;
+        //std::shared_ptr<Window> m_window;
         std::shared_ptr<World> m_world;
+        std::shared_ptr<OG33Renderer> m_renderer;
         MouseInput m_mouse;
         KeyInput m_keys;
+        std::string m_title;
     };
 }
 

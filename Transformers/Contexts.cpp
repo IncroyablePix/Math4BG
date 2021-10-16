@@ -7,6 +7,7 @@
 #include "../IO/OBJLoader.h"
 #include "../Utils/FileSplit.h"
 #include "../View/Renderer/3D/Texture/BMPTexture.h"
+#include "../View/IMGUI/imgui.h"
 
 
 namespace Math4BG
@@ -23,18 +24,18 @@ namespace Math4BG
 
     int Contexts::KillContextForWindowId(uint32_t id)
     {
-        if(m_contextIds.find(id) == m_contextIds.end())
+        if(m_contexts.find(id) == m_contexts.end())
             throw std::runtime_error("Context doesn't exist");
 
-        int contextId = m_contextIds[id];
+        //int contextId = m_contextIds[id];
 
-        Context* context = m_contexts[contextId];
+        Context* context = m_contexts[id];
         delete context;
 
-        m_contexts.erase(contextId);
-        m_contextIds.erase(id);
+        m_contexts.erase(id);
+        //m_contextIds.erase(id);
 
-        return contextId;
+        return id;
     }
 
     Context *Contexts::operator[](int index)
@@ -58,7 +59,6 @@ namespace Math4BG
         Context* context = new Context(info, type);
 
         m_contexts[m_count] = context;
-        m_contextIds[context->GetWindowId()] = m_count;
 
         return m_count++;
     }
@@ -85,7 +85,7 @@ namespace Math4BG
     bool Contexts::LoadModel(const std::string &path, const std::string &name)
     {
         FileSplit fileSplit(path);
-        //return std::shared_ptr<OG33Renderer>(Renderer3D::Create(window, width, height));
+        //return std::shared_ptr<OG33RendererSDL>(Renderer3D::Create(window, width, height));
         if(fileSplit.fileExtension == "obj")
         {
             OBJLoader loader;
@@ -96,6 +96,14 @@ namespace Math4BG
         }
 
         return false;
+    }
+
+    void Contexts::DrawContexts()
+    {
+        for(const auto& [key, context] : m_contexts)
+        {
+            context->Draw();
+        }
     }
 
     /*bool Contexts::LoadSound(const std::string &path, const std::string &name)

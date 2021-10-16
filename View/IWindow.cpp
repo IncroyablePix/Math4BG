@@ -6,7 +6,7 @@
 
 namespace Math4BG
 {
-    IWindow::IWindow(const WindowInfo &info) : m_title(info.title)
+    IWindow::IWindow(const WindowInfo &info) : m_title(info.title), m_width(info.width), m_height(info.height)
     {
 
     }

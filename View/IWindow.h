@@ -22,11 +22,14 @@ namespace Math4BG
         IWindow(const WindowInfo &info);
         void SetFPS(unsigned int fps);
         void SetUPS(unsigned int ups);
+        virtual void Resize(int width, int height) = 0;
 
     protected:
         std::string m_title;
         unsigned int m_fps;
         unsigned int m_ups;
+        int m_width;
+        int m_height;
         virtual void UpdateWindowTitle() = 0;
     };
 }

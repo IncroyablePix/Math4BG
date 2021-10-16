@@ -1,5 +1,5 @@
 //
-// Created by Benjam on 13-04-21.
+// Created by Benjam on 10/16/2021.
 //
 
 #ifndef MATH4BG_OG33RENDERER_H
@@ -7,51 +7,36 @@
 
 
 #include <memory>
-#include <SDL2/SDL.h>
-#include "../Screen.h"
-#include "Draw/IDrawable.h"
 #include "3D/Camera/ICamera.h"
-#include "3D/Camera/MainCamera.h"
-
+#include "Draw/IDrawable.h"
+#include <GL/glew.h>
 
 namespace Math4BG
 {
     class OG33Renderer : public std::enable_shared_from_this<OG33Renderer>
     {
     public:
-        OG33Renderer(SDL_Window *window, unsigned int width, unsigned int height);
+        OG33Renderer(int width, int height);
+        ~OG33Renderer();
 
-        virtual ~OG33Renderer();
+        inline unsigned int Width() const { return m_width; }
+        inline unsigned int Height() const { return m_height; }
 
-        inline unsigned int Width() const
-        { return m_screen.width; }
-
-        inline unsigned int Height() const
-        { return m_screen.height; }
+        void Resize(int width, int height);
 
         virtual void SetBackgroundColor(uint8_t r, uint8_t g, uint8_t b);
-
         virtual void Draw(ICamera* camera, IDrawable* drawable);
         virtual void Clear();
-        static std::shared_ptr<OG33Renderer> Create(SDL_Window *window, unsigned int width, unsigned int height);
 
-        inline void MakeContextCurrent(SDL_Window* window)
-        {
-            SDL_GL_MakeCurrent(window, m_glContext);
-        }
-
-    protected:
-        Pixel m_background;
-        Screen m_screen;
-
-        SDL_GLContext m_glContext;
-
+        static std::shared_ptr<OG33Renderer> Create(int width, int height);
     private:
-        static float Col(uint32_t color);
-        static void GlewInitAttempt();
-    };
+        int m_width;
+        int m_height;
 
-    static bool glewInitialized = false;
+        glm::vec4 m_background { 0.0f, 0.0f, 0.0f, 0.0f };
+
+        static float Col(uint32_t color);
+    };
 }
 
 #endif //MATH4BG_OG33RENDERER_H

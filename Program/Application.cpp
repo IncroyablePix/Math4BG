@@ -3,19 +3,25 @@
 //
 
 #include <iostream>
+#include <memory>
 #include <utility>
 #include "Application.h"
 #include "../Input/MouseInput.h"
 #include "../Input/KeyInput.h"
 #include "../IO/OBJLoader.h"
+#include "../View/IMGUI/imgui.h"
+#include "../View/IMGUI/imgui_impl_sdl.h"
 
 namespace Math4BG
 {
-    Application::Application(std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output) :
+    Application::Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output) :
         m_interpreter(CreateInterpreter("lua", contexts, output)),
         m_fpsLimiter(config.fpsLimiter),
-        m_output(output)
+        m_window(info, output),
+        m_output(std::move(output))
     {
+        /*WindowInfo info {"Math4BG", 1280, 720};
+        m_window = std::make_unique<MainWindow>(info, output);*/
         /*SDL_DisplayMode current;
         int errorCode = SDL_GetCurrentDisplayMode(0, &current);
         if(errorCode != 0)
@@ -26,14 +32,12 @@ namespace Math4BG
         m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
         m_interpreter->ExecuteFile(config.scriptFile);
 
-        /*auto loader = OBJLoader();
-        ModelData data = loader.LoadModel("models/suzanne.obj");
-        std::cout << data << std::endl;*/
+        m_window.SetContexts(m_contexts);
     }
 
     Application::~Application()
     {
-
+        ImGui::DestroyContext();
     }
 
     void Application::Start()
@@ -70,10 +74,76 @@ namespace Math4BG
 
         //---
 
+        int wheel = 0;
         //SDL_ShowCursor(SDL_DISABLE);
-
-        while (m_running)
+        
+        while(m_running) 
         {
+            SDL_PollEvent(&event);
+            ImGui_ImplSDL2_ProcessEvent(&event);
+            if(event.type == SDL_QUIT || event.window.event == SDL_WINDOWEVENT_CLOSE)
+            {
+                m_running = false;
+            }
+            else if(event.type == SDL_WINDOWEVENT)
+            {
+                if(event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+                {
+                    m_window.Resize(event.window.data1, event.window.data2);
+                }
+            }
+            else if(event.type == SDL_MOUSEWHEEL)
+            {
+                wheel = event.wheel.y;
+            }
+
+
+            // Chronos
+            unsigned long long now = SDL_GetTicks();
+            unsigned long long elapsed = now - m_last;
+
+            lag += (double) (elapsed) / 1000.0;
+            
+            while (lag > secondsPerUpdate)
+            {
+                // Mouse
+                int mouseX, mouseY;
+                const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+                
+                //--- 
+                   
+                m_window.Update(lag);
+                Update(lag);
+                m_window.SetMouseProps(ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY)), buttons, wheel);
+
+                lag -= secondsPerUpdate;
+                ups++;
+
+                if (now - lastUPS >= 1000)
+                {
+                    lastUPS = SDL_GetTicks();
+                    m_window.SetUPS(ups);
+                    
+                    ups = 0;
+                }
+            }
+            m_last = SDL_GetTicks();
+            
+            m_window.Render();
+
+            fps++;
+
+            if (now - lastFPS >= 1000)
+            {
+                lastFPS = SDL_GetTicks();
+                m_window.SetFPS(fps);
+                fps = 0;
+            }
+        }
+
+        /*while (m_running)
+        {
+            ImGuiIO& io = ImGui::GetIO();
             //---SDL STUFF---//
             SDL_PollEvent(&event);
             ManageWindowEvents(event);
@@ -107,6 +177,8 @@ namespace Math4BG
             }
             m_last = SDL_GetTicks();
 
+            m_window->Render();// TODO : ?
+
             it = m_contexts->Begin();
             for (; it != itEnd; it++)
             {
@@ -135,13 +207,13 @@ namespace Math4BG
                 if (frameDelay > frameTime)
                     SDL_Delay(frameDelay - frameTime);
             }
-        }
+        }*/
     }
 
     void Application::ManageWindowEvents(const SDL_Event& event)
     {
         int windowId = event.window.windowID;
-        Context* context = m_contexts->ContextFromWindowId(windowId);
+        /*Context* context = m_contexts->ContextFromWindowId(windowId);
 
         switch (event.type)
         {
@@ -177,7 +249,7 @@ namespace Math4BG
                         break;
                 }
                 break;
-        }
+        }*/
     }
 
     void Application::Update(double lag)
@@ -204,7 +276,7 @@ namespace Math4BG
     std::shared_ptr<ILanInterpreter> Application::CreateInterpreter(const std::string &name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output)
     {
         if(name == "lua")
-            return std::shared_ptr<ILanInterpreter>(LuaInterpreter::Create(contexts, output));
+            return std::shared_ptr<ILanInterpreter>(LuaInterpreter::Create(std::move(contexts), std::move(output)));
         /*else if(name == "js")
             return std::shared_ptr<ILanInterpreter>(JavascriptInterpreter::Create(contexts, output));*/
 

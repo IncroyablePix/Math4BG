@@ -12,18 +12,21 @@
 #include "../Transformers/Context.h"
 #include "../Transformers/Contexts.h"
 #include "../Output/IOutput.h"
+#include "../View/Windowing/MainWindow.h"
 
 namespace Math4BG
 {
     class Application
     {
     public:
-        Application(std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output);
+        Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output);
         ~Application();
         void Start();
 
     private:
         void ManageWindowEvents(const SDL_Event& event);
+
+        MainWindow m_window;
 
         std::shared_ptr<Contexts> m_contexts;
         std::shared_ptr<ILanInterpreter> m_interpreter;

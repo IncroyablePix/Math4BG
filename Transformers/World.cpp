@@ -12,6 +12,7 @@
 #include "../View/Renderer/3D/Light/PointLight.h"
 #include "../View/Renderer/3D/Object/Plane.h"
 #include "../Utils/ColorSwitch.h"
+#include "../View/IMGUI/imgui.h"
 
 
 namespace Math4BG
@@ -30,32 +31,44 @@ namespace Math4BG
 
     }
 
-    void World::Draw(Window &window)
+    void World::Draw(const std::string &title)
     {
-        for (std::pair<std::string, std::shared_ptr<Shader>> sh : m_shaders) // Updating shaders uniforms
+        for(const auto& [name, shader] : m_shaders)
         {
-            Shader* shader = sh.second.get();
+            Shader* shaderProgram = shader.get();
 
-            shader->Bind();
-            shader->SetUniformVec2("vPixelSize", m_camera->GetPixelSize());
-            m_directionalLight.ToShader(*shader);
+            shaderProgram->Bind();
+            shaderProgram->SetUniformVec2("vPixelSize", m_camera->GetPixelSize());
+            m_directionalLight.ToShader(*shaderProgram);
 
             for (std::pair<int, std::shared_ptr<Light>> light : m_lights)
             {
-                light.second->ToShader(*shader);
+                light.second->ToShader(*shaderProgram);
             }
-            shader->Unbind();
+            shaderProgram->Unbind();
         }
 
         m_fbo.Bind(true); // Draw everything to frame buffer
         m_renderer->Clear();
 
-        for(const auto& drawable : m_objects)
-            window.Draw(m_camera.get(), drawable.second.get());
-
-        window.DrawGUI();
+        for(const auto& [index, drawable] : m_objects)
+            m_renderer->Draw(m_camera.get(), drawable.get());
 
         m_fbo.Unbind();
+
+        //window.DrawGUI();
+
+        if(ImGui::BeginTabItem(title.c_str()))
+        {
+            ImGui::BeginChild("GameRender");
+            // Get the size of the child (i.e. the whole draw size of the windows).
+            ImVec2 wsize = ImGui::GetWindowSize();
+            // Because I use the texture from OpenGL, I need to invert the V from the UV.
+            ImGui::Image((ImTextureID) m_fbo.GetId(), wsize, ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::EndChild();
+
+            ImGui::EndTabItem();
+        }
 
         m_canvas.Bind(*m_ppShader, *m_fbo.GetTexture()); // Drawing frame buffer over canvas
     }
@@ -85,6 +98,10 @@ namespace Math4BG
     void World::Update(double lag, const MouseInput &mouse, const KeyInput &keys)
     {
         m_camera->Update(mouse, keys, lag);
+
+        m_fbo.Bind(true);
+        m_renderer->Clear();
+        m_fbo.Unbind();
     }
 
     int World::CreateCircle(const std::string &shaderName, const glm::vec3 &center, double radius, uint32_t color)
@@ -376,5 +393,11 @@ namespace Math4BG
             }
         }
         return false;
+    }
+
+    void World::Resize(int width, int height)
+    {
+        m_camera->SetViewportSize(width, height);
+        m_renderer->Resize(width, height);
     }
 }

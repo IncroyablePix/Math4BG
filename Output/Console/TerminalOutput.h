@@ -15,6 +15,8 @@ namespace Math4BG
     public:
         TerminalOutput();
         static std::shared_ptr<TerminalOutput> Create();
+
+        void PrintMessages() override { }
     };
 }
 

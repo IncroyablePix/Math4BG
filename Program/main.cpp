@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "../View/Error.h"
 #include "../Output/Console/TerminalOutput.h"
+#include "../Output/ImGuiConsole/ImGuiOutput.h"
 #include <memory>
 
 int main(int argc, char** argv)
@@ -25,10 +26,11 @@ int main(int argc, char** argv)
 
     //---
 
-    std::shared_ptr<Math4BG::IOutput> out = Math4BG::TerminalOutput::Create();
+
+    std::shared_ptr<Math4BG::IOutput> out = Math4BG::ImGuiOutput::Create();
     std::shared_ptr<Math4BG::Contexts> contexts = Math4BG::Contexts::Create();
 
-    Math4BG::Application app(contexts, config, out);
+    Math4BG::Application app({ "Math4BG", 1280, 720 }, contexts, config, out);
 
     try
     {

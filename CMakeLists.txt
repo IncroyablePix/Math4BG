@@ -110,8 +110,8 @@ set(SRC_FILES
         Transformers/Context.h
         Transformers/Contexts.cpp
         Transformers/Contexts.h
-        View/Renderer/OG33Renderer.cpp
-        View/Renderer/OG33Renderer.h
+        View/Renderer/OG33RendererSDL.cpp
+        View/Renderer/OG33RendererSDL.h
         Transformers/WorldType.h
         View/Renderer/3D/Shaders/ShaderProgramSource.cpp
         View/Renderer/3D/Shaders/ShaderProgramSource.h
@@ -166,11 +166,17 @@ set(SRC_FILES
         View/IMGUI/imstb_rectpack.h
         View/IMGUI/imstb_textedit.h
         View/IMGUI/imstb_truetype.h
+        View/IMGUI/imgui_impl_sdl.h
+        View/IMGUI/imgui_impl_sdl.cpp
+        View/IMGUI/imgui_impl_opengl3.h
+        View/IMGUI/imgui_impl_opengl3.cpp
+        View/IMGUI/imgui_impl_opengl3_loader.h
+        Output/CircularQueue.h
         Input/KeyInput.cpp
         Input/KeyInput.h
         Input/MouseInput.cpp Input/MouseInput.h IO/IModelLoader.cpp IO/IModelLoader.h IO/OBJLoader.cpp IO/OBJLoader.h Transformers/Interpreter/ILanInterpreter.cpp Transformers/Interpreter/ILanInterpreter.h Physics/Transform.cpp Physics/Transform.h IO/ModelData.h View/Renderer/3D/Vertices/Vertex.cpp View/Renderer/3D/Vertices/Vertex.h View/Renderer/3D/Vertices/Mesh.cpp View/Renderer/3D/Vertices/Mesh.h View/Renderer/3D/Object/Pyramid.cpp View/Renderer/3D/Object/Pyramid.h IO/IMG/ImageLoaders.cpp IO/IMG/ImageLoaders.h View/Renderer/3D/Texture/Texture.cpp View/Renderer/3D/Texture/Texture.h View/Renderer/3D/Texture/BMPTexture.cpp View/Renderer/3D/Texture/BMPTexture.h View/Renderer/3D/Light/Light.cpp View/Renderer/3D/Light/Light.h View/Renderer/3D/Light/PointLight.cpp View/Renderer/3D/Light/PointLight.h Sound/Sound.cpp Sound/Sound.h Sound/WAVSound.cpp Sound/WAVSound.h View/Renderer/3D/Light/DirectionalLight.cpp View/Renderer/3D/Light/DirectionalLight.h View/Renderer/3D/Object/Plane.cpp View/Renderer/3D/Object/Plane.h Utils/ColorSwitch.cpp Utils/ColorSwitch.h View/Renderer/3D/Particles/Particle.cpp View/Renderer/3D/Particles/Particle.h View/Renderer/3D/Texture/FrameBuffer/FrameBufferObject.cpp View/Renderer/3D/Texture/FrameBuffer/FrameBufferObject.h View/Renderer/3D/Texture/FrameBuffer/RenderedTexture.cpp View/Renderer/3D/Texture/FrameBuffer/RenderedTexture.h View/Renderer/3D/PostProcessing/ViewportSquare.cpp View/Renderer/3D/PostProcessing/ViewportSquare.h
         View/IWindow.cpp
-        View/IWindow.h)
+        View/IWindow.h View/Windowing/MainWindow.cpp View/Windowing/MainWindow.h View/Windowing/RenderWin.cpp View/Windowing/RenderWin.h View/Renderer/OG33Renderer.cpp View/Renderer/OG33Renderer.h Output/ImGuiConsole/ImGuiOutput.cpp Output/ImGuiConsole/ImGuiOutput.h)
 
 
 # OS SPECIFICITIES

@@ -1,74 +1,26 @@
 //
-// Created by Benjam on 13-04-21.
+// Created by Benjam on 10/16/2021.
 //
 
 #include "OG33Renderer.h"
-#include <GL/glew.h>
 
 namespace Math4BG
 {
-    OG33Renderer::OG33Renderer(SDL_Window *window, unsigned int width, unsigned int height) :
-            m_screen(width, height),
-            m_background{0x0, 0x0, 0x0, 0xFF},
-            m_glContext(SDL_GL_CreateContext(window))
+
+    OG33Renderer::OG33Renderer(int width, int height) : m_width(width), m_height(height)
     {
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-        glEnable(GL_CULL_FACE);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glCullFace(GL_BACK);
-
-        GlewInitAttempt();
-        glViewport(0, 0, width, height);
     }
 
     OG33Renderer::~OG33Renderer()
     {
-        SDL_GL_DeleteContext(m_glContext);
-    }
 
-
-    float OG33Renderer::Col(uint32_t color)
-    {
-        return ((float) color) / 0xFF;
     }
 
     void OG33Renderer::SetBackgroundColor(uint8_t r, uint8_t g, uint8_t b)
     {
-        m_background.r = r;
-        m_background.g = g;
-        m_background.b = b;
-        m_background.a = 1.0f;
-        glClearColor(Col(m_background.r), Col(m_background.g), Col(m_background.b), Col(m_background.a));
-    }
-
-    void OG33Renderer::Clear()
-    {
-        glClearColor(Col(m_background.r), Col(m_background.g), Col(m_background.b), Col(m_background.a));
-        glClearDepth(1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-
-    void OG33Renderer::GlewInitAttempt()
-    {
-        if(!glewInitialized)
-        {
-            glewExperimental = GL_TRUE;
-            if (glewInit() != GLEW_OK)
-                throw std::runtime_error("Failed to initialize GLEW.");
-
-            /*printf("----------------------------------------------------------------\n");
-            printf("Graphics Successfully Initialized\n");
-            printf("OpenGL Info\n");
-            printf("    Version: %s\n", glGetString(GL_VERSION));
-            printf("     Vendor: %s\n", glGetString(GL_VENDOR));
-            printf("   Renderer: %s\n", glGetString(GL_RENDERER));
-            printf("    Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-            printf("----------------------------------------------------------------\n");*/
-
-            glewInitialized = true;
-        }
+        m_background = { Col(r), Col(g), Col(b), 1.0f };
+        glClearColor(m_background.r, m_background.g, m_background.b, m_background.a);
     }
 
     void OG33Renderer::Draw(ICamera *camera, IDrawable *drawable)
@@ -76,8 +28,27 @@ namespace Math4BG
         drawable->Bind(*camera);
     }
 
-    std::shared_ptr<OG33Renderer> OG33Renderer::Create(SDL_Window *window, unsigned int width, unsigned int height)
+    void OG33Renderer::Clear()
     {
-        return std::shared_ptr<OG33Renderer>(static_cast<OG33Renderer *>(new OG33Renderer(window, width, height)));
+        glClearColor(m_background.r, m_background.g, m_background.b, m_background.a);
+        //glClearColor(1.0f, 0.0, 0.0, 1.0f);
+        glClearDepth(1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    std::shared_ptr<OG33Renderer> OG33Renderer::Create(int width, int height)
+    {
+        return std::shared_ptr<OG33Renderer>(static_cast<OG33Renderer *>(new OG33Renderer(width, height)));
+    }
+
+    float OG33Renderer::Col(uint32_t color)
+    {
+        return ((float) color) / 0xFF;
+    }
+
+    void OG33Renderer::Resize(int width, int height)
+    {
+        m_width = width;
+        m_height = height;
     }
 }

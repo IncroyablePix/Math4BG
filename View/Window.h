@@ -8,7 +8,7 @@
 #include <SDL2/SDL.h>
 #include <memory>
 #include "Screen.h"
-#include "Renderer/OG33Renderer.h"
+#include "Renderer/OG33RendererSDL.h"
 #include "../Transformers/WorldType.h"
 #include "IWindow.h"
 
@@ -25,7 +25,7 @@ namespace Math4BG
 
         static std::shared_ptr<Window> Create(const WindowInfo &info, WorldType worldType);
 
-        inline std::shared_ptr<OG33Renderer> GetRenderer()
+        inline std::shared_ptr<OG33RendererSDL> GetRenderer()
         { return m_renderer; }
 
 
@@ -34,6 +34,7 @@ namespace Math4BG
         void Draw(MainCamera* camera, IDrawable* drawable);
         void DrawGUI();
         void SwapBuffers();
+        void Resize(int width, int height) override;
 
         inline uint32_t GetWindowId() { return SDL_GetWindowID(m_window.get()); }
 
@@ -42,10 +43,10 @@ namespace Math4BG
 
     private:
         std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> m_window;
-        std::shared_ptr<OG33Renderer> m_renderer;
+        std::shared_ptr<OG33RendererSDL> m_renderer;
         std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdlRenderer;
 
-        static std::shared_ptr<OG33Renderer> CreateRenderer(SDL_Window *window, unsigned int width, unsigned int height, WorldType worldType);
+        static std::shared_ptr<OG33RendererSDL> CreateRenderer(SDL_Window *window, unsigned int width, unsigned int height, WorldType worldType);
         static uint32_t FlagsFor(WorldType worldType);
 
         static void InitSDL();

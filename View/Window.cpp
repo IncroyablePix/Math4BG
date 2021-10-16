@@ -11,7 +11,7 @@
 #include "Window.h"
 #include "IMGUI/imgui_sdl.h"
 #include "IMGUI/imgui.h"
-#include "Renderer/OG33Renderer.h"
+#include "Renderer/OG33RendererSDL.h"
 #include "Renderer/3D/Camera/MainCamera.h"
 
 
@@ -85,19 +85,19 @@ namespace Math4BG
         return std::shared_ptr<Window>(static_cast<Window *>(new Window(info, type)));
     }
 
-    std::shared_ptr<OG33Renderer>
+    std::shared_ptr<OG33RendererSDL>
     Window::CreateRenderer(SDL_Window *window, unsigned int width, unsigned int height, WorldType worldType)
     {
         /*switch (worldType)
         {
             case Flat:
-                return std::shared_ptr<OG33Renderer>(Renderer2D::Create(window, width, height));
+                return std::shared_ptr<OG33RendererSDL>(Renderer2D::Create(window, width, height));
             case Relief:
-                return std::shared_ptr<OG33Renderer>(Renderer3D::Create(window, width, height));
+                return std::shared_ptr<OG33RendererSDL>(Renderer3D::Create(window, width, height));
         }
 
         throw std::runtime_error("Invalid WorldType specified !");*/
-        return OG33Renderer::Create(window, width, height);
+        return OG33RendererSDL::Create(window, width, height);
     }
 
     uint32_t Window::FlagsFor(WorldType worldType)
@@ -135,6 +135,12 @@ namespace Math4BG
     {
         SDL_GL_SwapWindow(m_window.get());
         //m_renderer->SwapBuffers();
+    }
+
+    void Window::Resize(int width, int height)
+    {
+        m_width = width;
+        m_height = height;
     }
 }
 

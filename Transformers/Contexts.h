@@ -36,16 +36,17 @@ namespace Math4BG
         bool LoadTexture(const std::string &path, const std::string &name);
         bool LoadModel(const std::string &path, const std::string &name);
 
-        inline Context* ContextFromWindowId(int windowId) { return (m_contextIds.find(windowId) != m_contextIds.end()) ? m_contexts[m_contextIds[windowId]] : nullptr; }
+        //inline Context* ContextFromWindowId(int windowId) { return (m_contextIds.find(windowId) != m_contextIds.end()) ? m_contexts[m_contextIds[windowId]] : nullptr; }
+
+        void DrawContexts();
 
     private:
         std::unordered_map<std::string, ModelData> m_models;
         std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
-        std::unordered_map<uint32_t, int> m_contextIds;
+        //std::unordered_map<uint32_t, int> m_contextIds;
         std::unordered_map<int, Context*> m_contexts;
         std::unordered_map<int, int> m_objects;
         int m_count = 0;
-
     };
 }
 

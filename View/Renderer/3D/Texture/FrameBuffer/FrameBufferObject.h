@@ -20,7 +20,8 @@ namespace Math4BG
         void Bind(bool fullViewport) const;
         void Unbind() const;
 
-        inline std::shared_ptr<Texture> GetTexture() { return m_texture; }
+        inline std::shared_ptr<Texture> GetTexture() const { return m_texture; }
+        inline unsigned int GetId() const { return m_colBuffer; }
 
     private:
         unsigned int m_colBuffer;

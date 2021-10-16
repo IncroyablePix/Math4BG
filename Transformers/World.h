@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include "../View/Renderer/OG33RendererSDL.h"
 #include "../View/Renderer/OG33Renderer.h"
 #include "../View/Renderer/2D/Object/Point.h"
 #include "../View/Renderer/2D/Object/Object2D.h"
@@ -35,7 +36,7 @@ namespace Math4BG
 
         ~World();
 
-        void Draw(Window &window);
+        void Draw(const std::string& title);
         void Update(double lag, const MouseInput &mouse, const KeyInput &keys);
 
         std::string CreateShader(const std::string& path);
@@ -75,6 +76,10 @@ namespace Math4BG
         bool SetLightColor(int lightid, const glm::vec3 &color);
 
         bool SetDirectionalLight(float intensity, const glm::vec3 &orientation, const glm::vec3 &color);
+
+        void Resize(int width, int height);
+        inline unsigned int GetFboId() const { return m_fbo.GetId(); }
+        inline std::shared_ptr<Texture> GetFboTexture() const { return m_fbo.GetTexture(); }
 
     private:
         std::unique_ptr<MainCamera> m_camera;
