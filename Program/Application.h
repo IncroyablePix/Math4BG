@@ -13,6 +13,7 @@
 #include "../Transformers/Contexts.h"
 #include "../Output/IOutput.h"
 #include "../View/Windowing/MainWindow.h"
+#include "../View/IMGUI/Own/CodeEditor.h"
 
 namespace Math4BG
 {
@@ -31,6 +32,7 @@ namespace Math4BG
         std::shared_ptr<Contexts> m_contexts;
         std::shared_ptr<ILanInterpreter> m_interpreter;
         std::shared_ptr<IOutput> m_output;
+        std::shared_ptr<CodeEditor> m_codeEditor;
         unsigned long long m_start;
         unsigned long long m_last;
         bool m_running;

@@ -32,7 +32,14 @@ namespace Math4BG
         m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
         m_interpreter->ExecuteFile(config.scriptFile);
 
+        m_codeEditor = std::make_shared<CodeEditor>(config.scriptFile, [](const std::string& path)
+        {
+
+        });
+
         m_window.SetContexts(m_contexts);
+
+        m_window.SetCodeEditor(m_codeEditor);
     }
 
     Application::~Application()
@@ -129,7 +136,7 @@ namespace Math4BG
             }
             m_last = SDL_GetTicks();
             
-            m_window.Render();
+            m_window.Render(1.0 / lastFPS);
 
             fps++;
 
@@ -144,6 +151,7 @@ namespace Math4BG
         /*while (m_running)
         {
             ImGuiIO& io = ImGui::GetIO();
+        io.DeltaTime = delta;
             //---SDL STUFF---//
             SDL_PollEvent(&event);
             ManageWindowEvents(event);

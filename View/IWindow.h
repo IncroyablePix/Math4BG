@@ -23,6 +23,7 @@ namespace Math4BG
         void SetFPS(unsigned int fps);
         void SetUPS(unsigned int ups);
         virtual void Resize(int width, int height) = 0;
+        inline unsigned int GetFPS() const { return m_fps; }
 
     protected:
         std::string m_title;

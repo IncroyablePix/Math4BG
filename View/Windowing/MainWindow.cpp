@@ -11,14 +11,15 @@
 #include "../IMGUI/imgui_impl_sdl.h"
 #include "../IMGUI/imgui_internal.h"
 #include "../../Output/ImGuiConsole/ImGuiOutput.h"
+#include "../IMGUI/Own/CodeEditor.h"
 
 namespace Math4BG
 {
-
     MainWindow::MainWindow(const WindowInfo &info, std::shared_ptr<IOutput> output) :
     IWindow(info),
     m_window(nullptr, SDL_DestroyWindow),
-    m_output(std::move(output))
+    m_output(std::move(output)),
+    m_fileDialog(std::make_unique<imgui_addons::ImGuiFileBrowser>())
     {
         InitSDL();
 
@@ -91,14 +92,42 @@ namespace Math4BG
         }
     }
 
-    void MainWindow::Render() const
+    void MainWindow::Render(double delta) const
     {
         glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        ImGuiIO& io = ImGui::GetIO();
+
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
+
+        //--- Main Menu
+        bool open = false;
+        if(ImGui::BeginMainMenuBar())
+        {
+            if(ImGui::BeginMenu("File"))
+            {
+                if(ImGui::MenuItem("Open...", nullptr))
+                {
+                    open = true;
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+        }
+
+        if(open)
+            ImGui::OpenPopup("Open File");
+
+        if(m_fileDialog->showFileDialog("Open File", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".rar,.zip,.7z"))
+        {
+            std::cout << m_fileDialog->selected_fn << std::endl;      // The name of the selected file or directory in case of Select Directory dialog mode
+            std::cout << m_fileDialog->selected_path << std::endl;    // The absolute path to the selected file
+        }
+        //--- Dock Space
 
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
         ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -114,11 +143,11 @@ namespace Math4BG
             window_flags |= ImGuiWindowFlags_NoBackground;
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
         ImGui::Begin("DockSpace", nullptr, window_flags);
         ImGui::PopStyleVar();
         ImGui::PopStyleVar(2);
 
-        ImGuiIO& io = ImGui::GetIO();
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
@@ -151,7 +180,7 @@ namespace Math4BG
         ImGui::End();
 
         ImGui::Begin("Files");
-        ImGui::Text("Hello, left!");
+        ImGui::Text("Files!");
         ImGui::End();
 
         ImGui::Begin("Console");
@@ -159,11 +188,16 @@ namespace Math4BG
             output->PrintMessages();
         ImGui::End();
 
+        bool code = false;
         ImGui::Begin("Main");
             ImGui::BeginTabBar("Windows");
                 if(ImGui::BeginTabItem("Code"))
                 {
-                    ImGui::Text("Hello, top!");
+                    if(m_codeEditor)
+                        m_codeEditor->Show();
+                    else
+                        ImGui::Text("Hello, top!");
+
                     ImGui::EndTabItem();
                 }
                 m_contexts->DrawContexts();
@@ -242,5 +276,10 @@ namespace Math4BG
     void MainWindow::SetContexts(std::shared_ptr<Contexts> contexts)
     {
         m_contexts = std::move(contexts);
+    }
+
+    void MainWindow::SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor)
+    {
+        m_codeEditor = std::move(codeEditor);
     }
 }

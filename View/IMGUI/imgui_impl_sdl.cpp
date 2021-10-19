@@ -149,11 +149,23 @@ bool ImGui_ImplSDL2_ProcessEvent(const SDL_Event* event)
             if (event->button.button == SDL_BUTTON_MIDDLE) { bd->MousePressed[2] = true; }
             return true;
         }
-    case SDL_TEXTINPUT:
+        /*
+         * BUG FIX FOR TEXTINPUT BEING CALLED TOO MANY TIMES :
+         * Thanks cedriclmenard : https://github.com/ocornut/imgui/issues/1001*/
+    /*case SDL_TEXTINPUT:
         {
             io.AddInputCharactersUTF8(event->text.text);
             return true;
+        }*/
+    case SDL_TEXTINPUT:
+    {
+        static unsigned int prevTimestamp = 0;
+        if (event->text.timestamp != prevTimestamp) {
+            io.AddInputCharactersUTF8(event->text.text);
         }
+        prevTimestamp = event->text.timestamp;
+        return true;
+    }
     case SDL_KEYDOWN:
     case SDL_KEYUP:
         {

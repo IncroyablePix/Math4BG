@@ -31,6 +31,8 @@ namespace Math4BG
 
     }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
     void World::Draw(const std::string &title)
     {
         for(const auto& [name, shader] : m_shaders)
@@ -72,6 +74,7 @@ namespace Math4BG
 
         m_canvas.Bind(*m_ppShader, *m_fbo.GetTexture()); // Drawing frame buffer over canvas
     }
+#pragma clang diagnostic pop
 
     void World::SetCameraPos(const glm::vec3& pos)
     {

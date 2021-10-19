@@ -14,9 +14,9 @@ namespace Math4BG
         FileSplit(const std::string &filePath);
 
         std::string fileName;
-        std::string filePath;
-        std::string fileExtension;
-        std::string fileWithoutExtension;
+        std::string filePath; //
+        std::string fileExtension; // Without the dot !
+        std::string fileWithoutExtension; // Without the dot !
     };
 }
 

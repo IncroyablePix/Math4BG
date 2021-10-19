@@ -10,6 +10,8 @@
 #include "../IMGUI/imgui.h"
 #include "../../Transformers/Contexts.h"
 #include "../../Output/IOutput.h"
+#include "../IMGUI/Own/CodeEditor.h"
+#include "../IMGUI/ImGuiFileBrowser.h"
 
 namespace Math4BG
 {
@@ -20,10 +22,12 @@ namespace Math4BG
         ~MainWindow();
         void SetMouseProps(const ImVec2& position, const int buttons, const int wheel);
         void Update(double lag);
-        void Render() const;
+        void Render(double delta) const;
         void Resize(int width, int height) override;
 
         void SetContexts(std::shared_ptr<Contexts> contexts);
+
+        void SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor);
 
     protected:
         void UpdateWindowTitle() override;
@@ -40,6 +44,10 @@ namespace Math4BG
 
         std::shared_ptr<Contexts> m_contexts;
         std::shared_ptr<IOutput> m_output;
+
+        std::shared_ptr<CodeEditor> m_codeEditor;
+
+        std::unique_ptr<imgui_addons::ImGuiFileBrowser> m_fileDialog;
     };
 
     static bool sdl2Initialized = false;

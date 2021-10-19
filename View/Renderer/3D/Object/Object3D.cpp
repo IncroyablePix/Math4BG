@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <utility>
 #include "Object3D.h"
 #include "../GL/GLMacros.h"
 
@@ -12,7 +13,7 @@ namespace Math4BG
      * Currently pushes all data in a single mesh to make further work easier
      */
     Object3D::Object3D(std::shared_ptr<Shader> shader, ModelData *model, const Transform &transform) :
-        m_shader(shader),
+        m_shader(std::move(shader)),
         m_transform(transform)
     {
         m_meshes.push_back(std::make_unique<Mesh>((Vertex*) (model->vertices.data()), model->vertices.size(), model->ibc, transform));
