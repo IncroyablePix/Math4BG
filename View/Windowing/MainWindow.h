@@ -12,6 +12,8 @@
 #include "../../Output/IOutput.h"
 #include "../IMGUI/Own/CodeEditor.h"
 #include "../IMGUI/ImGuiFileBrowser.h"
+#include "../IMGUI/Own/Docking/MainDockSpace.h"
+#include "../IMGUI/Own/Main/EditorView.h"
 
 namespace Math4BG
 {
@@ -26,7 +28,6 @@ namespace Math4BG
         void Resize(int width, int height) override;
 
         void SetContexts(std::shared_ptr<Contexts> contexts);
-
         void SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor);
 
     protected:
@@ -42,12 +43,12 @@ namespace Math4BG
 
         void GlewInitAttempt();
 
-        std::shared_ptr<Contexts> m_contexts;
         std::shared_ptr<IOutput> m_output;
 
-        std::shared_ptr<CodeEditor> m_codeEditor;
-
         std::unique_ptr<imgui_addons::ImGuiFileBrowser> m_fileDialog;
+
+        std::unique_ptr<MainDockSpace> m_dockSpace;
+        std::shared_ptr<EditorView> m_editorView;
     };
 
     static bool sdl2Initialized = false;

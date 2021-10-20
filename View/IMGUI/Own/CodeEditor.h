@@ -7,19 +7,22 @@
 
 #include <memory>
 #include "../TextEditor.h"
+#include "IGuiElement.h"
 
 namespace Math4BG
 {
-    class CodeEditor : public std::enable_shared_from_this<CodeEditor>
+    class CodeEditor : public std::enable_shared_from_this<CodeEditor>, public IGuiElement
     {
     public:
-        CodeEditor(const std::string &path, std::function<void(const std::string& path)> reloadCallback);
+        CodeEditor(const std::string &path, std::function<void(const std::string &path)> reloadCallback, const std::string &name);
         ~CodeEditor();
         void ShowMenuBar();
-        void Show();
+        void Show() override;
         bool Save();
+        inline const std::string & GetName() override { return m_name; };
 
     private:
+        std::string m_name;
         std::string m_path;
         bool m_readOnly;
         TextEditor m_editor;

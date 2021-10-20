@@ -37,6 +37,7 @@ namespace Math4BG
         ~World();
 
         void Draw(const std::string& title);
+        void DrawWorld();
         void Update(double lag, const MouseInput &mouse, const KeyInput &keys);
 
         std::string CreateShader(const std::string& path);

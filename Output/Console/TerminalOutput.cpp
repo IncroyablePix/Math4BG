@@ -3,6 +3,7 @@
 //
 
 #include "TerminalOutput.h"
+#include "../../View/IMGUI/imgui.h"
 
 namespace Math4BG
 {

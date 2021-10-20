@@ -7,6 +7,7 @@
 
 
 #include "../IOutput.h"
+#include "../../View/IMGUI/Own/IGuiElement.h"
 
 namespace Math4BG
 {

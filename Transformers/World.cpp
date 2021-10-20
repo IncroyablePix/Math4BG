@@ -31,9 +31,7 @@ namespace Math4BG
 
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-    void World::Draw(const std::string &title)
+    void World::DrawWorld()
     {
         for(const auto& [name, shader] : m_shaders)
         {
@@ -57,7 +55,12 @@ namespace Math4BG
             m_renderer->Draw(m_camera.get(), drawable.get());
 
         m_fbo.Unbind();
+    }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+    void World::Draw(const std::string &title)
+    {
         //window.DrawGUI();
 
         if(ImGui::BeginTabItem(title.c_str()))
@@ -65,6 +68,8 @@ namespace Math4BG
             ImGui::BeginChild("GameRender");
             // Get the size of the child (i.e. the whole draw size of the windows).
             ImVec2 wsize = ImGui::GetWindowSize();
+            m_camera->SetViewportSize(wsize.x, wsize.y);
+            DrawWorld();
             // Because I use the texture from OpenGL, I need to invert the V from the UV.
             ImGui::Image((ImTextureID) m_fbo.GetId(), wsize, ImVec2(0, 1), ImVec2(1, 0));
             ImGui::EndChild();

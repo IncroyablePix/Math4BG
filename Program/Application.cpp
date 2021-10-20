@@ -35,7 +35,7 @@ namespace Math4BG
         m_codeEditor = std::make_shared<CodeEditor>(config.scriptFile, [](const std::string& path)
         {
 
-        });
+        }, "Code Editor");
 
         m_window.SetContexts(m_contexts);
 

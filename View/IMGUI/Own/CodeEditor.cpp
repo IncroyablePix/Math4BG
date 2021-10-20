@@ -8,9 +8,11 @@
 
 namespace Math4BG
 {
-    CodeEditor::CodeEditor(const std::string &path, std::function<void(const std::string &)> reloadCallback) :
+    CodeEditor::CodeEditor(const std::string &path, std::function<void(const std::string &path)> reloadCallback,
+                           const std::string &name) :
         m_path(path),
-        m_lanDef(GetLanguageDefinition(path))
+        m_lanDef(GetLanguageDefinition(path)),
+        m_name(name)
     {
         std::ifstream fileStream(path);
         if(fileStream.good())
@@ -29,11 +31,11 @@ namespace Math4BG
 
     void CodeEditor::ShowMenuBar()
     {
-        if(ImGui::BeginMenuBar())
-        {
+        /*if(ImGui::BeginMenuBar())
+        {*/
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("Save"))
+                if (ImGui::MenuItem("Save", "Ctrl-S"))
                 {
                     Save();
                 }
@@ -66,8 +68,8 @@ namespace Math4BG
 
                 ImGui::EndMenu();
             }
-            ImGui::EndMenuBar();
-        }
+            /*ImGui::EndMenuBar();
+        }*/
     }
 
     void CodeEditor::Show()
@@ -80,7 +82,7 @@ namespace Math4BG
                     m_editor.CanUndo() ? "*" : " ",
                     m_editor.GetLanguageDefinition().mName.c_str(), m_path.c_str());
 
-        m_editor.Render("TextEditor");
+        m_editor.Render(m_name.c_str());
     }
 
     TextEditor::LanguageDefinition CodeEditor::GetLanguageDefinition(const std::string &path)
@@ -96,6 +98,16 @@ namespace Math4BG
 
     bool CodeEditor::Save()
     {
-        return false;
+        std::ofstream fileStream(m_path);
+        if(fileStream.good())
+        {
+            std::string code = m_editor.GetText();
+            fileStream << code;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

@@ -12,6 +12,8 @@
 #include "../IMGUI/imgui_internal.h"
 #include "../../Output/ImGuiConsole/ImGuiOutput.h"
 #include "../IMGUI/Own/CodeEditor.h"
+#include "../IMGUI/Own/GuiConsole.h"
+#include "../IMGUI/Own/FileTree/FileTree.h"
 
 namespace Math4BG
 {
@@ -19,7 +21,9 @@ namespace Math4BG
     IWindow(info),
     m_window(nullptr, SDL_DestroyWindow),
     m_output(std::move(output)),
-    m_fileDialog(std::make_unique<imgui_addons::ImGuiFileBrowser>())
+    m_fileDialog(std::make_unique<imgui_addons::ImGuiFileBrowser>()),
+    m_dockSpace(std::make_unique<MainDockSpace>("MainDockWindow", 0)),
+    m_editorView(std::make_shared<EditorView>("Code editor"))
     {
         InitSDL();
 
@@ -43,6 +47,16 @@ namespace Math4BG
         glViewport(0, 0, info.width, info.height);
 
         InitImGui();
+
+        //--- GuiElements
+        auto mainDock = std::make_shared<DockSpace>("MainDock", 1);
+        //mainDock->AddElement(m_editorView, DOCK_TOP);
+        //mainDock->AddElement(std::make_shared<GuiConsole>("Console", m_output), DOCK_RIGHT);
+        m_dockSpace->AddElement(m_editorView, DOCK_TOP);
+        m_dockSpace->AddElement(std::make_shared<GuiConsole>("Console", m_output), DOCK_BOTTOM);
+        //m_dockSpace->AddElement(mainDock, DOCK_CENTER);
+        m_dockSpace->AddElement(std::make_shared<FileTree>("Files"), DOCK_LEFT);
+        //m_dockSpace->AddElement()
     }
 
     MainWindow::~MainWindow()
@@ -85,7 +99,7 @@ namespace Math4BG
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-            SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
+            SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);
             SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
             SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
             sdl2Initialized = true;
@@ -128,30 +142,81 @@ namespace Math4BG
             std::cout << m_fileDialog->selected_path << std::endl;    // The absolute path to the selected file
         }
         //--- Dock Space
+        /*ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGuiID mainDockSpaceId = 0;
 
-        static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+        // Central dockspace should take up all space
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID);
+
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar |
+                                       ImGuiWindowFlags_NoDocking |
+                                       ImGuiWindowFlags_NoTitleBar |
+                                       ImGuiWindowFlags_NoCollapse |
+                                       ImGuiWindowFlags_NoResize |
+                                       ImGuiWindowFlags_NoMove |
+                                       ImGuiWindowFlags_NoBringToFrontOnFocus |
+                                       ImGuiWindowFlags_NoNavFocus;
+        static ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGui::Begin("MainDockSpace", nullptr, windowFlags);
+
+        if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable) // If docking enabled
+        {
+            ImGuiID dockspaceId = ImGui::GetID("MyDockSpace");
+            ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f), dockspaceFlags);
+
+            static bool firstTime = true;
+            if (firstTime)
+            {
+                firstTime = false;
+
+                ImGui::DockBuilderRemoveNode(mainDockSpaceId); // clear any previous layout
+                ImGui::DockBuilderAddNode(dockspaceId, dockspaceFlags | ImGuiDockNodeFlags_DockSpace);
+                ImGui::DockBuilderSetNodeSize(dockspaceId, viewport->Size);
+
+                // split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
+                //   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
+                //                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
+                auto dockFiles = ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Left, 0.2f, nullptr, &dockspaceId);
+                auto dockMain = ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Up, 0.75f, nullptr, &dockspaceId);
+                auto dockConsole = ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Down, 0.25f, nullptr, &dockspaceId);
+
+                // we now dock our windows into the docking node we made above
+                ImGui::DockBuilderDockWindow("Console", dockConsole);
+                ImGui::DockBuilderDockWindow("Files", dockFiles);
+                ImGui::DockBuilderDockWindow("Main", dockMain);
+                ImGui::DockBuilderFinish(dockspaceId);
+            }
+        }
+
+        ImGui::End();*/
+
+        //ImGui::DockSpace(mainDockSpaceId, ImVec2(), ImGuiDockNodeFlags_PassthruCentralNode);
+
+        /*static ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_PassthruCentralNode;
         ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         ImGui::SetNextWindowPos(viewport->Pos);
         ImGui::SetNextWindowSize(viewport->Size);
         ImGui::SetNextWindowViewport(viewport->ID);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-        if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-            window_flags |= ImGuiWindowFlags_NoBackground;
+        windowFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+        if (dockspaceFlags & ImGuiDockNodeFlags_PassthruCentralNode)
+            windowFlags |= ImGuiWindowFlags_NoBackground;
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-        ImGui::Begin("DockSpace", nullptr, window_flags);
+        ImGui::Begin("DockSpace", nullptr, windowFlags);
         ImGui::PopStyleVar();
         ImGui::PopStyleVar(2);
 
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspaceFlags);
 
             static auto first_time = true;
             if (first_time)
@@ -159,7 +224,7 @@ namespace Math4BG
                 first_time = false;
 
                 ImGui::DockBuilderRemoveNode(dockspace_id); // clear any previous layout
-                ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
+                ImGui::DockBuilderAddNode(dockspace_id, dockspaceFlags | ImGuiDockNodeFlags_DockSpace);
                 ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
 
                 // split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
@@ -177,32 +242,39 @@ namespace Math4BG
             }
         }
 
-        ImGui::End();
+        ImGui::End();*/
+        //ImGui::Add
+        /*ImGuiDock::Dockspace dockspace;
+        ImGuiDock::Dock mainDock;
+        ImGuiDock::Dock leftDock;*/
 
-        ImGui::Begin("Files");
+        /*ImGui::Begin("Files");
         ImGui::Text("Files!");
         ImGui::End();
 
+
+        m_output->Show();
+
         ImGui::Begin("Console");
             auto output = m_output.get();
-            output->PrintMessages();
-        ImGui::End();
+            output->PrintMessages();ImGui::End();
 
-        bool code = false;
-        ImGui::Begin("Main");
+            ImGui::Begin("Main");
             ImGui::BeginTabBar("Windows");
-                if(ImGui::BeginTabItem("Code"))
-                {
-                    if(m_codeEditor)
-                        m_codeEditor->Show();
-                    else
-                        ImGui::Text("Hello, top!");
+            if(ImGui::BeginTabItem("Code"))
+            {
+                if(m_codeEditor)
+                    m_codeEditor->Show();
+                else
+                    ImGui::Text("Hello, top!");
 
-                    ImGui::EndTabItem();
-                }
-                m_contexts->DrawContexts();
+                ImGui::EndTabItem();
+            }
+            m_contexts->DrawContexts();
             ImGui::EndTabBar();
-        ImGui::End();
+        ImGui::End();*/
+
+        m_dockSpace->Show();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -275,11 +347,13 @@ namespace Math4BG
 
     void MainWindow::SetContexts(std::shared_ptr<Contexts> contexts)
     {
-        m_contexts = std::move(contexts);
+        m_editorView->SetContexts(contexts);
+        //m_contexts = std::move(contexts);
     }
 
     void MainWindow::SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor)
     {
-        m_codeEditor = std::move(codeEditor);
+        m_editorView->SetCodeEditor(codeEditor);
+        //m_codeEditor = std::move(codeEditor);
     }
 }

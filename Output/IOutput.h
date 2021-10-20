@@ -9,9 +9,11 @@
 #include <memory>
 #include <sstream>
 #include "CircularQueue.h"
+#include "../View/IMGUI/Own/IGuiElement.h"
 
 namespace Math4BG
 {
+
     class IOutput : private std::streambuf, public std::ostream, public std::enable_shared_from_this<IOutput>
     {
     public:
