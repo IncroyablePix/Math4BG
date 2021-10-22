@@ -281,13 +281,13 @@ namespace Math4BG
 
     int LuaInterpreter::CreateShader(lua_State *L)
     {
-        int contextid = (int) lua_tonumber(L, 1);
-        std::string file = lua_tostring(L, 2);
+        std::string file = lua_tostring(L, 1);
 
         std::string name = "";
 
-        if (m_contexts->ContextExists(contextid))
-            name = ((*m_contexts)[contextid])->GetWorld()->CreateShader(file);
+        name = m_contexts->CreateShader(file);
+        //if (m_contexts->ContextExists(contextid))
+            //name = ((*m_contexts)[contextid])->GetWorld()->CreateShader(file);
 
         lua_pushstring(L, name.c_str());
 
@@ -331,7 +331,7 @@ namespace Math4BG
     int LuaInterpreter::CreateCircle(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
-        std::string shader = lua_tostring(L, 2);
+        std::string name = lua_tostring(L, 2);
         double x = (double) lua_tonumber(L, 3);
         double y = (double) lua_tonumber(L, 4);
         double radius = (double) lua_tonumber(L, 5);
@@ -340,6 +340,9 @@ namespace Math4BG
         glm::vec3 position = {x, y, 0.0f};
 
         int id = -1;
+
+        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(name);
+
         if (m_contexts->ContextExists(contextid))
             id = ((*m_contexts)[contextid])->GetWorld()->CreateCircle(shader, position, radius, color);
 
@@ -385,7 +388,7 @@ namespace Math4BG
     int LuaInterpreter::CreateLine(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
-        std::string shader = lua_tostring(L, 2);
+        std::string name = lua_tostring(L, 2);
         double xStart = (double) lua_tonumber(L, 3);
         double yStart = (double) lua_tonumber(L, 4);
         double xEnd = (double) lua_tonumber(L, 5);
@@ -397,6 +400,9 @@ namespace Math4BG
         glm::vec3 end(xEnd, yEnd, 0.0f);
 
         int id = -1;
+
+        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(name);
+
         if (m_contexts->ContextExists(contextid))
             id = ((*m_contexts)[contextid])->GetWorld()->CreateLine(shader, start, end, color);
 
@@ -444,7 +450,7 @@ namespace Math4BG
     int LuaInterpreter::CreateRectangle(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
-        std::string shader = lua_tostring(L, 2);
+        std::string name = lua_tostring(L, 2);
         double x = (double) lua_tonumber(L, 3);
         double y = (double) lua_tonumber(L, 4);
         double width = (double) lua_tonumber(L, 5);
@@ -454,6 +460,9 @@ namespace Math4BG
         glm::vec3 position(x, y, 0.0f);
 
         int id = -1;
+
+        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(name);
+
         if (m_contexts->ContextExists(contextid))
             id = ((*m_contexts)[contextid])->GetWorld()->CreateRectangle(shader, position, width, height, color);
 
@@ -507,8 +516,11 @@ namespace Math4BG
         Transform transform = {{x, y, z}};
 
         int id = -1;
+
+        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(shaderName);
+
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(shaderName, transform);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(shader, transform);
 
         lua_pushnumber(L, id);
 
@@ -526,8 +538,11 @@ namespace Math4BG
         Transform transform = {{x, y, z}};
 
         int id = -1;
+
+        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(shaderName);
+
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreatePlane(shaderName, transform);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreatePlane(shader, transform);
 
         lua_pushnumber(L, id);
 
@@ -546,8 +561,11 @@ namespace Math4BG
         Transform transform = {{x, y, z}};
 
         int id = -1;
+
+        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(shaderName);
+
         if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreatePyramid(shaderName, transform);
+            id = ((*m_contexts)[contextid])->GetWorld()->CreatePyramid(shader, transform);
 
         lua_pushnumber(L, id);
 
@@ -702,8 +720,10 @@ namespace Math4BG
         {
             auto model = ((*m_contexts)[modelName]);
 
+            std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(shaderName);
+
             if (m_contexts->ContextExists(contextid))
-                id = ((*m_contexts)[contextid])->GetWorld()->CreateCustomObject(model, shaderName, transform);
+                id = ((*m_contexts)[contextid])->GetWorld()->CreateCustomObject(model, shader, transform);
         }
 
         lua_pushnumber(L, id);

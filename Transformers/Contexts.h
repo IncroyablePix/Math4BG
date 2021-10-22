@@ -25,6 +25,9 @@ namespace Math4BG
         Context *operator[](int index);
         ModelData *operator[](const std::string &name);
         inline std::shared_ptr<Texture> GetTextureByName(const std::string &name) { return m_textures[name]; }
+        std::shared_ptr<Shader> GetShaderByName(const std::string &name);
+
+        std::string CreateShader(const std::string &path);
 
         inline Context *GetWorldForId(int id) { return m_contexts[m_objects[id]]; }
         inline std::unordered_map<int, Context *>::iterator Begin() { return m_contexts.begin(); }
@@ -43,6 +46,7 @@ namespace Math4BG
     private:
         std::unordered_map<std::string, ModelData> m_models;
         std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
+        std::unordered_map<std::string, std::shared_ptr<Shader>> m_shaders;
         //std::unordered_map<uint32_t, int> m_contextIds;
         std::unordered_map<int, Context*> m_contexts;
         std::unordered_map<int, int> m_objects;

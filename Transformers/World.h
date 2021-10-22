@@ -40,27 +40,27 @@ namespace Math4BG
         void DrawWorld();
         void Update(double lag, const MouseInput &mouse, const KeyInput &keys);
 
-        std::string CreateShader(const std::string& path);
+        //std::string CreateShader(const std::string& path);
 
         void SetCameraPos(const glm::vec3 &pos);
         void SetCameraRot(const glm::vec2 &pos);
 
-        int CreateCircle(const std::string &shaderName, const glm::vec3 &center, double radius, uint32_t color);
+        int CreateCircle(std::shared_ptr<Shader> shader, const glm::vec3 &center, double radius, uint32_t color);
         bool SetCirclePos(int circleid, Point center);
         bool SetCircleSize(int circleid, double radius);
 
-        int CreateLine(const std::string &shaderName, const glm::vec3 &start, const glm::vec3 &end, uint32_t color);
+        int CreateLine(std::shared_ptr<Shader> shader, const glm::vec3 &start, const glm::vec3 &end, uint32_t color);
         bool SetLinePos(int lineid, Point start, Point end);
 
-        int CreateRectangle(const std::string &shaderName, const glm::vec3 &position, float width, float height, uint32_t color);
+        int CreateRectangle(std::shared_ptr<Shader> shader, const glm::vec3 &position, float width, float height, uint32_t color);
         bool SetRectanglePos(int rectangleid, Point position);
         bool SetRectangleDimens(int rectangleid, int width, int height);
 
         void SetBackgroundColor(unsigned int color);
 
-        int CreateCube(const std::string &shaderName, Transform& transform);
-        int CreatePlane(const std::string &shaderName, Transform& transform);
-        int CreatePyramid(const std::string &shaderName, Transform &transform);
+        int CreateCube(std::shared_ptr<Shader> shader, Transform& transform);
+        int CreatePlane(std::shared_ptr<Shader> shader, Transform& transform);
+        int CreatePyramid(std::shared_ptr<Shader> shader, Transform &transform);
         bool SetObjectColor(int objid, const glm::vec4 &color);
         bool SetObjectPos(int objid, const glm::vec3 &position);
         bool SetObjectPosOrigin(int objid, const glm::vec3 &position);
@@ -70,7 +70,7 @@ namespace Math4BG
         bool SetObjectTexture(int obj, std::shared_ptr<Texture> texture);
         bool SetObjectColor(int objid, const glm::vec3 &color);
 
-        int CreateCustomObject(ModelData* model, const std::string &shaderName, Transform& transform);
+        int CreateCustomObject(ModelData* model, std::shared_ptr<Shader> shader, Transform& transform);
 
         int CreatePointLight(float intensity, const glm::vec3 &color, const Transform& transform);
         bool SetLightPos(int lightid, const glm::vec3 &position);
@@ -81,6 +81,8 @@ namespace Math4BG
         void Resize(int width, int height);
         inline unsigned int GetFboId() const { return m_fbo.GetId(); }
         inline std::shared_ptr<Texture> GetFboTexture() const { return m_fbo.GetTexture(); }
+
+        void UpdateShaders(std::unordered_map<std::string, std::shared_ptr<Shader>>& shaders);
 
     private:
         std::unique_ptr<MainCamera> m_camera;
@@ -97,8 +99,6 @@ namespace Math4BG
         std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
         //std::unordered_map<int, Circle> m_circles;
         //std::unordered_map<int, Line> m_lines;
-
-        std::unordered_map<std::string, std::shared_ptr<Shader>> m_shaders;
 
         int m_count = 0;
 

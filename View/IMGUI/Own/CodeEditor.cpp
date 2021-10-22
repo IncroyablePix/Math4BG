@@ -5,6 +5,7 @@
 #include <fstream>
 #include "CodeEditor.h"
 #include "../../../Utils/FileSplit.h"
+#include "../../Error.h"
 
 namespace Math4BG
 {
@@ -31,8 +32,8 @@ namespace Math4BG
 
     void CodeEditor::ShowMenuBar()
     {
-        /*if(ImGui::BeginMenuBar())
-        {*/
+        if(ImGui::BeginMenuBar())
+        {
             if (ImGui::BeginMenu("File"))
             {
                 if (ImGui::MenuItem("Save", "Ctrl-S"))
@@ -68,8 +69,8 @@ namespace Math4BG
 
                 ImGui::EndMenu();
             }
-            /*ImGui::EndMenuBar();
-        }*/
+            ImGui::EndMenuBar();
+        }
     }
 
     void CodeEditor::Show()
@@ -103,6 +104,7 @@ namespace Math4BG
         {
             std::string code = m_editor.GetText();
             fileStream << code;
+            Beep();
             return true;
         }
         else

@@ -14,6 +14,12 @@ namespace Math4BG
     public:
         virtual void Show() = 0;
         virtual const std::string& GetName() = 0;
+
+        inline void SetDockSize(float dockSize) { m_dockSize = dockSize; }
+        inline float GetDockSize() const { return m_dockSize; }
+
+    protected:
+        float m_dockSize { 0.2f };
     };
 }
 

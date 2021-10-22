@@ -73,7 +73,7 @@ namespace Math4BG
         {
             if(slot != DOCK_CENTER)
             {
-                auto dock = ImGui::DockBuilderSplitNode(dockspaceId, slot, 0.2f, nullptr, &dockspaceId);
+                auto dock = ImGui::DockBuilderSplitNode(dockspaceId, slot, element->GetDockSize(), nullptr, &dockspaceId);
                 ImGui::DockBuilderDockWindow(element->GetName().c_str(), dock);
             }
         }

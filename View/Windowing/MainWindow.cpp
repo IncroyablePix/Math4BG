@@ -52,6 +52,7 @@ namespace Math4BG
         auto mainDock = std::make_shared<DockSpace>("MainDock", 1);
         //mainDock->AddElement(m_editorView, DOCK_TOP);
         //mainDock->AddElement(std::make_shared<GuiConsole>("Console", m_output), DOCK_RIGHT);
+        m_editorView->SetDockSize(0.8f);
         m_dockSpace->AddElement(m_editorView, DOCK_TOP);
         m_dockSpace->AddElement(std::make_shared<GuiConsole>("Console", m_output), DOCK_BOTTOM);
         //m_dockSpace->AddElement(mainDock, DOCK_CENTER);

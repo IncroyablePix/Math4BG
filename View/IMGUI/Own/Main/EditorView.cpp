@@ -14,19 +14,21 @@ namespace Math4BG
 
     void EditorView::Show()
     {
-        ImGui::Begin(m_name.c_str());
+        ImGui::Begin(m_name.c_str(), nullptr, ImGuiWindowFlags_MenuBar);
+
         ImGui::BeginTabBar("Windows");
-        if(ImGui::BeginTabItem("Code"))
-        {
-            if(m_codeEditor)
-                m_codeEditor->Show();
-            ImGui::EndTabItem();
-        }
+            if(ImGui::BeginTabItem("Code"))
+            {
+                if(m_codeEditor)
+                    m_codeEditor->Show();
 
-        if(m_contexts)
-            m_contexts->DrawContexts();
+                ImGui::EndTabItem();
+            }
 
-        ImGui::EndTabBar();
+            if(m_contexts)
+                m_contexts->DrawContexts();
+
+            ImGui::EndTabBar();
         ImGui::End();
     }
 

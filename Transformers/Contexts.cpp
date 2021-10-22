@@ -102,8 +102,26 @@ namespace Math4BG
     {
         for(const auto& [key, context] : m_contexts)
         {
+            context->GetWorld()->UpdateShaders(m_shaders);
             context->Draw();
         }
+    }
+
+    std::string Contexts::CreateShader(const std::string &path)
+    {
+        //--- HARDCODED
+        ShaderProgramSource source = ParseShader(path);
+        std::shared_ptr<Shader> shader = Shader::CreateShader(source);
+        FileSplit fileSplit(path);
+
+        m_shaders[fileSplit.fileWithoutExtension] = shader;
+
+        return fileSplit.fileWithoutExtension;
+    }
+
+    std::shared_ptr<Shader> Contexts::GetShaderByName(const std::string &name)
+    {
+        return m_shaders[name];
     }
 
     /*bool Contexts::LoadSound(const std::string &path, const std::string &name)

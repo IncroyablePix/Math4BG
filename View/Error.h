@@ -11,5 +11,7 @@
 namespace Math4BG
 {
     int ShowErrorMessage(const std::string &message);
+    void Beep();
+    void Success();
 }
 #endif //ARCPOSITION_ERROR_H
