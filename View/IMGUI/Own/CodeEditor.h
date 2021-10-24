@@ -18,6 +18,8 @@ namespace Math4BG
         ~CodeEditor();
         void ShowMenuBar();
         void Show() override;
+        void Begin() override;
+        void End() override;
         bool Save();
         inline const std::string & GetName() override { return m_name; };
 

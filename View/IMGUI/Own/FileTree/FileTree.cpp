@@ -16,8 +16,16 @@ namespace Math4BG
 
     void FileTree::Show()
     {
+        ImGui::Text("Files!");
+    }
+
+    void FileTree::Begin()
+    {
         ImGui::Begin(m_name.c_str());
-            ImGui::Text("Files!");
+    }
+
+    void FileTree::End()
+    {
         ImGui::End();
     }
 }

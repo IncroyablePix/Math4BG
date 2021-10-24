@@ -38,7 +38,7 @@ namespace Math4BG
 
         void Draw(const std::string& title);
         void DrawWorld();
-        void Update(double lag, const MouseInput &mouse, const KeyInput &keys);
+        void Update(double lag);//, const MouseInput &mouse, const KeyInput &keys);
 
         //std::string CreateShader(const std::string& path);
 
@@ -84,6 +84,11 @@ namespace Math4BG
 
         void UpdateShaders(std::unordered_map<std::string, std::shared_ptr<Shader>>& shaders);
 
+        void HandleMouseInputs();
+        void HandleKeyboardInputs();
+
+        inline void SetWindowActive(bool active) { m_windowActive = active; }
+
     private:
         std::unique_ptr<MainCamera> m_camera;
         std::shared_ptr<OG33Renderer> m_renderer;
@@ -97,8 +102,12 @@ namespace Math4BG
         DirectionalLight m_directionalLight;
         std::unordered_map<int, std::shared_ptr<Light>> m_lights;
         std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
-        //std::unordered_map<int, Circle> m_circles;
-        //std::unordered_map<int, Line> m_lines;
+
+        MouseInput m_mouse;
+        KeyInput m_keys;
+
+        bool m_windowActive;
+        bool m_tabActive;
 
         int m_count = 0;
 

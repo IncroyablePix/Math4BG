@@ -124,6 +124,18 @@ namespace Math4BG
         return m_shaders[name];
     }
 
+    void Contexts::Update(double lag)
+    {
+        for(const auto& [id, context] : m_contexts)
+            context->Update(lag);
+    }
+
+    void Contexts::SetWindowFocused(bool focused)
+    {
+        for(const auto& [id, context] : m_contexts)
+            context->GetWorld()->SetWindowActive(focused);
+    }
+
     /*bool Contexts::LoadSound(const std::string &path, const std::string &name)
     {
         FileSplit fileSplit(path);

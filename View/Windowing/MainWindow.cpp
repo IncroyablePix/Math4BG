@@ -142,56 +142,6 @@ namespace Math4BG
             std::cout << m_fileDialog->selected_fn << std::endl;      // The name of the selected file or directory in case of Select Directory dialog mode
             std::cout << m_fileDialog->selected_path << std::endl;    // The absolute path to the selected file
         }
-        //--- Dock Space
-        /*ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGuiID mainDockSpaceId = 0;
-
-        // Central dockspace should take up all space
-        ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(viewport->Size);
-        ImGui::SetNextWindowViewport(viewport->ID);
-
-        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar |
-                                       ImGuiWindowFlags_NoDocking |
-                                       ImGuiWindowFlags_NoTitleBar |
-                                       ImGuiWindowFlags_NoCollapse |
-                                       ImGuiWindowFlags_NoResize |
-                                       ImGuiWindowFlags_NoMove |
-                                       ImGuiWindowFlags_NoBringToFrontOnFocus |
-                                       ImGuiWindowFlags_NoNavFocus;
-        static ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_PassthruCentralNode;
-        ImGui::Begin("MainDockSpace", nullptr, windowFlags);
-
-        if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable) // If docking enabled
-        {
-            ImGuiID dockspaceId = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f), dockspaceFlags);
-
-            static bool firstTime = true;
-            if (firstTime)
-            {
-                firstTime = false;
-
-                ImGui::DockBuilderRemoveNode(mainDockSpaceId); // clear any previous layout
-                ImGui::DockBuilderAddNode(dockspaceId, dockspaceFlags | ImGuiDockNodeFlags_DockSpace);
-                ImGui::DockBuilderSetNodeSize(dockspaceId, viewport->Size);
-
-                // split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
-                //   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
-                //                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
-                auto dockFiles = ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Left, 0.2f, nullptr, &dockspaceId);
-                auto dockMain = ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Up, 0.75f, nullptr, &dockspaceId);
-                auto dockConsole = ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Down, 0.25f, nullptr, &dockspaceId);
-
-                // we now dock our windows into the docking node we made above
-                ImGui::DockBuilderDockWindow("Console", dockConsole);
-                ImGui::DockBuilderDockWindow("Files", dockFiles);
-                ImGui::DockBuilderDockWindow("Main", dockMain);
-                ImGui::DockBuilderFinish(dockspaceId);
-            }
-        }
-
-        ImGui::End();*/
 
         //ImGui::DockSpace(mainDockSpaceId, ImVec2(), ImGuiDockNodeFlags_PassthruCentralNode);
 
@@ -279,6 +229,12 @@ namespace Math4BG
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
 
         SDL_GL_SwapWindow(m_window.get());
     }

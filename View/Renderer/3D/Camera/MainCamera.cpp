@@ -32,10 +32,10 @@ namespace Math4BG {
 
             //---
 
-            if(m_verticalAngle > 80.0f)
-                m_verticalAngle = 80.0f;
-            else if(m_verticalAngle < -80.0f)
-                m_verticalAngle = -80.0f;
+            if(m_verticalAngle > 90.0f)
+                m_verticalAngle = 90.0f;
+            else if(m_verticalAngle < -90.0f)
+                m_verticalAngle = -90.0f;
 
             //---
 

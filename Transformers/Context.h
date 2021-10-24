@@ -27,10 +27,6 @@ namespace Math4BG
         void SetFPS(int fps);
         void Draw();
 
-        void KeySet(KeyButton button, bool state);
-        void MouseSet(MouseButton button, bool state);
-        void MousePos(const glm::vec2 &position);
-
         inline World *GetWorld() { return m_world.get(); }
         //inline uint32_t GetWindowId() { return m_window->GetWindowId(); }
         inline unsigned int GetFboId() const { return m_world->GetFboId(); }
@@ -41,8 +37,6 @@ namespace Math4BG
         //std::shared_ptr<Window> m_window;
         std::shared_ptr<World> m_world;
         std::shared_ptr<OG33Renderer> m_renderer;
-        MouseInput m_mouse;
-        KeyInput m_keys;
         std::string m_title;
     };
 }

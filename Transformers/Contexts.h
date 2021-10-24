@@ -30,9 +30,9 @@ namespace Math4BG
         std::string CreateShader(const std::string &path);
 
         inline Context *GetWorldForId(int id) { return m_contexts[m_objects[id]]; }
-        inline std::unordered_map<int, Context *>::iterator Begin() { return m_contexts.begin(); }
-        inline std::unordered_map<int, Context *>::iterator End() { return m_contexts.end(); }
         static std::shared_ptr<Contexts> Create();
+
+        void SetWindowFocused(bool focused);
 
         int KillContextForWindowId(uint32_t id);
 
@@ -41,6 +41,7 @@ namespace Math4BG
 
         //inline Context* ContextFromWindowId(int windowId) { return (m_contextIds.find(windowId) != m_contextIds.end()) ? m_contexts[m_contextIds[windowId]] : nullptr; }
 
+        void Update(double lag);
         void DrawContexts();
 
     private:

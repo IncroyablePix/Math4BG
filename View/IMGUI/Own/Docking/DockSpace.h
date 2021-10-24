@@ -28,6 +28,8 @@ namespace Math4BG
     {
     public:
         explicit DockSpace(const std::string &title, ImGuiID dockspaceId);
+        void Begin() override;
+        void End() override;
         ~DockSpace();
         void Show() override;
         inline const std::string & GetName() override { return m_title; }

@@ -270,15 +270,7 @@ namespace Math4BG
         std::unordered_map<int, Context *>::iterator itEnd;
 
         m_interpreter->CallUpdateFunction(lag);
-
-        it = m_contexts->Begin();
-        for (; it != itEnd; it++)
-        {
-            if(it->second)
-            {
-                it->second->Update(lag);
-            }
-        }
+        m_contexts->Update(lag);
     }
 
     std::shared_ptr<ILanInterpreter> Application::CreateInterpreter(const std::string &name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output)

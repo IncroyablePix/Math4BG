@@ -13,6 +13,8 @@ namespace Math4BG
     {
     public:
         MainDockSpace(const std::string &title, ImGuiID dockspaceId);
+        void Begin() override;
+        void End() override;
         ~MainDockSpace();
         void Show() override;
     };

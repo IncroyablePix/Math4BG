@@ -26,17 +26,9 @@ namespace Math4BG
     void DockSpace::Show()
     {
         ImGuiIO& io = ImGui::GetIO();
-
-        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar |
-                                       ImGuiWindowFlags_NoTitleBar |
-                                       ImGuiWindowFlags_NoCollapse |
-                                       ImGuiWindowFlags_NoResize |
-                                       ImGuiWindowFlags_NoMove |
-                                       ImGuiWindowFlags_NoBringToFrontOnFocus |
-                                       ImGuiWindowFlags_NoNavFocus;
         static ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_PassthruCentralNode;
 
-        ImGui::Begin(m_title.c_str(), nullptr, windowFlags);
+        Begin();
 
         if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable) // If docking enabled
         {
@@ -58,23 +50,53 @@ namespace Math4BG
                 ImGui::DockBuilderFinish(dockspaceId);
             }
         }
-
-        ImGui::End();
-
-        for(const auto& [slot, element] : m_elements)
-        {
-            element->Show();
-        }
+        End();
     }
 
     void DockSpace::ShowElements(ImGuiID dockspaceId)
     {
+        /*if(m_elements.find(DOCK_CENTER) != m_elements.end())
+        {
+            auto element = m_elements[DOCK_CENTER];
+            auto dock = ImGui::GetID(element->GetName().c_str());
+            //ImGui::DockBuilderDockWindow(element->GetName().c_str(), dock);
+            ImGui::DockBuilderAddNode(dock, ImGuiDockNodeFlags_PassthruCentralNode);
+        }*/
+
         for(const auto& [slot, element] : m_elements)
         {
             if(slot != DOCK_CENTER)
             {
                 auto dock = ImGui::DockBuilderSplitNode(dockspaceId, slot, element->GetDockSize(), nullptr, &dockspaceId);
                 ImGui::DockBuilderDockWindow(element->GetName().c_str(), dock);
+            }
+        }
+    }
+
+    void DockSpace::Begin()
+    {
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar |
+                                       ImGuiWindowFlags_NoTitleBar |
+                                       ImGuiWindowFlags_NoCollapse |
+                                       ImGuiWindowFlags_NoResize |
+                                       ImGuiWindowFlags_NoMove |
+                                       ImGuiWindowFlags_NoBringToFrontOnFocus |
+                                       ImGuiWindowFlags_NoNavFocus;
+
+        ImGui::Begin(m_title.c_str(), nullptr, windowFlags);
+    }
+
+    void DockSpace::End()
+    {
+        ImGui::End();
+
+        for(const auto& [slot, element] : m_elements)
+        {
+            if(slot != DOCK_CENTER)
+            {
+                element->Begin();
+                element->Show();
+                element->End();
             }
         }
     }

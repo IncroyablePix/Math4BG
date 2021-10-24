@@ -18,6 +18,8 @@ namespace Math4BG
         EditorView(const std::string& name);
         void Show() override;
         const std::string& GetName() override;
+        void Begin() override;
+        void End() override;
 
         void SetContexts(std::shared_ptr<Contexts> contexts);
         void SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor);

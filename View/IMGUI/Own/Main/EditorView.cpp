@@ -12,24 +12,33 @@ namespace Math4BG
 
     }
 
-    void EditorView::Show()
+    void EditorView::Begin()
     {
         ImGui::Begin(m_name.c_str(), nullptr, ImGuiWindowFlags_MenuBar);
+    }
 
-        ImGui::BeginTabBar("Windows");
-            if(ImGui::BeginTabItem("Code"))
-            {
-                if(m_codeEditor)
-                    m_codeEditor->Show();
-
-                ImGui::EndTabItem();
-            }
-
-            if(m_contexts)
-                m_contexts->DrawContexts();
-
-            ImGui::EndTabBar();
+    void EditorView::End()
+    {
         ImGui::End();
+    }
+
+    void EditorView::Show()
+    {
+        ImGui::BeginTabBar("Windows");
+        if(ImGui::BeginTabItem("Code"))
+        {
+            if(m_codeEditor)
+                m_codeEditor->Show();
+
+            ImGui::EndTabItem();
+        }
+        
+        m_contexts->SetWindowFocused(ImGui::IsWindowFocused());
+
+        if(m_contexts)
+            m_contexts->DrawContexts();
+
+        ImGui::EndTabBar();
     }
 
     const std::string &EditorView::GetName()

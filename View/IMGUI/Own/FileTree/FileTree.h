@@ -14,6 +14,8 @@ namespace Math4BG
     public:
         FileTree(const std::string &name);
         ~FileTree();
+        void Begin() override;
+        void End() override;
         inline const std::string& GetName() override { return m_name; }
         void Show() override;
 

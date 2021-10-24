@@ -112,4 +112,14 @@ namespace Math4BG
             return false;
         }
     }
+
+    void CodeEditor::Begin()
+    {
+
+    }
+
+    void CodeEditor::End()
+    {
+
+    }
 }

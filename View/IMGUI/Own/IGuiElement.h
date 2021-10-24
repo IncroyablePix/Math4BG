@@ -12,6 +12,8 @@ namespace Math4BG
     class IGuiElement : public std::enable_shared_from_this<IGuiElement>
     {
     public:
+        virtual void Begin() = 0;
+        virtual void End() = 0;
         virtual void Show() = 0;
         virtual const std::string& GetName() = 0;
 

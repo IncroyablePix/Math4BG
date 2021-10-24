@@ -18,11 +18,14 @@ namespace Math4BG
         GuiConsole(const std::string &name, std::shared_ptr<IOutput> output);
         ~GuiConsole() = default;
         void Show() override;
+        void Begin() override;
+        void End() override;
         inline const std::string& GetName() override { return m_name; };
 
     private:
         std::shared_ptr<IOutput> m_output;
         std::string m_name;
+        bool m_autoScroll { true };
     };
 }
 

@@ -15,14 +15,26 @@ namespace Math4BG
             m_output->PrintMessages();*/
 
         //ImGui::End();
-        ImGui::Begin(m_name.c_str());
         if(m_output)
             m_output->PrintMessages();
-        ImGui::End();
+
+        if(m_autoScroll)
+            ImGui::SetScrollHereY(1.0f);
+
     }
 
     GuiConsole::GuiConsole(const std::string &name, std::shared_ptr<IOutput> output) : m_output(std::move(output)), m_name(name)
     {
 
+    }
+
+    void GuiConsole::Begin()
+    {
+        ImGui::Begin(m_name.c_str());
+    }
+
+    void GuiConsole::End()
+    {
+        ImGui::End();
     }
 }

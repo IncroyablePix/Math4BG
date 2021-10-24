@@ -42,14 +42,14 @@ namespace Math4BG
         m_fbo.Unbind();
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
     void World::Draw(const std::string &title)
     {
         //window.DrawGUI();
 
+        m_tabActive = false;
         if(ImGui::BeginTabItem(title.c_str()))
         {
+            m_tabActive = true;
             ImGui::BeginChild("GameRender");
             // Get the size of the child (i.e. the whole draw size of the windows).
             ImVec2 wsize = ImGui::GetWindowSize();
@@ -64,7 +64,6 @@ namespace Math4BG
 
         m_canvas.Bind(*m_ppShader, *m_fbo.GetTexture()); // Drawing frame buffer over canvas
     }
-#pragma clang diagnostic pop
 
     void World::SetCameraPos(const glm::vec3& pos)
     {
@@ -88,9 +87,12 @@ namespace Math4BG
         return fileSplit.fileWithoutExtension;
     }*/
 
-    void World::Update(double lag, const MouseInput &mouse, const KeyInput &keys)
+    void World::Update(double lag)//, const MouseInput &mouse, const KeyInput &keys)
     {
-        m_camera->Update(mouse, keys, lag);
+        HandleMouseInputs();
+        HandleKeyboardInputs();
+
+        m_camera->Update(m_mouse, m_keys, lag);
 
         m_fbo.Bind(true);
         m_renderer->Clear();
@@ -410,6 +412,37 @@ namespace Math4BG
             }
 
             shaderProgram->Unbind();
+        }
+    }
+
+    void World::HandleMouseInputs()
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        if(m_tabActive)//if(m_windowActive)// && m_tabActive)
+        {
+            m_mouse.MouseSet(LMB, ImGui::IsMouseDown(ImGuiMouseButton_Left));
+            m_mouse.MouseSet(RMB, ImGui::IsMouseDown(ImGuiMouseButton_Right));
+            m_mouse.MouseSet(MMB, ImGui::IsMouseDown(ImGuiMouseButton_Middle));
+            //m_mouse.MouseSet(MWU, ImGui::IsMouseClicked(ImGuiMouseWheel));
+            //m_mouse.MouseSet(MWD, ImGui::IsMouseClicked(4));
+
+            m_mouse.MousePos({ImGui::GetMousePos().x, ImGui::GetMousePos().y});
+        }
+    }
+
+    void World::HandleKeyboardInputs()
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        //std::cout << ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_UpArrow)) << std::endl;
+        if(m_tabActive)//if(m_windowActive)// && m_tabActive)
+        {
+            m_keys.KeySet(Z, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_UpArrow)));
+            m_keys.KeySet(S, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_DownArrow)));
+            m_keys.KeySet(Q, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_LeftArrow)));
+            m_keys.KeySet(D, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_RightArrow)));
+            //m_keys.KeySet(S, ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)));
+            //m_keys.KeySet(Q, ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_A)));
+            //m_keys.KeySet(D, ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_)));
         }
     }
 }
