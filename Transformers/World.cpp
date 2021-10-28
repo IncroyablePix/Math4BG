@@ -49,13 +49,21 @@ namespace Math4BG
         if(ImGui::BeginTabItem(title.c_str()))
         {
             m_tabActive = true;
+
             ImGui::BeginChild("GameRender");
+
             // Get the size of the child (i.e. the whole draw size of the windows).
-            ImVec2 wsize = ImGui::GetWindowSize();
-            m_camera->SetViewportSize(wsize.x, wsize.y);
+            ImVec2 windowSize = ImGui::GetWindowSize();
+            auto pos = ImGui::GetCursorScreenPos();
+            //m_fbo.SetSize(windowSize.x, windowSize.y);
+            m_camera->SetViewportSize(windowSize.x, windowSize.y);
             DrawWorld();
             // Because I use the texture from OpenGL, I need to invert the V from the UV.
-            ImGui::Image((ImTextureID) m_fbo.GetId(), wsize, ImVec2(0, 1), ImVec2(1, 0));
+
+            //auto fboId = (ImTextureID) m_fbo.GetId();
+            auto fboId = (void *) (m_fbo.GetTexture()->GetId());
+            //ImGui::Image(fboId, windowSize, ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::GetWindowDrawList()->AddImage(fboId, ImVec2(pos), ImVec2(pos.x + windowSize.x, pos.y + windowSize.y), ImVec2(0, 1), ImVec2(1, 0));
             ImGui::EndChild();
 
             ImGui::EndTabItem();
@@ -226,9 +234,9 @@ namespace Math4BG
         return false;
     }
 
-    int World::CreateCustomObject(ModelData *model, std::shared_ptr<Shader> shader, Transform &transform)
+    int World::CreateCustomObject(std::shared_ptr<ModelData> model, std::shared_ptr<Shader> shader, Transform &transform)
     {
-        m_objects[m_count] = std::make_shared<Object3D>(std::move(shader), model, transform);
+        m_objects[m_count] = std::make_shared<Object3D>(std::move(shader), std::move(model), transform);
         return m_count++;
     }
 

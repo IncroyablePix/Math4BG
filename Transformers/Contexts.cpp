@@ -21,10 +21,10 @@ namespace Math4BG
 
     Contexts::~Contexts()
     {
-
+        Clear();
     }
 
-    Context *Contexts::operator[](int index)
+    std::shared_ptr<Context> Contexts::operator[](int index)
     {
         if (m_contexts.find(index) == m_contexts.end())
             throw std::runtime_error("Context doesn't exist");
@@ -32,19 +32,17 @@ namespace Math4BG
         return m_contexts[index];
     }
 
-    ModelData *Contexts::operator[](const std::string &name)
+    std::shared_ptr<ModelData> Contexts::operator[](const std::string &name)
     {
         if(!ModelExists(name))
             return nullptr;
 
-        return &m_models[name];
+        return m_models[name];
     }
 
     int Contexts::CreateContext(const WindowInfo &info)
     {
-        Context* context = new Context(info);
-
-        m_contexts[m_count] = context;
+        m_contexts[m_count] = std::make_shared<Context>(info);
 
         return m_count++;
     }
@@ -82,9 +80,7 @@ namespace Math4BG
         if(fileSplit.fileExtension == "obj")
         {
             OBJLoader loader;
-            ModelData model = loader.LoadModel(path);
-
-            m_models[name] = model;
+            m_models[name] = std::move(loader.LoadModel(path));
             return true;
         }
 
@@ -116,6 +112,7 @@ namespace Math4BG
         catch(const ShaderException &e)
         {
             *m_output << e.what();
+            return "";
         }
     }
 
@@ -138,11 +135,13 @@ namespace Math4BG
 
     void Contexts::Clear()
     {
-        m_contexts.clear();
         m_shaders.clear();
         m_textures.clear();
         m_models.clear();
         m_objects.clear();
+        m_contexts.clear();
+
+        m_count = 0;
     }
 
     /*bool Contexts::LoadSound(const std::string &path, const std::string &name)

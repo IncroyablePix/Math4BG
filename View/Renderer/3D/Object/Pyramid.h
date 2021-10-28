@@ -51,7 +51,7 @@ namespace Math4BG
         };
         inline static IndexBufferContainer pyramidIbc = {verticesIndexes, 18 };
 
-        inline static ModelData pyramidModel {vertices, 8, pyramidIbc };
+        inline static std::shared_ptr<ModelData> pyramidModel = std::make_shared<ModelData>(vertices, 8, pyramidIbc);
     };
 }
 

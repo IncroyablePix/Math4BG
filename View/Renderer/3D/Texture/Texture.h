@@ -12,10 +12,10 @@ namespace Math4BG
     class Texture
     {
     public:
-        Texture(unsigned int type);
+        explicit Texture(unsigned int type);
         virtual ~Texture();
 
-        inline unsigned int GetId() { return m_id; }
+        inline unsigned int GetId() const { return m_id; }
 
         virtual void Bind(unsigned int textureUnit);
         void Unbind();

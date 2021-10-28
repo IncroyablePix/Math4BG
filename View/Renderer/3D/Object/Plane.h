@@ -41,7 +41,7 @@ namespace Math4BG
 
         inline static IndexBufferContainer ibc = {{}, 0 };
 
-        inline static ModelData model {vertices, 36, ibc };
+        inline static std::shared_ptr<ModelData> model = std::make_shared<ModelData>(vertices, 36, ibc);
     };
 }
 

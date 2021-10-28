@@ -16,9 +16,7 @@ namespace Math4BG
     }
 
     Context::~Context()
-    {
-
-    }
+    = default;
 
     void Context::Update(double lag)
     {

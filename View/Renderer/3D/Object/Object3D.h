@@ -25,7 +25,7 @@ namespace Math4BG
     class Object3D : public IDrawable
     {
     public:
-        Object3D(std::shared_ptr<Shader> shader, ModelData* model, const Transform &transform);
+        Object3D(std::shared_ptr<Shader> shader, std::shared_ptr<ModelData> model, const Transform &transform);
         ~Object3D();
 
         //void SetShaderAttribute(std::string name);

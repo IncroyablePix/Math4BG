@@ -9,18 +9,12 @@
 
 namespace Math4BG
 {
-    CodeEditor::CodeEditor(const std::string &path, std::function<void(const std::string &path)> reloadCallback,
-                           const std::string &name) :
+    CodeEditor::CodeEditor(const std::string &path, const std::string &name) :
         m_path(path),
         m_lanDef(GetLanguageDefinition(path)),
         m_name(name)
     {
-        std::ifstream fileStream(path);
-        if(fileStream.good())
-        {
-            std::string code((std::istreambuf_iterator<char>(fileStream)), std::istreambuf_iterator<char>());
-            m_editor.SetText(code);
-        }
+        SetFile(path);
 
         m_editor.SetLanguageDefinition(m_lanDef);
     }
@@ -121,5 +115,15 @@ namespace Math4BG
     void CodeEditor::End()
     {
 
+    }
+
+    void CodeEditor::SetFile(const std::string &path)
+    {
+        std::ifstream fileStream(path);
+        if(fileStream.good())
+        {
+            std::string code((std::istreambuf_iterator<char>(fileStream)), std::istreambuf_iterator<char>());
+            m_editor.SetText(code);
+        }
     }
 }

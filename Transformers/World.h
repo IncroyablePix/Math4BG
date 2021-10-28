@@ -10,11 +10,6 @@
 #include <unordered_map>
 #include "../View/Renderer/OG33RendererSDL.h"
 #include "../View/Renderer/OG33Renderer.h"
-#include "../View/Renderer/2D/Object/Point.h"
-#include "../View/Renderer/2D/Object/Object2D.h"
-#include "../View/Renderer/2D/Object/Circle.h"
-#include "../View/Renderer/2D/Object/Line.h"
-#include "../View/Renderer/2D/Object/Rectangle.h"
 #include "../View/Window.h"
 #include "../View/Renderer/3D/Shaders/Shader.h"
 #include "../Physics/Transform.h"
@@ -29,7 +24,7 @@
 
 namespace Math4BG
 {
-    class World
+    class World : public std::enable_shared_from_this<World>
     {
     public:
         World(const WindowInfo &info, std::shared_ptr<OG33Renderer> renderer);
@@ -50,7 +45,7 @@ namespace Math4BG
         int CreateCube(std::shared_ptr<Shader> shader, Transform& transform);
         int CreatePlane(std::shared_ptr<Shader> shader, Transform& transform);
         int CreatePyramid(std::shared_ptr<Shader> shader, Transform &transform);
-        int CreateCustomObject(ModelData* model, std::shared_ptr<Shader> shader, Transform& transform);
+        int CreateCustomObject(std::shared_ptr<ModelData> model, std::shared_ptr<Shader> shader, Transform& transform);
 
         bool SetObjectColor(int objid, const glm::vec4 &color);
         bool SetObjectPos(int objid, const glm::vec3 &position);

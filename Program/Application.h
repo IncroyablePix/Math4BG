@@ -14,6 +14,7 @@
 #include "../Output/IOutput.h"
 #include "../View/Windowing/MainWindow.h"
 #include "../View/IMGUI/Own/CodeEditor.h"
+#include "../Transformers/Project/ProjectManager.h"
 
 namespace Math4BG
 {
@@ -23,14 +24,13 @@ namespace Math4BG
         Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output);
         ~Application();
         void Start();
-        void RunProject(const std::string& path);
 
     private:
 
+        std::shared_ptr<ProjectManager> m_projectManager;
         MainWindow m_window;
 
         std::shared_ptr<Contexts> m_contexts;
-        std::shared_ptr<ILanInterpreter> m_interpreter;
         std::shared_ptr<IOutput> m_output;
         std::shared_ptr<CodeEditor> m_codeEditor;
         unsigned long long m_start;
@@ -43,7 +43,7 @@ namespace Math4BG
 
         void Run();
 
-        static std::shared_ptr<ILanInterpreter> CreateInterpreter(const std::string& name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
+        static std::unique_ptr<ILanInterpreter> CreateInterpreter(const std::string& name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
     };
 }
 

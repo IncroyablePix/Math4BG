@@ -13,12 +13,13 @@ namespace Math4BG
     class FrameBufferObject
     {
     public:
-        FrameBufferObject(unsigned int width, unsigned int height);
+        FrameBufferObject(int width, int height);
         ~FrameBufferObject();
 
         bool IsComplete() const;
         void Bind(bool fullViewport) const;
         void Unbind() const;
+        void SetSize(int width, int height);
 
         inline std::shared_ptr<Texture> GetTexture() const { return m_texture; }
         inline unsigned int GetId() const { return m_colBuffer; }
@@ -27,8 +28,8 @@ namespace Math4BG
         unsigned int m_colBuffer;
         unsigned int m_depthBuffer;
 
-        unsigned int m_width;
-        unsigned int m_height;
+        int m_width;
+        int m_height;
 
         std::shared_ptr<RenderedTexture> m_texture;
     };

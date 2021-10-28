@@ -519,9 +519,10 @@ namespace Math4BG
         return out;
     }
 
-    std::shared_ptr<LuaInterpreter>LuaInterpreter::Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output)
+    std::unique_ptr<LuaInterpreter>LuaInterpreter::Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output)
     {
-        return std::shared_ptr<LuaInterpreter>(static_cast<LuaInterpreter *>(new LuaInterpreter(context, output)));
+        return std::make_unique<LuaInterpreter>(context, output);
+        //return std::shared_ptr<LuaInterpreter>(static_cast<LuaInterpreter *>(new LuaInterpreter(context, output)));
     }
 
     int LuaInterpreter::CreateCustomObject(lua_State *L)

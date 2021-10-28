@@ -6,7 +6,7 @@
 
 namespace Math4BG
 {
-    Plane::Plane(std::shared_ptr<Shader> shader, Math4BG::Transform &transform) : Object3D(shader, &model, transform)
+    Plane::Plane(std::shared_ptr<Shader> shader, Math4BG::Transform &transform) : Object3D(shader, model, transform)
     {
 
     }

@@ -14,7 +14,7 @@ namespace Math4BG
     class CodeEditor : public std::enable_shared_from_this<CodeEditor>, public IGuiElement
     {
     public:
-        CodeEditor(const std::string &path, std::function<void(const std::string &path)> reloadCallback, const std::string &name);
+        CodeEditor(const std::string &path, const std::string &name);
         ~CodeEditor();
         void ShowMenuBar();
         void Show() override;
@@ -22,6 +22,7 @@ namespace Math4BG
         void End() override;
         bool Save();
         inline const std::string & GetName() override { return m_name; };
+        void SetFile(const std::string &path);
 
     private:
         std::string m_name;

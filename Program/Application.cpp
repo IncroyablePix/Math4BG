@@ -11,14 +11,16 @@
 #include "../IO/OBJLoader.h"
 #include "../View/IMGUI/imgui.h"
 #include "../View/IMGUI/imgui_impl_sdl.h"
+#include "../View/IMGUI/imgui_impl_opengl3.h"
 
 namespace Math4BG
 {
     Application::Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output) :
-        m_interpreter(CreateInterpreter("lua", contexts, output)),
         m_fpsLimiter(config.fpsLimiter),
         m_window(info, output),
-        m_output(std::move(output))
+        m_contexts(std::move(contexts)),
+        m_output(std::move(output)),
+        m_projectManager(std::make_shared<ProjectManager>(config.scriptFile, contexts, output))
     {
         /*WindowInfo info {"Math4BG", 1280, 720};
         m_window = std::make_unique<MainWindow>(info, output);*/
@@ -29,29 +31,24 @@ namespace Math4BG
 
         m_refreshRate = 144;
 
-        m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
-        RunProject(config.scriptFile);
+        //m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
+        //RunProject(config.scriptFile);
 
 
-        m_codeEditor = std::make_shared<CodeEditor>(config.scriptFile, [](const std::string& path)
-        {
-
-        }, "Code Editor");
+        m_codeEditor = std::make_shared<CodeEditor>(config.scriptFile, "Code Editor");
+        m_projectManager->SetCodeEditor(m_codeEditor);
 
         m_window.SetContexts(m_contexts);
+        m_window.SetProjectManager(m_projectManager);
 
         m_window.SetCodeEditor(m_codeEditor);
     }
 
     Application::~Application()
     {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplSDL2_Shutdown();
         ImGui::DestroyContext();
-    }
-
-    void Application::RunProject(const std::string &path)
-    {
-        m_contexts->Clear();
-        m_interpreter->ExecuteFile(path);
     }
 
     void Application::Start()
@@ -61,11 +58,13 @@ namespace Math4BG
 
         m_running = true;
 
-        if (!m_interpreter->CheckValidity())
+        m_projectManager->Run();
+
+        /*if (!m_interpreter->CheckValidity())
             throw std::runtime_error(
                     "Invalid Lua script :\nMust contain the following functions : OnInit, OnUpdate(number), OnWindowClosed(windowId)");
 
-        m_interpreter->CallOnInitFunction();
+        m_interpreter->CallOnInitFunction();*/
         Run();
     }
 
@@ -98,6 +97,7 @@ namespace Math4BG
             if(event.type == SDL_QUIT || event.window.event == SDL_WINDOWEVENT_CLOSE)
             {
                 m_running = false;
+                break;
             }
             else if(event.type == SDL_WINDOWEVENT)
             {
@@ -158,17 +158,14 @@ namespace Math4BG
 
     void Application::Update(double lag)
     {
-        std::unordered_map<int, Context *>::iterator it;
-        std::unordered_map<int, Context *>::iterator itEnd;
-
-        m_interpreter->CallUpdateFunction(lag);
+        m_projectManager->Update(lag);
         m_contexts->Update(lag);
     }
 
-    std::shared_ptr<ILanInterpreter> Application::CreateInterpreter(const std::string &name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output)
+    std::unique_ptr<ILanInterpreter> Application::CreateInterpreter(const std::string &name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output)
     {
         if(name == "lua")
-            return LuaInterpreter::Create(std::move(contexts), std::move(output));
+            return std::move(LuaInterpreter::Create(std::move(contexts), std::move(output)));
         /*else if(name == "js")
             return std::shared_ptr<ILanInterpreter>(JavascriptInterpreter::Create(contexts, output));*/
 

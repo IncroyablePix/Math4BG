@@ -14,7 +14,7 @@ namespace Math4BG
 
     Texture::~Texture()
     {
-        glDeleteTextures(1, &m_id);
+
     }
 
     void Texture::Bind(unsigned int textureUnit)

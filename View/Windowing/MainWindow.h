@@ -14,6 +14,7 @@
 #include "../IMGUI/ImGuiFileBrowser.h"
 #include "../IMGUI/Own/Docking/MainDockSpace.h"
 #include "../IMGUI/Own/Main/EditorView.h"
+#include "../../Transformers/Project/ProjectManager.h"
 
 namespace Math4BG
 {
@@ -29,6 +30,7 @@ namespace Math4BG
 
         void SetContexts(std::shared_ptr<Contexts> contexts);
         void SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor);
+        void SetProjectManager(std::shared_ptr<ProjectManager> projectManager);
 
     protected:
         void UpdateWindowTitle() override;
@@ -49,6 +51,7 @@ namespace Math4BG
 
         std::unique_ptr<MainDockSpace> m_dockSpace;
         std::shared_ptr<EditorView> m_editorView;
+        std::shared_ptr<ProjectManager> m_projectManager;
     };
 
     static bool sdl2Initialized = false;

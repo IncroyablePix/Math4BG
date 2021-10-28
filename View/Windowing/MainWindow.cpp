@@ -14,6 +14,7 @@
 #include "../IMGUI/Own/CodeEditor.h"
 #include "../IMGUI/Own/GuiConsole.h"
 #include "../IMGUI/Own/FileTree/FileTree.h"
+#include "../../Transformers/Project/ProjectManager.h"
 
 namespace Math4BG
 {
@@ -137,10 +138,16 @@ namespace Math4BG
         if(open)
             ImGui::OpenPopup("Open File");
 
-        if(m_fileDialog->showFileDialog("Open File", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".rar,.zip,.7z"))
+        if(m_fileDialog->showFileDialog("Open File", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".lua,.js"))
         {
             std::cout << m_fileDialog->selected_fn << std::endl;      // The name of the selected file or directory in case of Select Directory dialog mode
             std::cout << m_fileDialog->selected_path << std::endl;    // The absolute path to the selected file
+
+            if(m_projectManager)
+            {
+                m_projectManager->SetPath(m_fileDialog->selected_path);
+                m_projectManager->Run();
+            }
         }
 
         //ImGui::DockSpace(mainDockSpaceId, ImVec2(), ImGuiDockNodeFlags_PassthruCentralNode);
@@ -304,13 +311,18 @@ namespace Math4BG
 
     void MainWindow::SetContexts(std::shared_ptr<Contexts> contexts)
     {
-        m_editorView->SetContexts(contexts);
+        m_editorView->SetContexts(std::move(contexts));
         //m_contexts = std::move(contexts);
     }
 
     void MainWindow::SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor)
     {
-        m_editorView->SetCodeEditor(codeEditor);
+        m_editorView->SetCodeEditor(std::move(codeEditor));
         //m_codeEditor = std::move(codeEditor);
+    }
+
+    void MainWindow::SetProjectManager(std::shared_ptr<ProjectManager> projectManager)
+    {
+        m_projectManager = std::move(projectManager);
     }
 }

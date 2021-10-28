@@ -17,6 +17,11 @@ namespace Math4BG
         GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, nullptr));
     }
 
+    RenderedTexture::~RenderedTexture()
+    {
+        GLCall(glDeleteTextures(1, &m_id));
+    }
+
     void RenderedTexture::Bind(unsigned int textureUnit)
     {
         Texture::Bind(textureUnit);

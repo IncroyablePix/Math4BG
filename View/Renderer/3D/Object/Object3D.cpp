@@ -12,7 +12,7 @@ namespace Math4BG
     /*
      * Currently pushes all data in a single mesh to make further work easier
      */
-    Object3D::Object3D(std::shared_ptr<Shader> shader, ModelData *model, const Transform &transform) :
+    Object3D::Object3D(std::shared_ptr<Shader> shader, std::shared_ptr<ModelData> model, const Transform &transform) :
         m_shader(std::move(shader)),
         m_transform(transform)
     {

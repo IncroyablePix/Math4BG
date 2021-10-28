@@ -10,10 +10,10 @@
 
 namespace Math4BG
 {
-    class OBJLoader : IModelLoader
+    class OBJLoader : public IModelLoader
     {
     public:
-        ModelData LoadModel(const std::string &path) override;
+        std::shared_ptr<ModelData> LoadModel(const std::string &path) override;
 
     private:
         void ReadVertexLine(std::stringstream &line, std::vector<glm::fvec3> &vc);

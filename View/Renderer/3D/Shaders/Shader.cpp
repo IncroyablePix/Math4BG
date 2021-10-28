@@ -16,7 +16,8 @@ namespace Math4BG
     Shader::Shader(unsigned int rendererId) :
             m_rendererId(rendererId)
     {
-
+        if(rendererId == 0)
+            throw ShaderException("Invalid shader program");
     }
 
     Shader::~Shader()

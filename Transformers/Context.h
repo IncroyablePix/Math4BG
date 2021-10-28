@@ -19,7 +19,7 @@ namespace Math4BG
     class Context : public std::enable_shared_from_this<Context>
     {
     public:
-        Context(const WindowInfo &info);
+        explicit Context(const WindowInfo &info);
         ~Context();
 
         void Update(double lag);
@@ -27,8 +27,7 @@ namespace Math4BG
         void SetFPS(int fps);
         void Draw();
 
-        inline World *GetWorld() { return m_world.get(); }
-        //inline uint32_t GetWindowId() { return m_window->GetWindowId(); }
+        inline std::shared_ptr<World> GetWorld() { return m_world; }
         inline unsigned int GetFboId() const { return m_world->GetFboId(); }
         inline std::shared_ptr<Texture> GetFboTexture() const { return m_world->GetFboTexture(); }
         inline const std::string& GetTitle() const { return m_title; }

@@ -13,6 +13,7 @@ namespace Math4BG
     {
     public:
         RenderedTexture(unsigned int width, unsigned int height);
+        ~RenderedTexture();
         void Bind(unsigned int textureUnit) override;
         void SetRegenMipMaps(bool b);
 

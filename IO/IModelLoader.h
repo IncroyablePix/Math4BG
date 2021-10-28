@@ -17,7 +17,7 @@ namespace Math4BG
     class IModelLoader
     {
     public:
-        virtual ModelData LoadModel(const std::string &path) = 0;
+        virtual std::shared_ptr<ModelData> LoadModel(const std::string &path) = 0;
     };
 }
 

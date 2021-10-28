@@ -7,7 +7,7 @@
 namespace Math4BG
 {
 
-    Cube::Cube(std::shared_ptr<Shader> shader, Transform &transform) : Object3D(shader, &model, transform)
+    Cube::Cube(std::shared_ptr<Shader> shader, Transform &transform) : Object3D(shader, model, transform)
     {
     }
 }

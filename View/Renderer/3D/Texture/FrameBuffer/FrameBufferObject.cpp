@@ -3,12 +3,13 @@
 //
 
 #include <GL/glew.h>
+#include <iostream>
 #include "FrameBufferObject.h"
 #include "../../GL/GLMacros.h"
 
 namespace Math4BG
 {
-    FrameBufferObject::FrameBufferObject(unsigned int width, unsigned int height) :
+    FrameBufferObject::FrameBufferObject(int width, int height) :
     m_width(width),
     m_height(height)
     {
@@ -27,7 +28,7 @@ namespace Math4BG
 
     FrameBufferObject::~FrameBufferObject()
     {
-        GLCall(glDeleteRenderbuffers(1, &m_colBuffer));
+        GLCall(glDeleteFramebuffers(1, &m_colBuffer));
         GLCall(glDeleteRenderbuffers(1, &m_depthBuffer));
     }
 
@@ -38,7 +39,9 @@ namespace Math4BG
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_colBuffer));
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_depthBuffer));
         if(fullViewport)
+        {
             glViewport(0, 0, m_width, m_height);
+        }
 
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //GLCall(glDrawBuffer(GL_COLOR_ATTACHMENT0));
@@ -54,5 +57,11 @@ namespace Math4BG
     bool FrameBufferObject::IsComplete() const
     {
         return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+    }
+
+    void FrameBufferObject::SetSize(int width, int height)
+    {
+        m_width = width;
+        m_height = height;
     }
 }

@@ -10,9 +10,10 @@
 
 namespace Math4BG
 {
-    struct ModelData
+    struct ModelData : public std::enable_shared_from_this<ModelData>
     {
         ModelData() = default;
+        ~ModelData() = default;
         ModelData(std::vector<Vertex> &vertices, IndexBufferContainer& ibc) : vertices(vertices), ibc(ibc) { }
         ModelData(Vertex *vertices, unsigned int len, IndexBufferContainer& ibc) : ibc(ibc)
         {

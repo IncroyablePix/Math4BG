@@ -16,9 +16,9 @@
 
 namespace Math4BG
 {
-    ModelData OBJLoader::LoadModel(const std::string &path)
+    std::shared_ptr<ModelData> OBJLoader::LoadModel(const std::string &path)
     {
-        ModelData data = { };
+        std::shared_ptr<ModelData> data = std::make_shared<ModelData>();
 
         std::vector<unsigned int> outVertexIndices;
         std::vector<unsigned int> outUVIndices;
@@ -63,7 +63,7 @@ namespace Math4BG
             vertex.normal = (normalIndex == UINT_MAX ? glm::vec3(1.0f, 1.0f, 1.0f) : outNormals[normalIndex]);
             vertex.col = glm::vec3(1.0f, 1.0f, 1.0f);
 
-            data.vertices.push_back(vertex);
+            data->vertices.push_back(vertex);
         }
 
         return data;

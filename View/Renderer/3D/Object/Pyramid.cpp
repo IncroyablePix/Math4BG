@@ -8,7 +8,7 @@
 namespace Math4BG
 {
 
-    Pyramid::Pyramid(std::shared_ptr<Shader> shader, Transform &transform) : Object3D(shader, &pyramidModel, transform)
+    Pyramid::Pyramid(std::shared_ptr<Shader> shader, Transform &transform) : Object3D(shader, pyramidModel, transform)
     {
     }
 }

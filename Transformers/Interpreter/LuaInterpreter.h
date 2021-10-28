@@ -80,7 +80,7 @@ namespace Math4BG
         int SetObjectRot(lua_State *L);
         int SetObjectScale(lua_State *L);
 
-        static std::shared_ptr<LuaInterpreter> Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output);
+        static std::unique_ptr<LuaInterpreter> Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output);
 
     private:
         std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;
