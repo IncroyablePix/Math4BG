@@ -19,7 +19,7 @@ namespace Math4BG
     class Window : public IWindow
     {
     public:
-        Window(const WindowInfo &info, WorldType worldType);
+        Window(const WindowInfo &info);
 
         ~Window();
 
@@ -46,8 +46,9 @@ namespace Math4BG
         std::shared_ptr<OG33RendererSDL> m_renderer;
         std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_sdlRenderer;
 
-        static std::shared_ptr<OG33RendererSDL> CreateRenderer(SDL_Window *window, unsigned int width, unsigned int height, WorldType worldType);
-        static uint32_t FlagsFor(WorldType worldType);
+        static std::shared_ptr<OG33RendererSDL>
+        CreateRenderer(SDL_Window *window, unsigned int width, unsigned int height);
+        static uint32_t FlagsFor();
 
         static void InitSDL();
     };

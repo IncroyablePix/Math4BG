@@ -17,7 +17,7 @@
 
 namespace Math4BG
 {
-    Window::Window(const WindowInfo &info, WorldType worldType) :
+    Window::Window(const WindowInfo &info) :
             IWindow(info),
             m_window(nullptr, SDL_DestroyWindow),
             m_sdlRenderer(nullptr, SDL_DestroyRenderer),
@@ -26,15 +26,9 @@ namespace Math4BG
         InitSDL();
 
         m_window.reset(SDL_CreateWindow(info.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, info.width,
-                                        info.height, FlagsFor(worldType)));
+                                        info.height, FlagsFor()));
         m_sdlRenderer.reset(SDL_CreateRenderer(m_window.get(), -1, SDL_RENDERER_ACCELERATED));
-        m_renderer = CreateRenderer(m_window.get(), info.width, info.height, worldType);
-
-        /*ImGui::CreateContext();
-        ImGuiSDL::Initialize(m_sdlRenderer.get(), info.width, info.height);*/
-
-        /*if(worldType == Flat)
-            m_renderer = Renderer2D::Create(m_window.get(), info.width, info.height);*/
+        m_renderer = CreateRenderer(m_window.get(), info.width, info.height);
 
         if (!m_window)
             throw std::runtime_error("La fenêtre n'a pas pu être créée !");
@@ -82,11 +76,11 @@ namespace Math4BG
 
     std::shared_ptr<Window> Window::Create(const WindowInfo &info, WorldType type)
     {
-        return std::shared_ptr<Window>(static_cast<Window *>(new Window(info, type)));
+        return std::shared_ptr<Window>(static_cast<Window *>(new Window(info)));
     }
 
     std::shared_ptr<OG33RendererSDL>
-    Window::CreateRenderer(SDL_Window *window, unsigned int width, unsigned int height, WorldType worldType)
+    Window::CreateRenderer(SDL_Window *window, unsigned int width, unsigned int height)
     {
         /*switch (worldType)
         {
@@ -100,7 +94,7 @@ namespace Math4BG
         return OG33RendererSDL::Create(window, width, height);
     }
 
-    uint32_t Window::FlagsFor(WorldType worldType)
+    uint32_t Window::FlagsFor()
     {
         uint32_t flag = SDL_WINDOW_SHOWN;
 

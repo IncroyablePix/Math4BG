@@ -21,7 +21,7 @@ namespace Math4BG
 
         ~Shader();
 
-        static std::shared_ptr<Shader> CreateShader(ShaderProgramSource source);
+        static std::shared_ptr<Shader> CreateShader(const ShaderProgramSource& source);
 
         static unsigned int CompileShader(unsigned int type, const std::string &source);
 
@@ -43,8 +43,9 @@ namespace Math4BG
         std::unordered_map<std::string, int> m_uniformLocations;
 
         int GetUniformLocation(const std::string &name);
-    };
 
+
+    };
     //extern Shader Basic;
 }
 

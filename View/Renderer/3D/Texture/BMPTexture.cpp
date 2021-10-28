@@ -4,7 +4,12 @@
 
 #include <stdexcept>
 #include <GL/glew.h>
+#include <array>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include "BMPTexture.h"
+#include "../../../../IO/IOException.h"
 
 #define BMP_HEADER_SIZE                 54
 
@@ -14,6 +19,30 @@
 
 namespace Math4BG
 {
+    struct BMPHeader
+    {
+        // Header
+        uint16_t fileType = 0x4D42;          // BM = { 'B' 'M' }
+        uint32_t fileSize = 0;               // size of the file (in bytes)
+        uint32_t reserved = 0;               // reserved for creation application id
+        uint32_t dataAddress = 0;             // start position of pixel data (bytes from the beginning of the file)
+
+        // Info Header
+        uint32_t size = 40;                     // info header size (40)
+        int32_t width = 0;                      // width of bitmap in pixels
+        int32_t height = 0;                     // width of bitmap in pixels
+        uint16_t planes = 1;                    // amount of planes, always 1
+
+        uint16_t bitCount = 0;                  // bits per pixel
+        uint32_t compression = 0;               // type of compression
+        uint32_t imageSize = 0;                 // 0 - for uncompressed images
+
+        int32_t pixelPerMeterWidth = 0;         // pixels per meter in width
+        int32_t pixelsPerMeterHeight = 0;         // pixels per meter in height
+        uint32_t colorsUsed = 0;               // No. color indexes in the color table. Use 0 for the max number of colors allowed by bitCount
+        uint32_t colorsImportant = 0;
+    };
+
     BMPTexture::BMPTexture(const std::string &path, unsigned int type) :
     Texture(type)
     {
@@ -41,6 +70,7 @@ namespace Math4BG
 
     unsigned char* BMPTexture::LoadBMP(const std::string &imagePath)
     {
+        //BMPHeader header;
         unsigned char header[54];
         unsigned int dataPos;
         unsigned int imageSize;
@@ -48,10 +78,18 @@ namespace Math4BG
         FILE* file = fopen(imagePath.c_str(), "rb");
 
         if(!file)
-            throw std::runtime_error("The image could not be loaded!");
+        {
+            std::stringstream ss;
+            ss << "The image " << imagePath << " could not be loaded!";
+            throw IOException(ss.str());
+        }
 
-        if(fread(header, 1, BMP_HEADER_SIZE, file) != BMP_HEADER_SIZE || header[0] != 'B' || header[1] != 'M')
-            throw std::runtime_error("The image is not a valid BMP file!");
+        if(fread((char*)&header, 1, BMP_HEADER_SIZE, file) != BMP_HEADER_SIZE || header[0] != 'B' || header[1] != 'M')// != 0x4D42)
+        {
+            std::stringstream ss;
+            ss << "The image " << imagePath << " is not a valid BMP file!";
+            throw IOException(ss.str());
+        }
 
         dataPos = *(int*) &(header[0x0A]);
         imageSize = *(int*) &(header[0x22]);

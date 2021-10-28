@@ -8,16 +8,17 @@
 #include "Context.h"
 #include "../IO/IModelLoader.h"
 #include "../View/Renderer/3D/Texture/Texture.h"
+#include "../Output/IOutput.h"
 
 namespace Math4BG
 {
     class Contexts : public std::enable_shared_from_this<Contexts>
     {
     public:
-        Contexts();
+        explicit Contexts(std::shared_ptr<IOutput> output);
         ~Contexts();
 
-        int CreateContext(const WindowInfo &info, WorldType type, bool windowed = true);
+        int CreateContext(const WindowInfo &info);
         inline Context *GetContext(int id) { return m_contexts[id]; }
         inline bool ContextExists(int id) { return m_contexts.find(id) != m_contexts.end() && m_contexts[id] != nullptr; }
         inline bool ModelExists(const std::string &name) { return m_models.find(name) != m_models.end(); }
@@ -30,17 +31,16 @@ namespace Math4BG
         std::string CreateShader(const std::string &path);
 
         inline Context *GetWorldForId(int id) { return m_contexts[m_objects[id]]; }
-        static std::shared_ptr<Contexts> Create();
+        static std::shared_ptr<Contexts> Create(std::shared_ptr<IOutput> output);
 
         void SetWindowFocused(bool focused);
-
-        int KillContextForWindowId(uint32_t id);
 
         bool LoadTexture(const std::string &path, const std::string &name);
         bool LoadModel(const std::string &path, const std::string &name);
 
         //inline Context* ContextFromWindowId(int windowId) { return (m_contextIds.find(windowId) != m_contextIds.end()) ? m_contexts[m_contextIds[windowId]] : nullptr; }
 
+        void Clear();
         void Update(double lag);
         void DrawContexts();
 
@@ -51,6 +51,8 @@ namespace Math4BG
         //std::unordered_map<uint32_t, int> m_contextIds;
         std::unordered_map<int, Context*> m_contexts;
         std::unordered_map<int, int> m_objects;
+
+        std::shared_ptr<IOutput> m_output;
         int m_count = 0;
     };
 }

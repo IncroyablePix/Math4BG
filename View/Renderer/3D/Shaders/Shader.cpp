@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Shader.h"
 #include "../GL/GLMacros.h"
+#include "ShaderException.h"
 
 
 namespace Math4BG
@@ -26,7 +27,7 @@ namespace Math4BG
         }
     }
 
-    std::shared_ptr<Shader> Shader::CreateShader(ShaderProgramSource source)
+    std::shared_ptr<Shader> Shader::CreateShader(const ShaderProgramSource& source)
     {
         bool geometry;
         unsigned int shaderProgram = glCreateProgram();
@@ -80,7 +81,7 @@ namespace Math4BG
                << message << std::endl;
 
             GLCall(glDeleteShader(id));
-            throw std::runtime_error(ss.str());
+            throw ShaderException(ss.str());
         }
 
         return id;

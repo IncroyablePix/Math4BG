@@ -68,34 +68,17 @@ namespace Math4BG
 
         //---
 
-        int CreateCircle(lua_State *L);
-        int SetCirclePos(lua_State *L);
-        int SetCircleSize(lua_State *L);
-        int SetCircleColor(lua_State *L);
-
-        int CreateLine(lua_State *L);
-        int SetLinePos(lua_State *L);
-        int SetLineColor(lua_State *L);
-
-        int CreateRectangle(lua_State *L);
-        int SetRectanglePos(lua_State *L);
-        int SetRectangleDimens(lua_State *L);
-        int SetRectangleColor(lua_State *L);
-
-        //---
-
         int CreateCube(lua_State *L);
         int CreatePlane(lua_State *L);
         int CreatePyramid(lua_State *L);
+        int CreateCustomObject(lua_State *L);
+
         int SetObjectColor(lua_State *L);
         int SetObjectPos(lua_State *L);
         int SetObjectPosOrigin(lua_State *L);
         int SetObjectOrigin(lua_State *L);
         int SetObjectRot(lua_State *L);
         int SetObjectScale(lua_State *L);
-
-        int CreateCustomObject(lua_State *L);
-
 
         static std::shared_ptr<LuaInterpreter> Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output);
 

@@ -32,7 +32,7 @@ namespace Math4BG
     class World
     {
     public:
-        World(const WindowInfo &info, WorldType type, std::shared_ptr<OG33Renderer> renderer);
+        World(const WindowInfo &info, std::shared_ptr<OG33Renderer> renderer);
 
         ~World();
 
@@ -45,22 +45,13 @@ namespace Math4BG
         void SetCameraPos(const glm::vec3 &pos);
         void SetCameraRot(const glm::vec2 &pos);
 
-        int CreateCircle(std::shared_ptr<Shader> shader, const glm::vec3 &center, double radius, uint32_t color);
-        bool SetCirclePos(int circleid, Point center);
-        bool SetCircleSize(int circleid, double radius);
-
-        int CreateLine(std::shared_ptr<Shader> shader, const glm::vec3 &start, const glm::vec3 &end, uint32_t color);
-        bool SetLinePos(int lineid, Point start, Point end);
-
-        int CreateRectangle(std::shared_ptr<Shader> shader, const glm::vec3 &position, float width, float height, uint32_t color);
-        bool SetRectanglePos(int rectangleid, Point position);
-        bool SetRectangleDimens(int rectangleid, int width, int height);
-
         void SetBackgroundColor(unsigned int color);
 
         int CreateCube(std::shared_ptr<Shader> shader, Transform& transform);
         int CreatePlane(std::shared_ptr<Shader> shader, Transform& transform);
         int CreatePyramid(std::shared_ptr<Shader> shader, Transform &transform);
+        int CreateCustomObject(ModelData* model, std::shared_ptr<Shader> shader, Transform& transform);
+
         bool SetObjectColor(int objid, const glm::vec4 &color);
         bool SetObjectPos(int objid, const glm::vec3 &position);
         bool SetObjectPosOrigin(int objid, const glm::vec3 &position);
@@ -69,8 +60,6 @@ namespace Math4BG
         bool SetObjectScale(int objid, const glm::vec3 &scale);
         bool SetObjectTexture(int obj, std::shared_ptr<Texture> texture);
         bool SetObjectColor(int objid, const glm::vec3 &color);
-
-        int CreateCustomObject(ModelData* model, std::shared_ptr<Shader> shader, Transform& transform);
 
         int CreatePointLight(float intensity, const glm::vec3 &color, const Transform& transform);
         bool SetLightPos(int lightid, const glm::vec3 &position);
@@ -96,8 +85,6 @@ namespace Math4BG
         std::shared_ptr<Shader> m_ppShader = Shader::CreateShader(ParseShader("shaders/background.shader"));
         ViewportSquare m_canvas;
         FrameBufferObject m_fbo;
-
-        WorldType m_type;
 
         DirectionalLight m_directionalLight;
         std::unordered_map<int, std::shared_ptr<Light>> m_lights;

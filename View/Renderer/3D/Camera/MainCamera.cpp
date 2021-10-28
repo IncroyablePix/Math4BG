@@ -57,6 +57,10 @@ namespace Math4BG {
             dir += m_left;
         if(keys.Down(KeyButton::D))
             dir += m_right;
+        if(keys.Down(KeyButton::PgUp))
+            dir += m_up;
+        if(keys.Down(KeyButton::PgDn))
+            dir -= m_up;
 
         Move(dir * m_speed, lag);
     }

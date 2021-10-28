@@ -7,12 +7,12 @@
 
 namespace Math4BG
 {
-    Context::Context(const WindowInfo &info, WorldType worldType) :
+    Context::Context(const WindowInfo &info) :
             //m_window(Window::Create(info, worldType)),
             m_title(info.title)
     {
         m_renderer = OG33Renderer::Create(info.width, info.height);
-        m_world = std::make_shared<World>(info, worldType, m_renderer);//m_window->GetRenderer());
+        m_world = std::make_shared<World>(info, m_renderer);//m_window->GetRenderer());
     }
 
     Context::~Context()
@@ -41,50 +41,6 @@ namespace Math4BG
 
     void Context::Draw()
     {
-        //m_window->Clear();
-        //m_window->MakeCurrentContext();
-
-        /*m_world->Draw();
-        if(ImGui::BeginTabItem(GetTitle().c_str()))
-        {
-            ImVec2 wsize = ImGui::GetWindowSize();
-            //m_world->Resize(wsize.x, wsize.y);
-            //glViewport(0, 0, 1280, 720);
-            ImGui::GetWindowDrawList()->AddImage(m_world->GetFboTexture().get(), wsize, ImVec2(0, 1), ImVec2(1, 0));
-            ImGui::EndTabItem();
-        }*/
-        //m_window->SwapBuffers();
-        /*glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-        glEnable(GL_CULL_FACE);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glCullFace(GL_BACK);*/
-
         m_world->Draw(m_title);
-        /*ImGui::Begin("Game rendering");
-        // Get the current cursor position (where your window is)
-        ImVec2 pos = ImGui::GetCursorScreenPos();
-
-        // A boolean to allow me to stop the game rendering
-
-        //glViewport(0, 0, W, H);
-        //m_world->Resize(W + 10, H + 10);
-        // Render the scene into an FBO
-        // Restore previous viewport
-        //glViewport(0, 0, m_renderer->Width(), m_renderer->Height());
-
-        // Get the texture associated to the FBO
-        auto tex = (m_world->GetFboId());
-
-        // Ask ImGui to draw it as an image:
-        // Under OpenGL the ImGUI image type is GLuint
-        // So make sure to use "(void *)tex" but not "&tex"
-        ImGui::GetWindowDrawList()->AddImage(
-                (void *)(tex), {0, 0},
-                {(float) m_renderer->Width(), (float) m_renderer->Height()},
-                ImVec2(0, 1), ImVec2(1, 0));
-
-        ImGui::End();*/
     }
 }

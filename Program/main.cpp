@@ -20,18 +20,15 @@ int main(int argc, char** argv)
         Math4BG::ShowErrorMessage(e.what());
     }
 
-    //--- TODO : Override params when passed as args to main
-
     ParseArgs(argc, argv, config);
 
     //---
 
 
     std::shared_ptr<Math4BG::IOutput> out = Math4BG::ImGuiOutput::Create();
-    std::shared_ptr<Math4BG::Contexts> contexts = Math4BG::Contexts::Create();
+    std::shared_ptr<Math4BG::Contexts> contexts = Math4BG::Contexts::Create(out);
 
     Math4BG::Application app({ "Math4BG", 1280, 720 }, contexts, config, out);
-
     try
     {
         app.Start();

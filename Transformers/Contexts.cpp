@@ -8,11 +8,13 @@
 #include "../Utils/FileSplit.h"
 #include "../View/Renderer/3D/Texture/BMPTexture.h"
 #include "../View/IMGUI/imgui.h"
+#include "../IO/IOException.h"
+#include "../View/Renderer/3D/Shaders/ShaderException.h"
 
 
 namespace Math4BG
 {
-    Contexts::Contexts()
+    Contexts::Contexts(std::shared_ptr<IOutput> output) : m_output(std::move(output))
     {
 
     }
@@ -20,22 +22,6 @@ namespace Math4BG
     Contexts::~Contexts()
     {
 
-    }
-
-    int Contexts::KillContextForWindowId(uint32_t id)
-    {
-        if(m_contexts.find(id) == m_contexts.end())
-            throw std::runtime_error("Context doesn't exist");
-
-        //int contextId = m_contextIds[id];
-
-        Context* context = m_contexts[id];
-        delete context;
-
-        m_contexts.erase(id);
-        //m_contextIds.erase(id);
-
-        return id;
     }
 
     Context *Contexts::operator[](int index)
@@ -54,18 +40,18 @@ namespace Math4BG
         return &m_models[name];
     }
 
-    int Contexts::CreateContext(const WindowInfo &info, WorldType type, bool windowed)
+    int Contexts::CreateContext(const WindowInfo &info)
     {
-        Context* context = new Context(info, type);
+        Context* context = new Context(info);
 
         m_contexts[m_count] = context;
 
         return m_count++;
     }
 
-    std::shared_ptr<Contexts> Contexts::Create()
+    std::shared_ptr<Contexts> Contexts::Create(std::shared_ptr<IOutput> output)
     {
-        return std::shared_ptr<Contexts>(static_cast<Contexts *>(new Contexts()));
+        return std::shared_ptr<Contexts>(static_cast<Contexts *>(new Contexts(std::move(output))));
     }
 
     bool Contexts::LoadTexture(const std::string &path, const std::string &name)
@@ -74,9 +60,16 @@ namespace Math4BG
 
         if(fileSplit.fileExtension == "bmp")
         {
-            std::shared_ptr<BMPTexture> texture = std::make_shared<BMPTexture>(path, GL_TEXTURE_2D);
-            m_textures[name] = texture;
-            return true;
+            try
+            {
+                std::shared_ptr<BMPTexture> texture = std::make_shared<BMPTexture>(path, GL_TEXTURE_2D);
+                m_textures[name] = texture;
+                return true;
+            }
+            catch(const IOException& e)
+            {
+                *m_output << e.what();
+            }
         }
 
         return false;
@@ -110,13 +103,20 @@ namespace Math4BG
     std::string Contexts::CreateShader(const std::string &path)
     {
         //--- HARDCODED
-        ShaderProgramSource source = ParseShader(path);
-        std::shared_ptr<Shader> shader = Shader::CreateShader(source);
-        FileSplit fileSplit(path);
+        try
+        {
+            ShaderProgramSource source = ParseShader(path);
+            std::shared_ptr<Shader> shader = Shader::CreateShader(source);
+            FileSplit fileSplit(path);
 
-        m_shaders[fileSplit.fileWithoutExtension] = shader;
+            m_shaders[fileSplit.fileWithoutExtension] = shader;
 
-        return fileSplit.fileWithoutExtension;
+            return fileSplit.fileWithoutExtension;
+        }
+        catch(const ShaderException &e)
+        {
+            *m_output << e.what();
+        }
     }
 
     std::shared_ptr<Shader> Contexts::GetShaderByName(const std::string &name)
@@ -134,6 +134,15 @@ namespace Math4BG
     {
         for(const auto& [id, context] : m_contexts)
             context->GetWorld()->SetWindowActive(focused);
+    }
+
+    void Contexts::Clear()
+    {
+        m_contexts.clear();
+        m_shaders.clear();
+        m_textures.clear();
+        m_models.clear();
+        m_objects.clear();
     }
 
     /*bool Contexts::LoadSound(const std::string &path, const std::string &name)

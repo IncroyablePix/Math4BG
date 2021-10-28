@@ -23,9 +23,9 @@ namespace Math4BG
         Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output);
         ~Application();
         void Start();
+        void RunProject(const std::string& path);
 
     private:
-        void ManageWindowEvents(const SDL_Event& event);
 
         MainWindow m_window;
 

@@ -19,7 +19,7 @@ namespace Math4BG
     class Context : public std::enable_shared_from_this<Context>
     {
     public:
-        Context(const WindowInfo &info, WorldType type);
+        Context(const WindowInfo &info);
         ~Context();
 
         void Update(double lag);

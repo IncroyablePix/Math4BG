@@ -17,9 +17,8 @@
 
 namespace Math4BG
 {
-    World::World(const WindowInfo &info, WorldType type, std::shared_ptr<OG33Renderer> renderer) :
+    World::World(const WindowInfo &info, std::shared_ptr<OG33Renderer> renderer) :
             m_renderer(std::move(renderer)),
-            m_type(type),
             m_camera(std::make_unique<MainCamera>(45.0f, (float) info.width, (float) info.height, 0.1f, 1000.0f)),
             m_directionalLight({0.7f, -0.7f, 0.0f}, 1.0f, {1.0f, 1.0f, 1.0f}),
             m_fbo(info.width, info.height)
@@ -75,18 +74,6 @@ namespace Math4BG
         m_camera->SetCameraRot(pos);
     }
 
-    /*std::string World::CreateShader(const std::string &path)
-    {
-        //--- HARDCODED
-        ShaderProgramSource source = ParseShader(path);
-        std::shared_ptr<Shader> shader = Shader::CreateShader(source);
-        FileSplit fileSplit(path);
-
-        m_shaders[fileSplit.fileWithoutExtension] = shader;
-
-        return fileSplit.fileWithoutExtension;
-    }*/
-
     void World::Update(double lag)//, const MouseInput &mouse, const KeyInput &keys)
     {
         HandleMouseInputs();
@@ -99,74 +86,6 @@ namespace Math4BG
         m_fbo.Unbind();
     }
 
-    int World::CreateCircle(std::shared_ptr<Shader> shader, const glm::vec3 &center, double radius, uint32_t color)
-    {
-        m_objects[m_count] = std::make_shared<Circle>(std::move(shader), center, radius, color);
-        //m_circles[m_count] = {center, radius, color};
-        return m_count++;
-    }
-
-    bool World::SetCirclePos(int circleid, Point center)
-    {
-        if (m_objects.find(circleid) != m_objects.end())
-        {
-            auto circle = m_objects[circleid].get();
-            if(Circle* c = dynamic_cast<Circle*>(circle))
-            {
-                c->m_center.x = center.x;
-                c->m_center.y = center.y;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    bool World::SetCircleSize(int circleid, double radius)
-    {
-        if (m_objects.find(circleid) != m_objects.end())
-        {
-            auto circle = m_objects[circleid].get();
-            if(Circle* c = dynamic_cast<Circle*>(circle))
-            {
-                c->m_radius = radius;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    int World::CreateLine(std::shared_ptr<Shader> shader, const glm::vec3 &start, const glm::vec3 &end, uint32_t color)
-    {
-        m_objects[m_count] = std::make_shared<Line>(std::move(shader), start, end, color);
-        //m_lines[m_count] = { start, end, color };
-        return m_count++;
-    }
-
-    bool World::SetLinePos(int lineid, Point start, Point end)
-    {
-        if (m_objects.find(lineid) != m_objects.end())
-        {
-            auto line = m_objects[lineid].get();
-            if(Line* r = dynamic_cast<Line*>(line))
-            {
-                r->m_start = {start.x, start.y, 1.0f};
-                r->m_end = {end.x, end.y, 1.0f};
-                return true;
-            }
-        }
-        return false;
-        /*if (m_objects.find(lineid) != m_objects.end())
-        {
-            m_lines[lineid].m_start = {start.x, start.y, 1.0f};
-            m_lines[lineid].m_end = {end.x, end.y, 1.0f};
-            return true;
-        }
-
-        return false;*/
-    }
-
     void World::SetBackgroundColor(unsigned int color)
     {
         uint8_t r = color >> 24;
@@ -174,43 +93,6 @@ namespace Math4BG
         uint8_t b = color >> 8;
 
         m_renderer->SetBackgroundColor(r, g, b);
-    }
-
-    int World::CreateRectangle(std::shared_ptr<Shader> shader, const glm::vec3 &position, float width, float height, uint32_t color)
-    {
-        //m_objects[m_count] = std::make_shared<Line>(start, end, color);
-        glm::vec2 dimens = {width, height};
-        m_objects[m_count] = std::make_shared<Rectangle>(std::move(shader), position, dimens, color);
-        return m_count++;
-    }
-
-    bool World::SetRectanglePos(int rectangleid, Point position)
-    {
-        if (m_objects.find(rectangleid) != m_objects.end())
-        {
-            auto rectangle = m_objects[rectangleid].get();
-            if(Rectangle* r = dynamic_cast<Rectangle*>(rectangle))
-            {
-                r->m_start = position;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    bool World::SetRectangleDimens(int rectangleid, int width, int height)
-    {
-        if (m_objects.find(rectangleid) != m_objects.end())
-        {
-            auto rectangle = m_objects[rectangleid].get();
-            if(Rectangle* r = dynamic_cast<Rectangle*>(rectangle))
-            {
-                r->m_width = width;
-                r->m_height = height;
-                return true;
-            }
-        }
-        return false;
     }
 
     int World::CreateCube(std::shared_ptr<Shader> shader, Transform &transform)
@@ -440,6 +322,8 @@ namespace Math4BG
             m_keys.KeySet(S, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_DownArrow)));
             m_keys.KeySet(Q, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_LeftArrow)));
             m_keys.KeySet(D, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_RightArrow)));
+            m_keys.KeySet(PgUp, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_PageUp)));
+            m_keys.KeySet(PgDn, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_PageDown)));
             //m_keys.KeySet(S, ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)));
             //m_keys.KeySet(Q, ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_A)));
             //m_keys.KeySet(D, ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_)));

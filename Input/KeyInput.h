@@ -19,6 +19,8 @@ namespace Math4BG
         Q = 1,
         S = 2,
         D = 3,
+        PgUp = 4,
+        PgDn = 5,
     };
 
     class KeyInput
