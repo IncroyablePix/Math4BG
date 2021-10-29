@@ -34,13 +34,11 @@ namespace Math4BG
         double GetNumber(const std::string &var);
         std::string GetString(const std::string &var);
         bool GetBool(const std::string &var);
-        bool CheckValidity() override;
 
         void RegisterFunctions() override;
 
         int CallOnInitFunction() override;
         int CallUpdateFunction(double lag) override;
-        int CallOnWindowClosed(int windowId) override;
 
         //---
 

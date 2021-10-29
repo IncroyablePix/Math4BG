@@ -23,9 +23,7 @@ namespace Math4BG
         for(int i = 0; i < KEY_BUTTONS_COUNT; i ++)
         {
             m_prevKeysState[i] = m_keysState[i];
-            //std::cout << i << ": " << m_keysState[i] << " - " << m_prevKeysState[i] << std::endl;
         }
-        //std::cout << std::endl;
 
     }
 

@@ -3,6 +3,7 @@
 //
 
 #include "ShaderProgramSource.h"
+#include "ShaderException.h"
 
 #include <sstream>
 #include <fstream>
@@ -31,14 +32,26 @@ namespace Math4BG
                     type = ShaderType::FragmentShader;
 
                 shaderFound[type] = true;
-            } else
+            }
+            else
             {
                 ss[type] << line << std::endl;
             }
         }
 
+        if(!shaderFound[0] || !shaderFound[2])
+        {
+            std::stringstream es;
+            es << "Invalid shader file: " << "\"" << filepath << "\"";
+            throw ShaderException(es.str());
+        }
+
+        const std::string vertexShader = ss[0].str();
+        const std::string geometryShader = ss[1].str();
+        const std::string fragmentShader = ss[2].str();
+
         return {shaderFound[0], shaderFound[1], shaderFound[2],
-                ss[0].str(), ss[1].str(), ss[2].str()};
+                vertexShader, geometryShader, fragmentShader };
     }
 
     //---

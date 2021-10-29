@@ -10,11 +10,14 @@
 #include "../View/IMGUI/imgui.h"
 #include "../IO/IOException.h"
 #include "../View/Renderer/3D/Shaders/ShaderException.h"
+#include "../View/Renderer/3D/Shaders/BasicShaders.h"
 
 
 namespace Math4BG
 {
-    Contexts::Contexts(std::shared_ptr<IOutput> output) : m_output(std::move(output))
+    Contexts::Contexts(std::shared_ptr<IOutput> output) :
+    m_output(std::move(output)),
+    m_basicShader(nullptr)
     {
 
     }
@@ -91,14 +94,17 @@ namespace Math4BG
     {
         for(const auto& [key, context] : m_contexts)
         {
-            context->GetWorld()->UpdateShaders(m_shaders);
+            if(m_basicShader)
+                context->GetWorld()->UpdateShader(m_basicShader);
+            for(const auto& [name, shader] : m_shaders)
+                context->GetWorld()->UpdateShader(shader);
+
             context->Draw();
         }
     }
 
     std::string Contexts::CreateShader(const std::string &path)
     {
-        //--- HARDCODED
         try
         {
             ShaderProgramSource source = ParseShader(path);
@@ -118,6 +124,13 @@ namespace Math4BG
 
     std::shared_ptr<Shader> Contexts::GetShaderByName(const std::string &name)
     {
+        if(m_shaders.find(name) == m_shaders.end())
+        {
+            if(!m_basicShader)
+                m_basicShader = std::move(CreateBasicShader());
+            return m_basicShader;
+        }
+
         return m_shaders[name];
     }
 

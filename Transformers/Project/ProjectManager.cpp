@@ -5,6 +5,7 @@
 #include "ProjectManager.h"
 #include "../Interpreter/LuaInterpreter.h"
 #include "../../Utils/FileSplit.h"
+#include "../Interpreter/CodeException.h"
 
 namespace Math4BG
 {
@@ -22,8 +23,14 @@ namespace Math4BG
         m_path = path;
     }
 
+    void ProjectManager::Reload()
+    {
+        Run();
+    }
+
     void ProjectManager::Run()
     {
+        m_runningProject = false;
         m_contexts->Clear();
 
         if(m_codeEditor)
@@ -32,18 +39,12 @@ namespace Math4BG
         FileSplit fileSplit(m_path);
         m_interpreter = std::move(CreateInterpreter(fileSplit.fileExtension, m_contexts, m_output));
 
-        m_interpreter->ExecuteFile(m_path);
+        try { m_interpreter->ExecuteFile(m_path); }
+        catch(const CodeException &e) { *m_output << e.what(); }
 
-        if (!m_interpreter->CheckValidity())
-        {
-            *m_output << "Invalid Script: ";
-            throw std::runtime_error(
-                    "Invalid Lua script :\nMust contain the following functions : OnInit, OnUpdate(number), OnWindowClosed(windowId)");
-        }
-        else
-        {
-            m_interpreter->CallOnInitFunction();
-        }
+        m_runningProject = true;
+        try { m_interpreter->CallOnInitFunction(); }
+        catch(const CodeException &e) { *m_output << e.what(); }
     }
 
     std::unique_ptr<ILanInterpreter> ProjectManager::CreateInterpreter(const std::string &name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output)
@@ -58,7 +59,11 @@ namespace Math4BG
 
     void ProjectManager::Update(double deltaTime)
     {
-        m_interpreter->CallUpdateFunction(deltaTime);
+        if(m_runningProject)
+        {
+            try { m_interpreter->CallUpdateFunction(deltaTime); }
+            catch(const CodeException &e) { *m_output << e.what(); }
+        }
     }
 
     void ProjectManager::SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor)

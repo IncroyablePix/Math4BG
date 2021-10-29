@@ -35,7 +35,6 @@ namespace Math4BG
             auto wSize = ImGui::GetWindowSize();
             ImGuiID dockspaceId = ImGui::GetID(m_title.c_str());
             ImGui::DockSpace(dockspaceId, ImVec2(), dockspaceFlags);
-            std::cout << wSize.x << " " << wSize.y << std::endl;
 
             if (m_firstTime)
             {

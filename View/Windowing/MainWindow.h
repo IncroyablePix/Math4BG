@@ -43,7 +43,7 @@ namespace Math4BG
         static void InitSDL();
         void InitImGui();
 
-        void GlewInitAttempt();
+        static void GlewInitAttempt();
 
         std::shared_ptr<IOutput> m_output;
 

@@ -22,9 +22,7 @@ namespace Math4BG
 
         virtual int CallOnInitFunction() = 0;
         virtual int CallUpdateFunction(double lag) = 0;
-        virtual int CallOnWindowClosed(int windowId) = 0;
 
-        virtual bool CheckValidity() = 0;
         virtual void RegisterFunctions() = 0;
 
     protected:

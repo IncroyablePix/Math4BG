@@ -39,7 +39,6 @@ namespace Math4BG
 
     void VertexBuffer::Push()
     {
-        //std::cout << "sizeof buffer : " << m_data.size() << std::endl;
         GLCall(glBufferData(GL_ARRAY_BUFFER, m_data.size(), &m_data[0], GL_STATIC_DRAW));
     }
 

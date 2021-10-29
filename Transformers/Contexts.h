@@ -49,6 +49,8 @@ namespace Math4BG
         std::unordered_map<int, std::shared_ptr<Context>> m_contexts;
         std::unordered_map<int, int> m_objects;
 
+        std::shared_ptr<Shader> m_basicShader;
+
         std::shared_ptr<IOutput> m_output;
         int m_count = 0;
     };

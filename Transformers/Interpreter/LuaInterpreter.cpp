@@ -8,12 +8,13 @@
 #include "LuaInterpreter.h"
 #include "../../Output/IOutput.h"
 #include "../../Utils/ColorSwitch.h"
+#include "CodeException.h"
 
 namespace Math4BG
 {
     LuaInterpreter::LuaInterpreter(std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output) :
             m_luaState(nullptr, lua_close),
-            ILanInterpreter(std::move(contexts), output)
+            ILanInterpreter(std::move(contexts), std::move(output))
     {
         m_luaState.reset(luaL_newstate());
         luaL_openlibs(m_luaState.get());
@@ -37,19 +38,6 @@ namespace Math4BG
             ThrowLuaException();
     }
 
-    bool LuaInterpreter::CheckValidity()
-    {
-        char *functions[] = {"OnInit", "OnUpdate", "OnWindowClosed"};
-        for (auto &function : functions)
-        {
-            lua_getglobal(m_luaState.get(), function);
-            if (!lua_isfunction(m_luaState.get(), -1))
-                return false;
-        }
-
-        return true;
-    }
-
     int LuaInterpreter::CallUpdateFunction(const double lag)
     {
         lua_getglobal(m_luaState.get(), "OnUpdate");
@@ -63,23 +51,10 @@ namespace Math4BG
 
             return (int) lua_tonumber(m_luaState.get(), -1);
         }
-
-        return -1;
-    }
-
-    int LuaInterpreter::CallOnWindowClosed(int windowId)
-    {
-        lua_getglobal(m_luaState.get(), "OnWindowClosed");
-        if (lua_isfunction(m_luaState.get(), -1))
+        /*else
         {
-            lua_pushnumber(m_luaState.get(), windowId);
-
-            int out = lua_pcall(m_luaState.get(), 1, 1, 0);
-            if (!CheckLua(out))
-                ThrowLuaException();
-
-            return (int) lua_tonumber(m_luaState.get(), -1);
-        }
+            throw CodeException("Could not find \"OnUpdate\" function");
+        }*/
 
         return -1;
     }
@@ -94,6 +69,10 @@ namespace Math4BG
                 ThrowLuaException();
 
             return (int) lua_tonumber(m_luaState.get(), -1);
+        }
+        else
+        {
+            throw CodeException("Could not find \"OnInit\" function");
         }
 
         return -1;
@@ -153,7 +132,7 @@ namespace Math4BG
     void LuaInterpreter::ThrowLuaException()
     {
         std::string error = lua_tostring(m_luaState.get(), -1);
-        throw std::runtime_error(error);
+        throw CodeException(error);
     }
 
     void LuaInterpreter::RegisterFunctions()
@@ -351,7 +330,15 @@ namespace Math4BG
     int LuaInterpreter::CreatePlane(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
-        std::string shaderName = lua_tostring(L, 2);
+        std::string shaderName;
+        try
+        {
+            shaderName = lua_tostring(L, 2);
+        }
+        catch(const std::logic_error& e)
+        {
+            shaderName = "";
+        }
         float x = (float) lua_tonumber(L, 3);
         float y = (float) lua_tonumber(L, 4);
         float z = (float) lua_tonumber(L, 5);

@@ -66,7 +66,7 @@ namespace Math4BG
         inline unsigned int GetFboId() const { return m_fbo.GetId(); }
         inline std::shared_ptr<Texture> GetFboTexture() const { return m_fbo.GetTexture(); }
 
-        void UpdateShaders(std::unordered_map<std::string, std::shared_ptr<Shader>>& shaders);
+        void UpdateShader(std::shared_ptr<Shader> shaders);
 
         void HandleMouseInputs();
         void HandleKeyboardInputs();

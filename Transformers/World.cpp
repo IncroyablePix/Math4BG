@@ -286,23 +286,20 @@ namespace Math4BG
         m_renderer->Resize(width, height);
     }
 
-    void World::UpdateShaders(std::unordered_map<std::string, std::shared_ptr<Shader>> &shaders)
+    void World::UpdateShader(std::shared_ptr<Shader> shader)
     {
-        for(const auto& [name, shader] : shaders)
+        Shader* shaderProgram = shader.get();
+
+        shaderProgram->Bind();
+        shaderProgram->SetUniformVec2("vPixelSize", m_camera->GetPixelSize());
+        m_directionalLight.ToShader(*shaderProgram);
+
+        for(const auto& [id, light] : m_lights)
         {
-            Shader* shaderProgram = shader.get();
-
-            shaderProgram->Bind();
-            shaderProgram->SetUniformVec2("vPixelSize", m_camera->GetPixelSize());
-            m_directionalLight.ToShader(*shaderProgram);
-
-            for(const auto& [id, light] : m_lights)
-            {
-                light->ToShader(*shaderProgram);
-            }
-
-            shaderProgram->Unbind();
+            light->ToShader(*shaderProgram);
         }
+
+        shaderProgram->Unbind();
     }
 
     void World::HandleMouseInputs()
@@ -323,7 +320,6 @@ namespace Math4BG
     void World::HandleKeyboardInputs()
     {
         ImGuiIO& io = ImGui::GetIO();
-        //std::cout << ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_UpArrow)) << std::endl;
         if(m_tabActive)//if(m_windowActive)// && m_tabActive)
         {
             m_keys.KeySet(Z, ImGui::IsKeyDown(ImGui::GetKeyIndex(ImGuiKey_UpArrow)));

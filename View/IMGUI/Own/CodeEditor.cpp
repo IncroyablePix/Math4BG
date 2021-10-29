@@ -122,6 +122,7 @@ namespace Math4BG
         std::ifstream fileStream(path);
         if(fileStream.good())
         {
+            m_path = path;
             std::string code((std::istreambuf_iterator<char>(fileStream)), std::istreambuf_iterator<char>());
             m_editor.SetText(code);
         }

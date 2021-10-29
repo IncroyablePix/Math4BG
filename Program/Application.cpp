@@ -12,6 +12,7 @@
 #include "../View/IMGUI/imgui.h"
 #include "../View/IMGUI/imgui_impl_sdl.h"
 #include "../View/IMGUI/imgui_impl_opengl3.h"
+#include "../Transformers/Interpreter/CodeException.h"
 
 namespace Math4BG
 {
@@ -22,18 +23,7 @@ namespace Math4BG
         m_output(std::move(output)),
         m_projectManager(std::make_shared<ProjectManager>(config.scriptFile, contexts, output))
     {
-        /*WindowInfo info {"Math4BG", 1280, 720};
-        m_window = std::make_unique<MainWindow>(info, output);*/
-        /*SDL_DisplayMode current;
-        int errorCode = SDL_GetCurrentDisplayMode(0, &current);
-        if(errorCode != 0)
-            throw std::runtime_error("Could not retrieve DisplayMode");*/
-
         m_refreshRate = 144;
-
-        //m_contexts = std::shared_ptr<Contexts>(std::move(contexts));
-        //RunProject(config.scriptFile);
-
 
         m_codeEditor = std::make_shared<CodeEditor>(config.scriptFile, "Code Editor");
         m_projectManager->SetCodeEditor(m_codeEditor);
@@ -127,7 +117,15 @@ namespace Math4BG
                 //--- 
                    
                 m_window.Update(lag);
-                Update(lag);
+                try
+                {
+                    Update(lag);
+                }
+                catch(const CodeException &e)
+                {
+                    *m_output << e.what();
+                }
+
                 m_window.SetMouseProps(ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY)), buttons, wheel);
 
                 lag -= secondsPerUpdate;

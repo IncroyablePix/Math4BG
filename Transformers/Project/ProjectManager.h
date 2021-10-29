@@ -17,6 +17,7 @@ namespace Math4BG
         ProjectManager(const std::string &path, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
         void SetPath(const std::string &path);
         void Run();
+        void Reload();
         void Update(double deltaTime);
         void SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor);
 
@@ -26,6 +27,8 @@ namespace Math4BG
         std::shared_ptr<Contexts> m_contexts;
         std::unique_ptr<ILanInterpreter> m_interpreter;
         std::shared_ptr<CodeEditor> m_codeEditor;
+
+        bool m_runningProject { false };
 
         static std::unique_ptr<ILanInterpreter> CreateInterpreter(const std::string& name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
     };

@@ -130,6 +130,10 @@ namespace Math4BG
                 {
                     open = true;
                 }
+                if(ImGui::MenuItem("Reload", nullptr))
+                {
+                    m_projectManager->Reload();
+                }
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -140,8 +144,10 @@ namespace Math4BG
 
         if(m_fileDialog->showFileDialog("Open File", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".lua,.js"))
         {
-            std::cout << m_fileDialog->selected_fn << std::endl;      // The name of the selected file or directory in case of Select Directory dialog mode
-            std::cout << m_fileDialog->selected_path << std::endl;    // The absolute path to the selected file
+            std::stringstream ss; ss << "Opening " << m_fileDialog->selected_fn;
+            *m_output << ss.str();
+            /*std::cout << m_fileDialog->selected_fn << std::endl;      // The name of the selected file or directory in case of Select Directory dialog mode
+            std::cout << m_fileDialog->selected_path << std::endl;    // The absolute path to the selected file*/
 
             if(m_projectManager)
             {
