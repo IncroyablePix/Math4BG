@@ -9,7 +9,7 @@
 #include <memory>
 #include "Screen.h"
 #include "Renderer/OG33RendererSDL.h"
-#include "../Transformers/WorldType.h"
+#include "../Transformers/World/WorldType.h"
 #include "IWindow.h"
 
 #define UPS     50

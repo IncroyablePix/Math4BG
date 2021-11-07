@@ -18,7 +18,7 @@ namespace Math4BG
         explicit Contexts(std::shared_ptr<IOutput> output);
         ~Contexts();
 
-        int CreateContext(const WindowInfo &info);
+        int CreateContext(const WindowInfo &info, bool abstract);
         inline std::shared_ptr<Context> GetContext(int id) { return m_contexts[id]; }
         inline bool ContextExists(int id) { return m_contexts.find(id) != m_contexts.end() && m_contexts[id] != nullptr; }
         inline bool ModelExists(const std::string &name) { return m_models.find(name) != m_models.end(); }
@@ -31,6 +31,7 @@ namespace Math4BG
         std::string CreateShader(const std::string &path);
 
         inline std::shared_ptr<Context> GetWorldForId(int id) { return m_contexts[m_objects[id]]; }
+        inline void SetWorldForObjectId(int objectId, int worldId) { m_objects[objectId] = worldId; }
         static std::shared_ptr<Contexts> Create(std::shared_ptr<IOutput> output);
 
         void SetWindowFocused(bool focused);

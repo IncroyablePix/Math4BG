@@ -8,32 +8,32 @@
 
 #include <memory>
 #include <unordered_map>
-#include "../View/Renderer/OG33RendererSDL.h"
-#include "../View/Renderer/OG33Renderer.h"
-#include "../View/Window.h"
-#include "../View/Renderer/3D/Shaders/Shader.h"
-#include "../Physics/Transform.h"
-#include "../IO/ModelData.h"
-#include "../View/Renderer/3D/Texture/Texture.h"
-#include "../View/Renderer/3D/Light/Light.h"
-#include "../View/Renderer/3D/Light/DirectionalLight.h"
-#include "../View/Renderer/3D/PostProcessing/ViewportSquare.h"
-#include "../View/Renderer/3D/Texture/FrameBuffer/FrameBufferObject.h"
+#include "../../View/Renderer/OG33RendererSDL.h"
+#include "../../View/Renderer/OG33Renderer.h"
+#include "../../View/Window.h"
+#include "../../View/Renderer/3D/Shaders/Shader.h"
+#include "../../Physics/Transform.h"
+#include "../../IO/ModelData.h"
+#include "../../View/Renderer/3D/Texture/Texture.h"
+#include "../../View/Renderer/3D/Light/Light.h"
+#include "../../View/Renderer/3D/Light/DirectionalLight.h"
+#include "../../View/Renderer/3D/PostProcessing/ViewportSquare.h"
+#include "../../View/Renderer/3D/Texture/FrameBuffer/FrameBufferObject.h"
 
 #define INVALID_OBJECT_ID               (-1)
 
 namespace Math4BG
 {
-    class World : public std::enable_shared_from_this<World>
+    class IWorld : public std::enable_shared_from_this<IWorld>
     {
     public:
-        World(const WindowInfo &info, std::shared_ptr<OG33Renderer> renderer);
+        IWorld(const WindowInfo &info, std::shared_ptr<OG33Renderer> renderer);
 
-        ~World();
+        ~IWorld();
 
-        void Draw(const std::string& title);
+        virtual void Draw(const std::string& title) = 0;
         void DrawWorld();
-        void Update(double lag);//, const MouseInput &mouse, const KeyInput &keys);
+        virtual void Update(double lag);//, const MouseInput &mouse, const KeyInput &keys);
 
         //std::string CreateShader(const std::string& path);
 
@@ -68,36 +68,30 @@ namespace Math4BG
 
         void UpdateShader(std::shared_ptr<Shader> shaders);
 
-        void HandleMouseInputs();
-        void HandleKeyboardInputs();
-
         inline void SetWindowActive(bool active) { m_windowActive = active; }
 
     private:
-        std::unique_ptr<MainCamera> m_camera;
         std::shared_ptr<OG33Renderer> m_renderer;
-
-        std::shared_ptr<Shader> m_ppShader = Shader::CreateShader(ParseShader("shaders/background.shader"));
-        ViewportSquare m_canvas;
-        FrameBufferObject m_fbo;
 
         DirectionalLight m_directionalLight;
         std::unordered_map<int, std::shared_ptr<Light>> m_lights;
         std::unordered_map<int, std::shared_ptr<IDrawable>> m_objects;
 
-        MouseInput m_mouse;
-        KeyInput m_keys;
-
         bool m_windowActive;
-        bool m_tabActive;
-
-        int m_count = 0;
 
         template<typename Base, typename T>
         static inline bool instanceof(const T*) {
             return std::is_base_of<Base, T>::value;
         }
+
+    protected:
+        std::unique_ptr<MainCamera> m_camera;
+        std::shared_ptr<Shader> m_ppShader = Shader::CreateShader(ParseShader("shaders/background.shader"));
+        FrameBufferObject m_fbo;
+        ViewportSquare m_canvas;
     };
+
+    static int objectsCount = 0;
 }
 
 #endif //ARCPOSITION_WORLD_H

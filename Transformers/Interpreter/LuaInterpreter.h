@@ -7,7 +7,7 @@
 
 #include <memory>
 #include "../Contexts.h"
-#include "../World.h"
+#include "../World/IWorld.h"
 #include "../../Output/IOutput.h"
 #include "ILanInterpreter.h"
 /**
@@ -44,7 +44,7 @@ namespace Math4BG
 
         int Print(lua_State *L);
 
-        int CreateWindow(lua_State *L);
+        int CreateContext(lua_State *L);
         int DestroyWindow(lua_State *L);
         int SetBackgroundColor(lua_State *L);
 
@@ -77,6 +77,7 @@ namespace Math4BG
         int SetObjectOrigin(lua_State *L);
         int SetObjectRot(lua_State *L);
         int SetObjectScale(lua_State *L);
+        int SetObjectTexture(lua_State *L);
 
         static std::unique_ptr<LuaInterpreter> Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output);
 
@@ -84,8 +85,6 @@ namespace Math4BG
         std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;
         bool CheckLua(int r);
         void ThrowLuaException();
-
-        int SetObjectTexture(lua_State *L);
 
         static float Col(uint32_t color);
     };

@@ -43,9 +43,15 @@ namespace Math4BG
         return m_models[name];
     }
 
-    int Contexts::CreateContext(const WindowInfo &info)
+    int Contexts::CreateContext(const WindowInfo &info, bool abstract)
     {
-        m_contexts[m_count] = std::make_shared<Context>(info);
+        auto context = std::make_shared<Context>(info, abstract);
+        m_contexts[m_count] = context;
+
+        if(abstract)
+        {
+             m_textures[info.title] = context->GetFboTexture();
+        }
 
         return m_count++;
     }
