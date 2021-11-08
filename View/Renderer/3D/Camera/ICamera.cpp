@@ -2,6 +2,7 @@
 // Created by Benjam on 13-05-21.
 //
 
+#include <iostream>
 #include "ICamera.h"
 #include "MainCamera.h"
 
@@ -105,4 +106,7 @@ namespace Math4BG
     {
         return m_eye;
     }
+
+    ICamera::~ICamera()
+    = default;
 }

@@ -36,6 +36,7 @@ namespace Math4BG
 
     Application::~Application()
     {
+        m_contexts->Clear();
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplSDL2_Shutdown();
         ImGui::DestroyContext();

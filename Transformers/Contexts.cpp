@@ -160,6 +160,8 @@ namespace Math4BG
         m_objects.clear();
         m_contexts.clear();
 
+        m_basicShader.reset();
+
         m_count = 0;
     }
 

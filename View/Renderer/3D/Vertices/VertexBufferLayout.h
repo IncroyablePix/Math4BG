@@ -38,6 +38,7 @@ namespace Math4BG
     {
     public:
         VertexBufferLayout();
+        ~VertexBufferLayout();
 
         template<typename T>
         void Push(unsigned int count)

@@ -24,7 +24,10 @@ namespace Math4BG
 
     VertexBuffer::~VertexBuffer()
     {
-        GLCall(glDeleteBuffers(1, &m_rendererID));
+        if(m_rendererID != 0)
+        {
+            GLCall(glDeleteBuffers(1, &m_rendererID));
+        }
     }
 
     void VertexBuffer::Add(void *ptrData, unsigned int size)

@@ -14,7 +14,7 @@ namespace Math4BG
     public:
         ICamera() = default;
         ICamera(float width, float height, float fov, float nearClip, float farClip);
-        virtual ~ICamera() = default;
+        virtual ~ICamera();
 
         const glm::mat4 GetMVP() const;
         const glm::mat4 GetProjectionMatrix() const;

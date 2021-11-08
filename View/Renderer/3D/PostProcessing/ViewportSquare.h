@@ -18,6 +18,7 @@ namespace Math4BG
     {
     public:
         ViewportSquare();
+        ~ViewportSquare();
 
         void Bind(Math4BG::Shader &shader, Texture& texture) const;
 

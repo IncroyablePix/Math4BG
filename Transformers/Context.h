@@ -23,8 +23,6 @@ namespace Math4BG
         ~Context();
 
         void Update(double lag);
-        void SetUPS(int ups);
-        void SetFPS(int fps);
         void Draw();
 
         inline std::shared_ptr<IWorld> GetWorld() { return m_world; }

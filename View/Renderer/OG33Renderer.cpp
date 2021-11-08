@@ -2,6 +2,7 @@
 // Created by Benjam on 10/16/2021.
 //
 
+#include <iostream>
 #include "OG33Renderer.h"
 
 namespace Math4BG
@@ -14,7 +15,6 @@ namespace Math4BG
 
     OG33Renderer::~OG33Renderer()
     {
-
     }
 
     void OG33Renderer::SetBackgroundColor(uint8_t r, uint8_t g, uint8_t b)
@@ -38,7 +38,7 @@ namespace Math4BG
 
     std::shared_ptr<OG33Renderer> OG33Renderer::Create(int width, int height)
     {
-        return std::shared_ptr<OG33Renderer>(static_cast<OG33Renderer *>(new OG33Renderer(width, height)));
+        return std::make_shared<OG33Renderer>(width, height);
     }
 
     float OG33Renderer::Col(uint32_t color)

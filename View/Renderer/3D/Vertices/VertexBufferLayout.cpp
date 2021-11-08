@@ -22,4 +22,7 @@ namespace Math4BG
     {
         return m_elements;
     }
+
+    VertexBufferLayout::~VertexBufferLayout()
+    = default;
 }

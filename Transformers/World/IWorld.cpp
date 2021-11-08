@@ -6,14 +6,9 @@
 #include <utility>
 #include "IWorld.h"
 #include "../../View/Renderer/3D/Object/Cube.h"
-#include "../../Utils/FileSplit.h"
-#include "../../View/Renderer/3D/Camera/MainCamera.h"
 #include "../../View/Renderer/3D/Object/Pyramid.h"
-#include "../../View/Renderer/3D/Texture/Texture.h"
 #include "../../View/Renderer/3D/Light/PointLight.h"
 #include "../../View/Renderer/3D/Object/Plane.h"
-#include "../../Utils/ColorSwitch.h"
-#include "../../View/IMGUI/imgui.h"
 
 
 namespace Math4BG
@@ -27,9 +22,7 @@ namespace Math4BG
     }
 
     IWorld::~IWorld()
-    {
-
-    }
+    = default;
 
     void IWorld::DrawWorld()
     {

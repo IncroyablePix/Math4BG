@@ -42,4 +42,7 @@ namespace Math4BG
 
         shader.Unbind();
     }
+
+    ViewportSquare::~ViewportSquare()
+    = default;
 }

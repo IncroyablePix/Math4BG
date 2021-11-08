@@ -21,7 +21,8 @@ namespace Math4BG
     }
 
     Context::~Context()
-    = default;
+    {
+    }
 
     void Context::Update(double lag)
     {
@@ -30,16 +31,6 @@ namespace Math4BG
 
         //m_window->Clear();
         m_world->Update(lag);//, m_mouse, m_keys);
-    }
-
-    void Context::SetUPS(int ups)
-    {
-        //m_window->SetUPS(ups);
-    }
-
-    void Context::SetFPS(int fps)
-    {
-        //m_window->SetFPS(fps);
     }
 
     void Context::Draw()
