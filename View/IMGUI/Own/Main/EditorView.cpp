@@ -25,12 +25,9 @@ namespace Math4BG
     void EditorView::Show()
     {
         ImGui::BeginTabBar("Windows");
-        if(ImGui::BeginTabItem("Code"))
+        if(m_codeEditor)
         {
-            if(m_codeEditor)
-                m_codeEditor->Show();
-
-            ImGui::EndTabItem();
+            m_codeEditor->Show();
         }
         
         m_contexts->SetWindowFocused(ImGui::IsWindowFocused());

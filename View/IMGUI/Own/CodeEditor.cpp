@@ -69,15 +69,24 @@ namespace Math4BG
 
     void CodeEditor::Show()
     {
-        ShowMenuBar();
-        auto cursor = m_editor.GetCursorPosition();
+        if(Opened())
+        {
+            if(ImGui::BeginTabItem("Code"))
+            {
+                ShowMenuBar();
+                auto cursor = m_editor.GetCursorPosition();
 
-        ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cursor.mLine + 1, cursor.mColumn + 1, m_editor.GetTotalLines(),
-                    m_editor.IsOverwrite() ? "Ovr" : "Ins",
-                    m_editor.CanUndo() ? "*" : " ",
-                    m_editor.GetLanguageDefinition().mName.c_str(), m_path.c_str());
+                ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cursor.mLine + 1, cursor.mColumn + 1,
+                            m_editor.GetTotalLines(),
+                            m_editor.IsOverwrite() ? "Ovr" : "Ins",
+                            m_editor.CanUndo() ? "*" : " ",
+                            m_editor.GetLanguageDefinition().mName.c_str(), m_path.c_str());
 
-        m_editor.Render(m_name.c_str());
+                m_editor.Render(m_name.c_str());
+
+                ImGui::EndTabItem();
+            }
+        }
     }
 
     TextEditor::LanguageDefinition CodeEditor::GetLanguageDefinition(const std::string &path)
@@ -119,12 +128,20 @@ namespace Math4BG
 
     void CodeEditor::SetFile(const std::string &path)
     {
-        std::ifstream fileStream(path);
-        if(fileStream.good())
+        if(!path.empty())
         {
-            m_path = path;
-            std::string code((std::istreambuf_iterator<char>(fileStream)), std::istreambuf_iterator<char>());
-            m_editor.SetText(code);
+            std::ifstream fileStream(path);
+            if (fileStream.good())
+            {
+                m_path = path;
+                m_lanDef = GetLanguageDefinition(path);
+                m_editor.SetLanguageDefinition(m_lanDef);
+                std::string code((std::istreambuf_iterator<char>(fileStream)), std::istreambuf_iterator<char>());
+                m_editor.SetText(code);
+                return;
+            }
         }
+        m_path = path;
+        m_editor.SetText("");
     }
 }

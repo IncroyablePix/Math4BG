@@ -87,6 +87,22 @@ set(GLM_DIR $ENV{GLM})
 include_directories(${GLM_DIR})
 message("Done!")
 
+### QUICKJS ###
+message("Including QuickJS")
+
+if(NOT DEFINED     QUICKJS_ROOT  AND
+        NOT DEFINED $ENV{QUICKJS_ROOT})
+    set(QUICKJS_ROOT $ENV{QUICKJS64})
+endif()
+
+if(OS STREQUAL "NT")
+    set(QUICKJS_INCLUDE_DIRS "${QUICKJS_ROOT}/include")
+    set(QUICKJS_LIBRARIES "${QUICKJS_ROOT}/lib/quickjs/libquickjs.dll")
+elseif(OS STREQUAL "UNIX")
+    find_package(QUICKJS REQUIRED)
+endif()
+message("Done!")
+
 ############ SOURCE ############
 set(SRC_FILES
         Program/main.cpp
@@ -169,9 +185,10 @@ set(SRC_FILES
         Output/CircularQueue.h
         Input/KeyInput.cpp
         Input/KeyInput.h
+        IO/Json/json.hpp
         Input/MouseInput.cpp Input/MouseInput.h IO/IModelLoader.cpp IO/IModelLoader.h IO/OBJLoader.cpp IO/OBJLoader.h Transformers/Interpreter/ILanInterpreter.cpp Transformers/Interpreter/ILanInterpreter.h Physics/Transform.cpp Physics/Transform.h IO/ModelData.h View/Renderer/3D/Vertices/Vertex.cpp View/Renderer/3D/Vertices/Vertex.h View/Renderer/3D/Vertices/Mesh.cpp View/Renderer/3D/Vertices/Mesh.h View/Renderer/3D/Object/Pyramid.cpp View/Renderer/3D/Object/Pyramid.h IO/IMG/ImageLoaders.cpp IO/IMG/ImageLoaders.h View/Renderer/3D/Texture/Texture.cpp View/Renderer/3D/Texture/Texture.h View/Renderer/3D/Texture/BMPTexture.cpp View/Renderer/3D/Texture/BMPTexture.h View/Renderer/3D/Light/Light.cpp View/Renderer/3D/Light/Light.h View/Renderer/3D/Light/PointLight.cpp View/Renderer/3D/Light/PointLight.h Sound/Sound.cpp Sound/Sound.h Sound/WAVSound.cpp Sound/WAVSound.h View/Renderer/3D/Light/DirectionalLight.cpp View/Renderer/3D/Light/DirectionalLight.h View/Renderer/3D/Object/Plane.cpp View/Renderer/3D/Object/Plane.h Utils/ColorSwitch.cpp Utils/ColorSwitch.h View/Renderer/3D/Particles/Particle.cpp View/Renderer/3D/Particles/Particle.h View/Renderer/3D/Texture/FrameBuffer/FrameBufferObject.cpp View/Renderer/3D/Texture/FrameBuffer/FrameBufferObject.h View/Renderer/3D/Texture/FrameBuffer/RenderedTexture.cpp View/Renderer/3D/Texture/FrameBuffer/RenderedTexture.h View/Renderer/3D/PostProcessing/ViewportSquare.cpp View/Renderer/3D/PostProcessing/ViewportSquare.h
         View/IWindow.cpp
-        View/IWindow.h View/Windowing/MainWindow.cpp View/Windowing/MainWindow.h View/Windowing/RenderWin.cpp View/Windowing/RenderWin.h View/Renderer/OG33Renderer.cpp View/Renderer/OG33Renderer.h Output/ImGuiConsole/ImGuiOutput.cpp Output/ImGuiConsole/ImGuiOutput.h View/IMGUI/Own/CodeEditor.cpp View/IMGUI/Own/CodeEditor.h View/IMGUI/Own/Docking/DockSpace.cpp View/IMGUI/Own/Docking/DockSpace.h View/IMGUI/Own/IGuiElement.h View/IMGUI/Own/Docking/MainDockSpace.cpp View/IMGUI/Own/Docking/MainDockSpace.h View/IMGUI/Own/GuiConsole.cpp View/IMGUI/Own/GuiConsole.h View/IMGUI/Own/Main/EditorView.cpp View/IMGUI/Own/Main/EditorView.h View/IMGUI/Own/FileTree/FileTree.cpp View/IMGUI/Own/FileTree/FileTree.h IO/IOException.cpp IO/IOException.h View/Renderer/3D/Shaders/ShaderException.cpp View/Renderer/3D/Shaders/ShaderException.h Transformers/Project/ProjectManager.cpp Transformers/Project/ProjectManager.h View/Renderer/3D/Shaders/BasicShaders.cpp View/Renderer/3D/Shaders/BasicShaders.h Transformers/Interpreter/CodeException.cpp Transformers/Interpreter/CodeException.h Transformers/World/ConcreteWorld.cpp Transformers/World/ConcreteWorld.h Transformers/World/AbstractWorld.cpp Transformers/World/AbstractWorld.h)
+        View/IWindow.h View/Windowing/MainWindow.cpp View/Windowing/MainWindow.h View/Windowing/RenderWin.cpp View/Windowing/RenderWin.h View/Renderer/OG33Renderer.cpp View/Renderer/OG33Renderer.h Output/ImGuiConsole/ImGuiOutput.cpp Output/ImGuiConsole/ImGuiOutput.h View/IMGUI/Own/CodeEditor.cpp View/IMGUI/Own/CodeEditor.h View/IMGUI/Own/Docking/DockSpace.cpp View/IMGUI/Own/Docking/DockSpace.h View/IMGUI/Own/IGuiElement.h View/IMGUI/Own/Docking/MainDockSpace.cpp View/IMGUI/Own/Docking/MainDockSpace.h View/IMGUI/Own/GuiConsole.cpp View/IMGUI/Own/GuiConsole.h View/IMGUI/Own/Main/EditorView.cpp View/IMGUI/Own/Main/EditorView.h View/IMGUI/Own/FileTree/FileTree.cpp View/IMGUI/Own/FileTree/FileTree.h IO/IOException.cpp IO/IOException.h View/Renderer/3D/Shaders/ShaderException.cpp View/Renderer/3D/Shaders/ShaderException.h Transformers/Project/ProjectManager.cpp Transformers/Project/ProjectManager.h View/Renderer/3D/Shaders/BasicShaders.cpp View/Renderer/3D/Shaders/BasicShaders.h Transformers/Interpreter/CodeException.cpp Transformers/Interpreter/CodeException.h Transformers/World/ConcreteWorld.cpp Transformers/World/ConcreteWorld.h Transformers/World/AbstractWorld.cpp Transformers/World/AbstractWorld.h IO/DirFile/FilesystemUtils.cpp IO/DirFile/FilesystemUtils.h Transformers/Interpreter/JSInterpreter.cpp Transformers/Interpreter/JSInterpreter.h Transformers/Project/ProjectPackage.cpp Transformers/Project/ProjectPackage.h Transformers/Project/ProjectSaverLoader.cpp Transformers/Project/ProjectSaverLoader.h View/IMGUI/Own/FileTree/FileTreeContent.cpp View/IMGUI/Own/FileTree/FileTreeContent.h)
 
 
 # OS SPECIFICITIES
@@ -220,3 +237,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${LUA_LIBRARIES})
 message("Linking GLEW...")
 target_include_directories(${PROJECT_NAME} PUBLIC ${GLEW_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${GLEW_LIBRARIES})
+
+### GLEW ###
+message("Linking QuickJS...")
+target_include_directories(${PROJECT_NAME} PUBLIC ${QUICKJS_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${QUICKJS_LIBRARIES})

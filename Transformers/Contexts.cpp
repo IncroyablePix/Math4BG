@@ -63,13 +63,16 @@ namespace Math4BG
 
     bool Contexts::LoadTexture(const std::string &path, const std::string &name)
     {
+        std::stringstream ss;
+        ss << GetRootPath() << "/" << path;
+
         FileSplit fileSplit(path);
 
         if(fileSplit.fileExtension == "bmp")
         {
             try
             {
-                std::shared_ptr<BMPTexture> texture = std::make_shared<BMPTexture>(path, GL_TEXTURE_2D);
+                std::shared_ptr<BMPTexture> texture = std::make_shared<BMPTexture>(ss.str(), GL_TEXTURE_2D);
                 m_textures[name] = texture;
                 return true;
             }
@@ -84,12 +87,15 @@ namespace Math4BG
 
     bool Contexts::LoadModel(const std::string &path, const std::string &name)
     {
+        std::stringstream ss;
+        ss << GetRootPath() << "/" << path;
+
         FileSplit fileSplit(path);
-        //return std::shared_ptr<OG33RendererSDL>(Renderer3D::Create(window, width, height));
+
         if(fileSplit.fileExtension == "obj")
         {
             OBJLoader loader;
-            m_models[name] = std::move(loader.LoadModel(path));
+            m_models[name] = std::move(loader.LoadModel(ss.str()));
             return true;
         }
 
@@ -111,9 +117,12 @@ namespace Math4BG
 
     std::string Contexts::CreateShader(const std::string &path)
     {
+        std::stringstream ss;
+        ss << GetRootPath() << "/" << path;
+
         try
         {
-            ShaderProgramSource source = ParseShader(path);
+            ShaderProgramSource source = ParseShader(ss.str());
             std::shared_ptr<Shader> shader = Shader::CreateShader(source);
             FileSplit fileSplit(path);
 

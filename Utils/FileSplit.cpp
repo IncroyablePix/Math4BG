@@ -7,7 +7,6 @@
 
 namespace Math4BG
 {
-
     std::string GetFilePath(const std::string& path)
     {
         auto pathEnd = path.find_last_of("/\\");
@@ -47,11 +46,11 @@ namespace Math4BG
         return ext;
     }
 
-    FileSplit::FileSplit(const std::string &filePath)
+    FileSplit::FileSplit(const std::string &path)
     {
-        fileName = GetFileName(filePath);
-        //filePath = GetFilePath(filePath);
-        fileExtension = GetFileExtension(filePath);
-        fileWithoutExtension = GetFileWithoutExtension(filePath);
+        fileName = GetFileName(path);
+        filePath = GetFilePath(path);
+        fileExtension = GetFileExtension(path);
+        fileWithoutExtension = GetFileWithoutExtension(path);
     }
 }

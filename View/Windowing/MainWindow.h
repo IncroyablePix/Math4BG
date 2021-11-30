@@ -30,6 +30,7 @@ namespace Math4BG
 
         void SetContexts(std::shared_ptr<Contexts> contexts);
         void SetCodeEditor(std::shared_ptr<CodeEditor> codeEditor);
+        void SetFileTreeContent(std::shared_ptr<FileTreeContent> fileTree);
         void SetProjectManager(std::shared_ptr<ProjectManager> projectManager);
 
     protected:
@@ -48,10 +49,12 @@ namespace Math4BG
         std::shared_ptr<IOutput> m_output;
 
         std::unique_ptr<imgui_addons::ImGuiFileBrowser> m_fileDialog;
+        std::unique_ptr<imgui_addons::ImGuiFileBrowser> m_newProjectDialog;
 
         std::unique_ptr<MainDockSpace> m_dockSpace;
         std::shared_ptr<EditorView> m_editorView;
         std::shared_ptr<ProjectManager> m_projectManager;
+        std::shared_ptr<FileTree> m_fileTree;
     };
 
     static bool sdl2Initialized = false;

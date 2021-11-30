@@ -7,7 +7,9 @@
 
 namespace Math4BG
 {
-    FileTree::FileTree(const std::string &name) : m_name(name)
+    FileTree::FileTree(const std::string &name) :
+        m_name(name),
+        m_fileTreeContent(nullptr)
     {
 
     }
@@ -16,7 +18,8 @@ namespace Math4BG
 
     void FileTree::Show()
     {
-        ImGui::Text("Files!");
+        if(m_fileTreeContent)
+            m_fileTreeContent->Show();
     }
 
     void FileTree::Begin()

@@ -11,7 +11,7 @@ namespace Math4BG
 {
     struct FileSplit
     {
-        FileSplit(const std::string &filePath);
+        FileSplit(const std::string &path);
 
         std::string fileName;
         std::string filePath; //

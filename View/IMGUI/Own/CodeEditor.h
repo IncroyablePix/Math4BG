@@ -22,6 +22,7 @@ namespace Math4BG
         void End() override;
         bool Save();
         inline const std::string & GetName() override { return m_name; };
+        inline bool Opened() const { return !m_path.empty(); }
         void SetFile(const std::string &path);
 
     private:

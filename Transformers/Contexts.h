@@ -43,6 +43,9 @@ namespace Math4BG
         void Update(double lag);
         void DrawContexts();
 
+        inline void SetRootPath(const std::string &root) { m_rootPath = root; }
+        inline const std::string& GetRootPath() const { return m_rootPath; }
+
     private:
         std::unordered_map<std::string, std::shared_ptr<ModelData>> m_models;
         std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
@@ -53,6 +56,8 @@ namespace Math4BG
         std::shared_ptr<Shader> m_basicShader;
 
         std::shared_ptr<IOutput> m_output;
+
+        std::string m_rootPath;
         int m_count = 0;
     };
 }

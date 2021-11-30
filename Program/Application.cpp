@@ -21,17 +21,22 @@ namespace Math4BG
         m_window(info, output),
         m_contexts(std::move(contexts)),
         m_output(std::move(output)),
-        m_projectManager(std::make_shared<ProjectManager>(config.scriptFile, contexts, output))
+        m_projectManager(std::make_shared<ProjectManager>(/*config.scriptFile*/"", contexts, output))
     {
         m_refreshRate = 144;
 
-        m_codeEditor = std::make_shared<CodeEditor>(config.scriptFile, "Code Editor");
+        m_codeEditor = std::make_shared<CodeEditor>(/*config.scriptFile*/"", "Code Editor");
+        m_fileTreeContent = std::make_shared<FileTreeContent>();
+
         m_projectManager->SetCodeEditor(m_codeEditor);
+        m_projectManager->SetFileTreeContent(m_fileTreeContent);
+
 
         m_window.SetContexts(m_contexts);
         m_window.SetProjectManager(m_projectManager);
 
         m_window.SetCodeEditor(m_codeEditor);
+        m_window.SetFileTreeContent(m_fileTreeContent);
     }
 
     Application::~Application()
@@ -161,13 +166,4 @@ namespace Math4BG
         m_contexts->Update(lag);
     }
 
-    std::unique_ptr<ILanInterpreter> Application::CreateInterpreter(const std::string &name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output)
-    {
-        if(name == "lua")
-            return std::move(LuaInterpreter::Create(std::move(contexts), std::move(output)));
-        /*else if(name == "js")
-            return std::shared_ptr<ILanInterpreter>(JavascriptInterpreter::Create(contexts, output));*/
-
-        throw std::runtime_error("Invalid Interpreter specified!");
-    }
 }
