@@ -17,13 +17,22 @@ namespace Math4BG
     public:
         JSInterpreter(std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
         ~JSInterpreter() override = default;
+        int CallOnInitFunction() override;
+        int CallUpdateFunction(double lag) override;
+        void ExecuteFile(const std::string &path) override;
+        void RegisterFunctions() override;
+
+        void CreateContext();
+
+        static std::unique_ptr<JSInterpreter> Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output);
 
     private:
         //std::unique_ptr<lua_State, decltype(lua_close) *> m_luaState;
         std::unique_ptr<JSRuntime, decltype(JS_FreeRuntime)*> m_runTime;
         std::unique_ptr<JSContext, decltype(JS_FreeContext)*> m_jsContext;
         static JSContext* CustomJsContext(JSRuntime* runtime);
-
+        inline static std::unordered_map<int, void*> magicMap;
+        int m_instanceNumber;
         /*void ExecuteCommand(const std::string &cmd);
         void ExecuteFile(const std::string &path) override;
         double GetNumber(const std::string &var);
@@ -82,7 +91,9 @@ namespace Math4BG
         void ThrowLuaException();
 
         static float Col(uint32_t color);*/
+        static int magicCount;
     };
+
 }
 
 

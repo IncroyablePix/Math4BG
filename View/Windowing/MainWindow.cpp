@@ -21,10 +21,9 @@ namespace Math4BG
     IWindow(info),
     m_window(nullptr, SDL_DestroyWindow),
     m_output(std::move(output)),
-    m_fileDialog(std::make_unique<imgui_addons::ImGuiFileBrowser>()),
-    m_newProjectDialog(std::make_unique<imgui_addons::ImGuiFileBrowser>()),
     m_dockSpace(std::make_unique<MainDockSpace>("MainDockWindow", 0)),
-    m_editorView(std::make_shared<EditorView>("Editor"))
+    m_editorView(std::make_shared<EditorView>("Editor")),
+    m_topMenu(std::make_unique<TopMenu>(m_projectManager, m_output))
     {
         InitSDL();
 
@@ -116,61 +115,9 @@ namespace Math4BG
         ImGui::NewFrame();
 
         //--- Main Menu
-        bool open = false;
-        bool newProject = false;
-        if(ImGui::BeginMainMenuBar())
-        {
-            if(ImGui::BeginMenu("File"))
-            {
-                if(ImGui::MenuItem("New project", nullptr))
-                {
-                    newProject = true;
-                }
-                if(ImGui::MenuItem("Open...", nullptr))
-                {
-                    open = true;
-                }
-                if(ImGui::MenuItem("Reload", nullptr))
-                {
-                    m_projectManager->Reload();
-                }
-                ImGui::EndMenu();
-            }
-            ImGui::EndMainMenuBar();
-        }
-
-        if(newProject)
-            ImGui::OpenPopup("New Project");
-
-        if(m_newProjectDialog->showFileDialog("New Project", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310)))
-        {
-            std::stringstream ss; ss << "Creating new project: " << m_newProjectDialog->selected_fn << " in " << m_newProjectDialog->selected_path;
-            *m_output << ss.str();
-
-            if(m_projectManager)
-            {
-                m_projectManager->Create(m_newProjectDialog->selected_fn, m_newProjectDialog->selected_path);
-            }
-        }
-
-        if(open)
-            ImGui::OpenPopup("Open File");
-
-        if(m_fileDialog->showFileDialog("Open File", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".m4bg"))
-        {
-            std::stringstream ss; ss << "Opening " << m_fileDialog->selected_fn;
-            *m_output << ss.str();
-            /*std::cout << m_fileDialog->selected_fn << std::endl;      // The name of the selected file or directory in case of Select Directory dialog mode
-            std::cout << m_fileDialog->selected_path << std::endl;    // The absolute path to the selected file*/
-
-            if(m_projectManager)
-            {
-                m_projectManager->SetPath(m_fileDialog->selected_path);
-                m_projectManager->Run();
-            }
-        }
-
-
+        m_topMenu->Begin();
+        m_topMenu->Show();
+        m_topMenu->End();
 
         //ImGui::DockSpace(mainDockSpaceId, ImVec2(), ImGuiDockNodeFlags_PassthruCentralNode);
 
@@ -346,6 +293,7 @@ namespace Math4BG
     void MainWindow::SetProjectManager(std::shared_ptr<ProjectManager> projectManager)
     {
         m_projectManager = std::move(projectManager);
+        m_topMenu->SetProjectManager(m_projectManager);
     }
 
     void MainWindow::SetFileTreeContent(std::shared_ptr<FileTreeContent> fileTreeContent)

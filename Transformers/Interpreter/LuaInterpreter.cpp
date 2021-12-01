@@ -7,7 +7,6 @@
 #include <chrono>
 #include "LuaInterpreter.h"
 #include "../../Output/IOutput.h"
-#include "../../Utils/ColorSwitch.h"
 #include "CodeException.h"
 
 namespace Math4BG
@@ -186,8 +185,8 @@ namespace Math4BG
             else if(lua_isnumber(L, i))
                 ss << lua_tonumber(L, i);
         }
-        std::cout << ss.str() << std::endl;
-        *m_output << ss.str();
+
+        PrintImplementation(ss.str());
 
         return 0;
     }
@@ -204,10 +203,7 @@ namespace Math4BG
         unsigned int height = lua_tonumber(L, 3);
         bool abstract = lua_toboolean(L, 4);
 
-        //*m_output << "Creating window : " << title << std::endl;
-
-        int id = m_contexts->CreateContext({title, width, height}, abstract);
-        lua_pushnumber(L, id);
+        lua_pushnumber(L, CreateContextImplementation(title, width, height, abstract));
         return 1;
     }
 
@@ -218,9 +214,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 3);
         float z = (float) lua_tonumber(L, 4);
 
-
-        if(m_contexts->ContextExists(contextid))
-            ((*m_contexts)[contextid])->GetWorld()->SetCameraPos({x, y, z});
+        SetCameraPosImplementation(contextid, x, y, z);
 
         return 1;
     }
@@ -231,29 +225,16 @@ namespace Math4BG
         float x = (float) lua_tonumber(L, 2);
         float y = (float) lua_tonumber(L, 3);
 
-
-        if(m_contexts->ContextExists(contextid))
-            ((*m_contexts)[contextid])->GetWorld()->SetCameraRot({x, y});
+        SetCameraRotImplementation(contextid, x, y);
 
         return 1;
-    }
-
-    int LuaInterpreter::DestroyWindow(lua_State *L)
-    {
-        return 0;
     }
 
     int LuaInterpreter::CreateShader(lua_State *L)
     {
         std::string file = lua_tostring(L, 1);
 
-        std::string name = "";
-
-        name = m_contexts->CreateShader(file);
-        //if (m_contexts->ContextExists(contextid))
-            //name = ((*m_contexts)[contextid])->GetWorld()->CreateShader(file);
-
-        lua_pushstring(L, name.c_str());
+        lua_pushstring(L, CreateShaderImplementation(file).c_str());
 
         return 1;
     }
@@ -263,20 +244,8 @@ namespace Math4BG
         std::string file = lua_tostring(L, 1);
         std::string name = lua_tostring(L, 2);
 
-        bool out = m_contexts->LoadTexture(file, name);
+        lua_pushboolean(L, CreateTextureImplementation(file, name));
 
-        lua_pushboolean(L, out);
-
-        return 1;
-    }
-
-    int LuaInterpreter::GetMillis(lua_State *L)
-    {
-        std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch());
-        auto now = ms.count();
-
-        lua_pushnumber(L, now);
         return 1;
     }
 
@@ -285,24 +254,24 @@ namespace Math4BG
         std::string file = lua_tostring(L, 1);
         std::string name = lua_tostring(L, 2);
 
-        bool out = m_contexts->LoadModel(file, name);
+        lua_pushboolean(L, CreateModelImplementation(file, name));
 
-        lua_pushboolean(L, out);
+        return 1;
+    }
 
+    int LuaInterpreter::GetMillis(lua_State *L)
+    {
+        lua_pushnumber(L, GetMillisImplementation());
         return 1;
     }
 
     int LuaInterpreter::SetBackgroundColor(lua_State *L)
     {
         int contextid = (int) lua_tonumber(L, 1);
-        /*float r = (float) lua_tonumber(L, 2);
-        float g = (float) lua_tonumber(L, 3);
-        float b = (float) lua_tonumber(L, 4);*/
         unsigned int color = (unsigned int) lua_tonumber(L, 2);
 
-        //unsigned int color = (int) r * 0xFF
+        SetBackgroundColorImplementation(contextid, color);
 
-        ((*m_contexts)[contextid])->GetWorld()->SetBackgroundColor(color);
         return 0;
     }
 
@@ -314,18 +283,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 4);
         float z = (float) lua_tonumber(L, 5);
 
-        Transform transform = {{x, y, z}};
-
-        int id = -1;
-
-        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(shaderName);
-
-        if (m_contexts->ContextExists(contextid))
-        {
-            id = ((*m_contexts)[contextid])->GetWorld()->CreateCube(shader, transform);
-            m_contexts->SetWorldForObjectId(id, contextid);
-        }
-        lua_pushnumber(L, id);
+        lua_pushnumber(L, CreateCubeImplementation(contextid, shaderName, x, y, z));
 
         return 1;
     }
@@ -346,19 +304,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 4);
         float z = (float) lua_tonumber(L, 5);
 
-        Transform transform = {{x, y, z}};
-
-        int id = -1;
-
-        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(shaderName);
-
-        if (m_contexts->ContextExists(contextid))
-        {
-            id = ((*m_contexts)[contextid])->GetWorld()->CreatePlane(shader, transform);
-            m_contexts->SetWorldForObjectId(id, contextid);
-        }
-
-        lua_pushnumber(L, id);
+        lua_pushnumber(L, CreatePlaneImplementation(contextid, shaderName, x, y, z));
 
         return 1;
     }
@@ -372,19 +318,7 @@ namespace Math4BG
         float z = (float) lua_tonumber(L, 5);
 
         //unsigned int color = (unsigned int) lua_tonumber(L, 5);
-        Transform transform = {{x, y, z}};
-
-        int id = -1;
-
-        std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(shaderName);
-
-        if (m_contexts->ContextExists(contextid))
-        {
-            id = ((*m_contexts)[contextid])->GetWorld()->CreatePyramid(shader, transform);
-            m_contexts->SetWorldForObjectId(id, contextid);
-        }
-
-        lua_pushnumber(L, id);
+        lua_pushnumber(L, CreatePyramidImplementation(contextid, shaderName, x, y, z));
 
         return 1;
     }
@@ -398,24 +332,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 5);
         float z = (float) lua_tonumber(L, 6);
 
-        //unsigned int color = (unsigned int) lua_tonumber(L, 5);
-        Transform transform({ x, y, z }, { x, y, z }, { 0.0, 0.0, 0.0 }, {1.0f, 1.0f, 1.0f});
-
-        int id = -1;
-        if(m_contexts->ModelExists(modelName))
-        {
-            auto model = ((*m_contexts)[modelName]);
-
-            std::shared_ptr<Shader> shader = m_contexts->GetShaderByName(shaderName);
-
-            if (m_contexts->ContextExists(contextid))
-            {
-                id = ((*m_contexts)[contextid])->GetWorld()->CreateCustomObject(model, shader, transform);
-                m_contexts->SetWorldForObjectId(id, contextid);
-            }
-        }
-
-        lua_pushnumber(L, id);
+        lua_pushnumber(L, CreateCustomObjectImplementation(contextid, shaderName, modelName, x, y, z));
 
         return 1;
     }
@@ -427,12 +344,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 3);
         float z = (float) lua_tonumber(L, 4);
 
-        bool out = false;
-
-        if (m_contexts->GetWorldForId(id))
-            out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectPos(id, {x, y, z});
-
-        lua_pushboolean(L, out);
+        lua_pushboolean(L, SetObjectPosImplementation(id, x, y, z));
 
         return 1;
     }
@@ -444,12 +356,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 3);
         float z = (float) lua_tonumber(L, 4);
 
-        bool out = false;
-
-        if (m_contexts->GetWorldForId(id))
-            out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectRot(id, {x, y, z});
-
-        lua_pushboolean(L, out);
+        lua_pushboolean(L, SetObjectRotImplementation(id, x, y, z));
 
         return 1;
     }
@@ -461,12 +368,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 3);
         float z = (float) lua_tonumber(L, 4);
 
-        bool out = false;
-
-        if (m_contexts->GetWorldForId(id))
-            out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectScale(id, {x, y, z});
-
-        lua_pushboolean(L, out);
+        lua_pushboolean(L, SetObjectScaleImplementation(id, x, y, z));
 
         return 1;
     }
@@ -478,15 +380,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 3);
         float z = (float) lua_tonumber(L, 4);
 
-        bool out = false;
-
-        if (m_contexts->GetWorldForId(id))
-        {
-            auto world = m_contexts->GetWorldForId(id)->GetWorld();
-            out = world->SetObjectPosOrigin(id, {x, y, z});
-        }
-
-        lua_pushboolean(L, out);
+        lua_pushboolean(L, SetObjectPosOriginImplementation(id, x, y, z));
 
         return 1;
     }
@@ -498,12 +392,7 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 3);
         float z = (float) lua_tonumber(L, 4);
 
-        bool out = false;
-
-        if (m_contexts->GetWorldForId(id))
-            out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectOrigin(id, {x, y, z});
-
-        lua_pushboolean(L, out);
+        lua_pushboolean(L, SetObjectOriginImplementation(id, x, y, z));
 
         return 1;
     }
@@ -513,23 +402,7 @@ namespace Math4BG
         int id = (int) lua_tonumber(L, 1);
         std::string name = lua_tostring(L, 2);
 
-        bool out = false;
-
-        if (m_contexts->TextureExists(name))
-        {
-            std::shared_ptr<Texture> texture = m_contexts->GetTextureByName(name);
-
-            if (m_contexts->GetWorldForId(id))
-                out = m_contexts->GetWorldForId(id)->GetWorld()->SetObjectTexture(id, texture);
-        }
-        else
-        {
-            std::stringstream ss;
-            ss << "Texture \"" << name << "\" not found!";
-            *m_output << ss.str();
-        }
-
-        lua_pushboolean(L, out);
+        lua_pushboolean(L, SetObjectTextureImplementation(id, name));
 
         return 1;
     }
@@ -538,26 +411,15 @@ namespace Math4BG
     {
         int id = (int) lua_tonumber(L, 1);
         unsigned int color = (unsigned int) lua_tonumber(L, 2);
-        /*float r = (float) lua_tonumber(L, 2);
-        float g = (float) lua_tonumber(L, 3);
-        float b = (float) lua_tonumber(L, 4);*/
 
-        bool out = false;
+        lua_pushboolean(L, SetObjectColorImplementation(id, color));
 
-        glm::vec4 vectorizedColor(MaskToFloat(color), 1.0f);
-
-        std::shared_ptr<Context> context = m_contexts->GetWorldForId(id);
-        if(context)
-            out = context->GetWorld()->SetObjectColor(id, vectorizedColor);
-
-
-        return out;
+        return 1;
     }
 
     std::unique_ptr<LuaInterpreter>LuaInterpreter::Create(std::shared_ptr<Contexts> context, std::shared_ptr<IOutput> output)
     {
         return std::make_unique<LuaInterpreter>(context, output);
-        //return std::shared_ptr<LuaInterpreter>(static_cast<LuaInterpreter *>(new LuaInterpreter(context, output)));
     }
 
     int LuaInterpreter::SetDirectionalLight(lua_State *L)
@@ -568,16 +430,8 @@ namespace Math4BG
         float z = (float) lua_tonumber(L, 4);
         float intensity = (float) lua_tonumber(L, 5);
         unsigned int color = (unsigned int) lua_tonumber(L, 6);
-        /*float r = (float) lua_tonumber(L, 6);
-        float g = (float) lua_tonumber(L, 7);
-        float b = (float) lua_tonumber(L, 8);*/
 
-        bool out = false;
-
-        if (m_contexts->ContextExists(contextid))
-            out = ((*m_contexts)[contextid])->GetWorld()->SetDirectionalLight(intensity, {x, y, z}, MaskToFloat(color));
-
-        lua_pushboolean(L, out);
+        lua_pushboolean(L, SetDirectionalLightImplementation(contextid, x, y, z, intensity, color));
 
         return 1;
     }
@@ -587,22 +441,11 @@ namespace Math4BG
         int contextid = (int) lua_tonumber(L, 1);
         float intensity = (float) lua_tonumber(L, 2);
         unsigned int color = (unsigned int) lua_tonumber(L, 3);
-        /*float r = (float) lua_tonumber(L, 3);
-        float g = (float) lua_tonumber(L, 4);
-        float b = (float) lua_tonumber(L, 5);*/
         float x = (float) lua_tonumber(L, 4);
         float y = (float) lua_tonumber(L, 5);
         float z = (float) lua_tonumber(L, 6);
 
-        //unsigned int color = (unsigned int) lua_tonumber(L, 5);
-        Transform transform({ x, y, z }, { x, y, z }, { 0.0, 0.0, 0.0 }, {1.0f, 1.0f, 1.0f});
-        //glm::vec3 color(r, g, b);
-
-        int id = -1;
-        if (m_contexts->ContextExists(contextid))
-            id = ((*m_contexts)[contextid])->GetWorld()->CreatePointLight(intensity, MaskToFloat(color), transform);
-
-        lua_pushnumber(L, id);
+        lua_pushnumber(L, CreatePointLightImplementation(contextid, intensity, color, x, y, z));
 
         return 1;
     }
@@ -614,29 +457,19 @@ namespace Math4BG
         float y = (float) lua_tonumber(L, 3);
         float z = (float) lua_tonumber(L, 4);
 
-        bool out = false;
+        lua_pushboolean(L, SetLightPosImplementation(id, x, y, z));
 
-        if(m_contexts->GetWorldForId(id))
-            out = m_contexts->GetWorldForId(id)->GetWorld()->SetLightPos(id, {x, y, z});
-
-        return out;
+        return 1;
     }
 
     int LuaInterpreter::SetLightColor(lua_State *L)
     {
         int id = (int) lua_tonumber(L, 1);
         unsigned int color = (unsigned int) lua_tonumber(L, 2);
-        /*float r = (float) lua_tonumber(L, 2);
-        float g = (float) lua_tonumber(L, 3);
-        float b = (float) lua_tonumber(L, 4);*/
 
-        bool out = false;
-        glm::vec3 col = MaskToFloat(color);
+        lua_pushboolean(L, SetLightColorImplementation(id, color));
 
-        if(m_contexts->GetWorldForId(id))
-            out = m_contexts->GetWorldForId(id)->GetWorld()->SetLightColor(id, MaskToFloat(color));
-
-        return out;
+        return 1;
     }
 
     float LuaInterpreter::Col(uint32_t color)

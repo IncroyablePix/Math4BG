@@ -6,6 +6,7 @@
 #include "CodeEditor.h"
 #include "../../../Utils/FileSplit.h"
 #include "../../Error.h"
+#include "../../../Transformers/Interpreter/ILanInterpreter.h"
 
 namespace Math4BG
 {
@@ -92,9 +93,13 @@ namespace Math4BG
     TextEditor::LanguageDefinition CodeEditor::GetLanguageDefinition(const std::string &path)
     {
         FileSplit fileSplit { path };
-        if(fileSplit.fileExtension == "lua")
+        if(fileSplit.fileExtension == LANGUAGE_LUA)
         {
             return TextEditor::LanguageDefinition::Lua();
+        }
+        else if(fileSplit.fileExtension == LANGUAGE_JS)
+        {
+            return TextEditor::LanguageDefinition::C();
         }
 
         return TextEditor::LanguageDefinition::C();

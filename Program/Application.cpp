@@ -16,21 +16,21 @@
 
 namespace Math4BG
 {
-    Application::Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output) :
-        m_fpsLimiter(config.fpsLimiter),
+    Application::Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, std::shared_ptr<Config> config, std::shared_ptr<IOutput> output) :
+        m_config(std::move(config)),
+        m_fpsLimiter(m_config->fpsLimiter),
         m_window(info, output),
         m_contexts(std::move(contexts)),
         m_output(std::move(output)),
-        m_projectManager(std::make_shared<ProjectManager>(/*config.scriptFile*/"", contexts, output))
+        m_projectManager(std::make_shared<ProjectManager>(config->projectPackage, config, contexts, output))
     {
         m_refreshRate = 144;
 
-        m_codeEditor = std::make_shared<CodeEditor>(/*config.scriptFile*/"", "Code Editor");
+        m_codeEditor = std::make_shared<CodeEditor>(m_config->projectPackage, "Code Editor");
         m_fileTreeContent = std::make_shared<FileTreeContent>();
 
         m_projectManager->SetCodeEditor(m_codeEditor);
         m_projectManager->SetFileTreeContent(m_fileTreeContent);
-
 
         m_window.SetContexts(m_contexts);
         m_window.SetProjectManager(m_projectManager);
@@ -56,11 +56,6 @@ namespace Math4BG
 
         m_projectManager->Run();
 
-        /*if (!m_interpreter->CheckValidity())
-            throw std::runtime_error(
-                    "Invalid Lua script :\nMust contain the following functions : OnInit, OnUpdate(number), OnWindowClosed(windowId)");
-
-        m_interpreter->CallOnInitFunction();*/
         Run();
     }
 

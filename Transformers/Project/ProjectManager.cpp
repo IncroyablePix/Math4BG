@@ -6,19 +6,23 @@
 #include <utility>
 #include "ProjectManager.h"
 #include "../Interpreter/LuaInterpreter.h"
+#include "../Interpreter/JSInterpreter.h"
 #include "../../Utils/FileSplit.h"
 #include "../Interpreter/CodeException.h"
 #include "../../IO/DirFile/FilesystemUtils.h"
-#include "ProjectPackage.h"
 #include "ProjectSaverLoader.h"
+#include "../../IO/IOException.h"
 
 namespace Math4BG
 {
-    ProjectManager::ProjectManager(std::string path, std::shared_ptr<Contexts> contexts,
+    ProjectManager::ProjectManager(std::string path,
+                                   std::shared_ptr<Config> config,
+                                   std::shared_ptr<Contexts> contexts,
                                    std::shared_ptr<IOutput> output) :
                                    m_path(std::move(path)),
                                    m_contexts(std::move(contexts)),
-                                   m_output(std::move(output))
+                                   m_output(std::move(output)),
+                                   m_config(std::move(config))
     {
 
     }
@@ -37,28 +41,39 @@ namespace Math4BG
     {
         if(!m_path.empty())
         {
-            m_runningProject = false;
-            m_contexts->Clear();
+            try
+            {
+                m_project = std::move(LoadFromFile(m_path));
 
-            m_project = std::move(LoadFromFile(m_path));
+                m_config->projectPackage = m_path;
+                SaveConfig(CONFIG_PATH, m_config);
 
-            if (m_codeEditor)
-                m_codeEditor->SetFile(m_project->mainScript);
+                m_runningProject = false;
+                m_contexts->Clear();
 
-            if(m_fileTreeContent)
-                m_fileTreeContent->SetProjectPackage(m_project);
+                if (m_codeEditor)
+                    m_codeEditor->SetFile(m_project->mainScript);
 
-            FileSplit fileSplit(m_path);// fileSplit.fileExtension
-            m_contexts->SetRootPath(fileSplit.filePath);
+                if(m_fileTreeContent)
+                    m_fileTreeContent->SetProjectPackage(m_project);
 
-            m_interpreter = std::move(CreateInterpreter(m_project->language, m_contexts, m_output));
+                FileSplit fileSplit(m_path);// fileSplit.fileExtension
+                m_contexts->SetRootPath(fileSplit.filePath);
 
-            try { m_interpreter->ExecuteFile(m_project->mainScript); }
-            catch (const CodeException &e) { *m_output << e.what(); }
+                m_interpreter = std::move(CreateInterpreter(m_project->language, m_contexts, m_output));
 
-            m_runningProject = true;
-            try { m_interpreter->CallOnInitFunction(); }
-            catch (const CodeException &e) { *m_output << e.what(); }
+                try { m_interpreter->ExecuteFile(m_project->mainScript); }
+                catch (const CodeException &e) { *m_output << e.what(); }
+
+                m_runningProject = true;
+                try { m_interpreter->CallOnInitFunction(); }
+                catch (const CodeException &e) { *m_output << e.what(); }
+            }
+            catch(const IOException e)
+            {
+                m_path = "";
+                *m_output << "Could not load project.";
+            }
         }
     }
 
@@ -74,7 +89,6 @@ namespace Math4BG
         {
             std::stringstream ssScripts;
             ssScripts << ss.str() << "/scripts";
-            std::cout << ssScripts.str() << std::endl;
             CreateFileDirectories(ssScripts.str());
 
             {
@@ -90,7 +104,6 @@ namespace Math4BG
         {
             std::stringstream ssScripts;
             ssScripts << ss.str() << "/shaders";
-            std::cout << ssScripts.str() << std::endl;
             CreateFileDirectories(ssScripts.str());
         }
 
@@ -98,7 +111,6 @@ namespace Math4BG
         {
             std::stringstream ssScripts;
             ssScripts << ss.str() << "/sounds";
-            std::cout << ssScripts.str() << std::endl;
             CreateFileDirectories(ssScripts.str());
         }
 
@@ -106,7 +118,6 @@ namespace Math4BG
         {
             std::stringstream ssScripts;
             ssScripts << ss.str() << "/models";
-            std::cout << ssScripts.str() << std::endl;
             CreateFileDirectories(ssScripts.str());
         }
 
@@ -114,11 +125,10 @@ namespace Math4BG
         {
             std::stringstream ssScripts;
             ssScripts << ss.str() << "/textures";
-            std::cout << ssScripts.str() << std::endl;
             CreateFileDirectories(ssScripts.str());
         }
 
-        auto projectPackage = ProjectPackage::EmptyProject(projectName, "lua");
+        auto projectPackage = ProjectPackage::EmptyProject(projectName, path, LANGUAGE_LUA);
         // Config file creation
         {
             std::stringstream ssPackage(ss.str());
@@ -136,10 +146,10 @@ namespace Math4BG
 
     std::unique_ptr<ILanInterpreter> ProjectManager::CreateInterpreter(const std::string &name, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output)
     {
-        if(name == "lua")
+        if(name == LANGUAGE_LUA)
             return std::move(LuaInterpreter::Create(std::move(contexts), std::move(output)));
-        /*else if(name == "js")
-            return std::shared_ptr<ILanInterpreter>(JavascriptInterpreter::Create(contexts, output));*/
+        else if(name == LANGUAGE_JS)
+            return std::move(JSInterpreter::Create(std::move(contexts), std::move(output)));
 
         throw std::runtime_error("Invalid Interpreter specified!");
     }

@@ -13,9 +13,17 @@
 
 namespace Math4BG
 {
+    struct FileElement
+    {
+        FileElement(const std::string& name, const std::string &path);
+        std::string Name;
+        std::string Path;
+        bool Clicked = false;
+    };
+
     struct FileStructure
     {
-        std::vector<std::string> files;
+        std::vector<FileElement> files;
         std::unordered_map<std::string, std::unique_ptr<FileStructure>> directories;
         inline bool Empty() const { return files.empty() && directories.empty(); }
     };
@@ -28,7 +36,7 @@ namespace Math4BG
         std::string mainScript;
         FileStructure fileStructure;
 
-        static std::shared_ptr<ProjectPackage> EmptyProject(const std::string &name, const std::string &language);
+        static std::shared_ptr<ProjectPackage> EmptyProject(const std::string &name, const std::string &path, const std::string &language);
     };
 }
 

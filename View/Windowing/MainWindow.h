@@ -15,6 +15,7 @@
 #include "../IMGUI/Own/Docking/MainDockSpace.h"
 #include "../IMGUI/Own/Main/EditorView.h"
 #include "../../Transformers/Project/ProjectManager.h"
+#include "../IMGUI/Own/TopMenu/TopMenu.h"
 
 namespace Math4BG
 {
@@ -48,13 +49,11 @@ namespace Math4BG
 
         std::shared_ptr<IOutput> m_output;
 
-        std::unique_ptr<imgui_addons::ImGuiFileBrowser> m_fileDialog;
-        std::unique_ptr<imgui_addons::ImGuiFileBrowser> m_newProjectDialog;
-
         std::unique_ptr<MainDockSpace> m_dockSpace;
         std::shared_ptr<EditorView> m_editorView;
         std::shared_ptr<ProjectManager> m_projectManager;
         std::shared_ptr<FileTree> m_fileTree;
+        std::unique_ptr<TopMenu> m_topMenu;
     };
 
     static bool sdl2Initialized = false;

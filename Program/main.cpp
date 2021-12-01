@@ -10,7 +10,8 @@
 
 int main(int argc, char** argv)
 {
-    Math4BG::Config config;
+    std::shared_ptr<Math4BG::Config> config = std::make_shared<Math4BG::Config>();
+
     try
     {
         LoadConfig(CONFIG_PATH, config);
@@ -28,7 +29,7 @@ int main(int argc, char** argv)
     std::shared_ptr<Math4BG::IOutput> out = Math4BG::ImGuiOutput::Create();
     std::shared_ptr<Math4BG::Contexts> contexts = Math4BG::Contexts::Create(out);
 
-    Math4BG::Application app({ "Math4BG", 1280, 720 }, contexts, config, out);
+    Math4BG::Application app({ "Math4BG", 1280, 720 }, contexts, std::move(config), out);
     try
     {
         app.Start();

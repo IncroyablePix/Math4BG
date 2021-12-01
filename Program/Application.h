@@ -22,7 +22,7 @@ namespace Math4BG
     class Application
     {
     public:
-        Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, const Config &config, std::shared_ptr<IOutput> output);
+        Application(const WindowInfo &info, std::shared_ptr<Contexts> contexts, std::shared_ptr<Config> config, std::shared_ptr<IOutput> output);
         ~Application();
         void Start();
 
@@ -35,10 +35,12 @@ namespace Math4BG
         std::shared_ptr<IOutput> m_output;
         std::shared_ptr<CodeEditor> m_codeEditor;
         std::shared_ptr<FileTreeContent> m_fileTreeContent;
+        std::shared_ptr<Config> m_config;
         unsigned long long m_start;
         unsigned long long m_last;
         bool m_running;
         bool m_fpsLimiter;
+
         int m_refreshRate;
 
         void Update(double lag);

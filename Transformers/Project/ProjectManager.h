@@ -10,13 +10,14 @@
 #include "../../View/IMGUI/Own/CodeEditor.h"
 #include "../../View//IMGUI/Own/FileTree/FileTree.h"
 #include "ProjectPackage.h"
+#include "../../Program/Config/Config.h"
 
 namespace Math4BG
 {
     class ProjectManager : public std::enable_shared_from_this<ProjectManager>
     {
     public:
-        ProjectManager(std::string path, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
+        ProjectManager(std::string path, std::shared_ptr<Config> config, std::shared_ptr<Contexts> contexts, std::shared_ptr<IOutput> output);
         void SetPath(const std::string &path);
         void Create(const std::string &projectName, const std::string &path);
         void Run();
@@ -33,6 +34,7 @@ namespace Math4BG
         std::shared_ptr<CodeEditor> m_codeEditor;
         std::shared_ptr<FileTreeContent> m_fileTreeContent;
         std::shared_ptr<ProjectPackage> m_project;
+        std::shared_ptr<Config> m_config;
 
         bool m_runningProject { false };
 

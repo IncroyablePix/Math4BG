@@ -6,30 +6,51 @@
 #include <sstream>
 #include "Config.h"
 #include "../../Transformers/Interpreter/LuaInterpreter.h"
+#include <fstream>
+#include "../../IO/Json/json.hpp"
 
 namespace Math4BG
 {
     void SetConfigScript(const std::string &scriptName, Config &config)
     {
-        std::ostringstream ss;
+        /*std::ostringstream ss;
         ss << "scripts/" << scriptName << ".lua";
-        config.scriptFile = ss.str();
+        config.scriptFile = ss.str();*/
     }
 
-    void LoadConfig(const std::string &path, Config &config)
+    void LoadConfig(const std::string &path, const std::shared_ptr<Config>& config)
     {
-        LuaInterpreter lua(nullptr, nullptr);
+        nlohmann::json j;
+        std::ifstream file(path);
+        file >> j;
 
-        lua.ExecuteFile(path);
-        std::string scriptName = lua.GetString("script");
-        SetConfigScript(scriptName, config);
-        config.fpsLimiter = lua.GetBool("fpslimiter");
+        if(j.contains("project") && j["project"].is_string())
+            config->projectPackage = j["project"];
+        else
+            config->projectPackage = "";
+
+        //---
+
+        if(j.contains("fpsLimiter") && j["fpsLimiter"].is_boolean())
+            config->fpsLimiter = j["fpsLimiter"];
+        else
+            config->fpsLimiter = true;
     }
 
-    void ParseArgs(int argc, char** argv, Math4BG::Config &config)
+    void SaveConfig(const std::string &path, const std::shared_ptr<Config>& config)
+    {
+        nlohmann::json j = nlohmann::json::object();
+        j["project"] = config->projectPackage;
+        j["fpsLimiter"] = config->fpsLimiter;
+
+        std::ofstream file(path);
+        file << j;
+    }
+
+    void ParseArgs(int argc, char** argv, std::shared_ptr<Config> config)
     {
         std::string previous;
-        for(int i = 1; i < argc; i ++)
+        /*for(int i = 1; i < argc; i ++)
         {
             if(previous == "-s")
             {
@@ -37,7 +58,7 @@ namespace Math4BG
             }
 
             previous = argv[i];
-        }
+        }*/
     }
 }
 

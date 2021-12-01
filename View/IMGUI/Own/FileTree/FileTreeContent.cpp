@@ -7,6 +7,13 @@
 
 namespace Math4BG
 {
+
+    FileElement::FileElement(const std::string& name, const std::string &path)
+    {
+        Name = name;
+        Path = path;
+    }
+
     void FileTreeContent::Show()
     {
         if (m_projectPackage)
@@ -44,7 +51,7 @@ namespace Math4BG
 
         for(const auto& file : fileStructure.files)
         {
-            ImGui::Text("%s", file.c_str());
+            ImGui::Selectable(file.Name.c_str(), &file.Clicked);
         }
 
         ImGui::Unindent();
